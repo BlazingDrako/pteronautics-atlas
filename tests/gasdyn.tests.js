@@ -61,4 +61,10 @@ export function gasdynTests(log) {
   log('jet at design pressure has no waves', jet.ok && Math.abs(jet.totalTurn) < 1e-9, `turn=${jet.totalTurn}`);
   const ju = G.jetPlume(2, 2, g);
   log('underexpanded jet: boundary turns outward and builds cells', ju.ok && ju.totalTurn > 0 && ju.polys.length > 50, `turn ${(ju.totalTurn / D).toFixed(2)}°, ${ju.polys.length} regions, cell ≈ ${ju.cellLen.toFixed(2)} h`);
+  for (const pr of [1.05, 1.321, 2.5]) { // sonic exit (converging nozzle): lattice must stay inside the jet boundary
+    const js = G.jetPlume(1, pr, g, { nFan: 9, xmax: 160 });
+    const bmax = Math.max(...js.boundary.map(p => p.y));
+    let ymax = 0; for (const P of js.polys) for (const p of P.pts) ymax = Math.max(ymax, p.y);
+    log(`sonic-exit jet pe/pa=${pr}: plume regions stay inside the boundary`, js.ok && isFinite(js.cellLen) && ymax <= bmax * 1.03, `region max y ${ymax.toFixed(3)} vs boundary ${bmax.toFixed(3)}, cell ${js.cellLen.toFixed(2)} h`);
+  }
 }

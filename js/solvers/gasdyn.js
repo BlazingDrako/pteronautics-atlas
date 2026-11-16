@@ -415,10 +415,19 @@ export function minLengthNozzle(Me, g, n = 16) {
 // Exit flow Me (uniform, parallel), pressure ratio pe/pa. Half-height 1. Returns region polygons with states.
 // Expansions are split into nFan waves; compressions are single waves (weak-shock approximation).
 export function jetPlume(Me, peRatio, g, { nFan = 10, xmax = 12, maxLines = 4000 } = {}) {
+  const Me0 = Me, peRatio0 = peRatio;
   Me = Math.max(Me, 1.0005);
-  const p0e = isen.p0_p(Me, g);           // p0/pe at exit
+  let p0e = isen.p0_p(Me, g);             // p0/pe at exit
   const pa_p0 = 1 / (p0e * peRatio);
   const Mb = M_from_p(pa_p0, g);
+  // At a sonic exit μ = 90° and the C+ and C− directions coincide, so the lattice is singular wherever the flow
+  // returns to the exit state. March from a slightly supersonic exit with the same ambient pressure (same
+  // fully-expanded Mach number Mb, so nearly the same jet width and cell length) instead.
+  if (Me < 1.05 && Mb > 1) {
+    Me = Math.max(Me, Math.min(1.05, 1 + 0.5 * (Mb - 1)));
+    p0e = isen.p0_p(Me, g); peRatio = 1 / (p0e * pa_p0);
+  }
+  let L = NaN;
   const nue = isen.nu(Me, g);
   if (!(Mb > 1)) return { ok: false, reason: 'subsonic-boundary', Mb };
   const nub = isen.nu(Mb, g);
@@ -506,12 +515,43 @@ export function jetPlume(Me, peRatio, g, { nFan = 10, xmax = 12, maxLines = 4000
       for (let j = 1; j <= m; j++) { const a = q.pts[j], b = r.pts[j - off]; if (q.csign[j]) waves.push({ pts: [a, b], sign: q.csign[j], fam: '+' }); }
     }
     q = r;
+    if (!isFinite(L) && r.kind === 'refl') L = cellEnd(boundary);
+    if (isFinite(L) && Math.min(...q.pts.map(p => p.x)) > 1.35 * L) break; // first cell fully resolved
     if (q.pts[0].x > xmax && q.pts[q.pts.length - 1].x > xmax) break;
     if (!isFinite(q.pts[0].x) || q.pts[0].y > 50) break;
   }
-  const cellLen = estimateCell(boundary);
-  let ymax = 1; for (const p of boundary) if (p.x < 2.2 * (cellLen || xmax)) ymax = Math.max(ymax, p.y);
-  return { ok: true, ymax, polys, waves, boundary, Mb, nub, nue, totalTurn: nub - nue, crossed, cellLen, Me, peRatio, pa_p0: pa_p0, p0e, firstAxis };
+  let cellLen = L;
+  let out = { polys, waves, boundary };
+  if (isFinite(L) && L > 0) {
+    // The ideal (inviscid, no-mixing) cell pattern is periodic. Marching on accumulates error where the flow
+    // returns to the exit state, so keep the first cell (dropping any region that left the jet) and repeat it.
+    let yCap = 1; for (const p of boundary) if (p.x <= L) yCap = Math.max(yCap, p.y);
+    yCap *= 1.02;
+    const good = pts => pts.every(p => isFinite(p.x) && p.x >= -1e-6 && p.y >= -1e-6 && p.y <= yCap) && Math.min(...pts.map(p => p.x)) < L;
+    const bP = polys.filter(P => good(P.pts)), bW = waves.filter(w => good(w.pts));
+    const bB = boundary.filter(p => p.x < L); bB.push({ x: L, y: 1 });
+    out = { polys: [], waves: [], boundary: [] };
+    const sh = (pts, dx) => pts.map(p => ({ x: p.x + dx, y: p.y }));
+    for (let k = 0; k * L < xmax; k++) {
+      const dx = k * L;
+      for (const P of bP) out.polys.push({ pts: sh(P.pts, dx), s: P.s });
+      for (const w of bW) out.waves.push({ ...w, pts: sh(w.pts, dx) });
+      for (const p of (k ? bB.slice(1) : bB)) out.boundary.push({ x: p.x + dx, y: p.y });
+    }
+  } else cellLen = estimateCell(boundary);
+  let ymax = 1; for (const p of out.boundary) if (p.x < 2.2 * (cellLen || xmax)) ymax = Math.max(ymax, p.y);
+  return { ok: true, ymax, ...out, Mb, nub, nue, totalTurn: nub - nue, crossed, cellLen, Me: Me0, peRatio: peRatio0, pa_p0: pa_p0, p0e, firstAxis };
+}
+// End of the first shock cell: where the jet boundary first comes back to the exit height (y = 1).
+function cellEnd(b) {
+  if (b.length < 3) return NaN;
+  const s = Math.sign(b[1].y - 1);
+  if (!s) return NaN;
+  for (let i = 2; i < b.length; i++) {
+    const d0 = b[i - 1].y - 1, d1 = b[i].y - 1;
+    if (Math.sign(d1) !== s) { const t = d0 / (d0 - d1 || 1); return b[i - 1].x + t * (b[i].x - b[i - 1].x); }
+  }
+  return NaN;
 }
 function estimateCell(b) {
   // boundary height oscillates: find first local minimum (for under-) or maximum after start

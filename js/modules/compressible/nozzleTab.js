@@ -210,8 +210,11 @@ export function nozzleTab({ keep = o => o } = {}) {
     const x0 = geo.xs[0], xe = geo.xe, Ln = xe - x0;
     const Rc = geo.rs[0], wallT = 0.18 * Math.max(1, Rc / 2);
     const cells = jet && jet.ok && isFinite(jet.cellLen) ? jet.cellLen * Re : 0;
-    const plumeL = Math.max(1.4 * Ln, 7 * Re, 8, Math.min(2.15 * cells, 9 * Ln + 20));
-    const Ymax = Math.max(Rc + wallT, Re * Math.max(1.9, (jet && jet.ok ? jet.ymax * 1.15 : 0)), 2);
+    // a strongly under-expanded jet (planar model) can be many exit widths across: let it run off the frame
+    // rather than shrinking the nozzle to a dot
+    const hull = Math.max(Rc + wallT, 1.9 * Re, 2);
+    const Ymax = Math.min(3 * hull, Math.max(Rc + wallT, Re * Math.max(1.9, (jet && jet.ok ? jet.ymax * 1.15 : 0)), 2));
+    const plumeL = Math.min(Math.max(1.4 * Ln, 7 * Re, 8, Math.min(2.15 * cells, 9 * Ln + 20)), Math.max(8, 7 * Re, 1.4 * Ln, 6 * Ymax));
     const b = { x0: x0 - 0.2, x1: xe + plumeL, y0: -Ymax, y1: Ymax };
     const ref = flow.p0e;
     // plume polygons in world coordinates (scale by Re, shift by xe), both halves
@@ -270,7 +273,7 @@ export function nozzleTab({ keep = o => o } = {}) {
     if (tHi - tLo < 0.02) { tLo -= 0.05; tHi += 0.02; }
     const glowRange = [tLo - 0.35 * (tHi - tLo), tHi + 0.08 * (tHi - tLo)];
     return {
-      bounds: b, fill, speed: 1.1, nParticles: 520, ranges: { glow: glowRange },
+      bounds: b, anchor: 'left', fill, speed: 1.1, nParticles: 520, ranges: { glow: glowRange },
       refNames: { p: 'p/p₀', T: 'T/T₀', rho: 'ρ/ρ₀', p0: 'p₀ local/p₀' },
       qlabel: { M: 'Mach number', p: 'Pressure p/p₀', T: 'Temperature T/T₀', glow: 'Exhaust glow (T/T₀)' },
       spawn: init => {
@@ -316,8 +319,9 @@ export function nozzleTab({ keep = o => o } = {}) {
           line(ctx, { x: flow.shock.x, y: r }, { x: flow.shock.x, y: r + wallT }, dark ? 'rgba(255,255,255,0.7)' : 'rgba(20,24,33,0.6)', 1, [2, 2]);
         }
         if (xSep !== null) { for (const sg of [1, -1]) { const r = G.radiusAt(geo, xSep); line(ctx, { x: xSep, y: sg * r }, { x: xSep + 0.25 * Re, y: sg * (r - 0.25 * Re) }, ctx.css('--bad'), 3); } label(ctx, { x: xSep, y: G.radiusAt(geo, xSep) }, 'separation (est.)', { color: ctx.css('--bad'), dy: -14, align: 'center' }); }
-        label(ctx, { x: 0, y: -1 - wallT }, 'throat', { dy: 12, align: 'center', bg: false, color: ctx.css('--text-2') });
-        label(ctx, { x: xe, y: -Re - wallT }, `exit M ${flow.Me.toFixed(2)}`, { dy: 12, align: 'center', bg: false, color: ctx.css('--text-2') });
+        // converging-only: the throat is the exit, so one label
+        if (xe > 0.5) label(ctx, { x: 0, y: -1 - wallT }, 'throat', { dy: 12, align: 'center', bg: false, color: ctx.css('--text-2') });
+        label(ctx, { x: xe, y: -Re - wallT }, `${xe > 0.5 ? 'exit' : 'throat = exit'} M ${flow.Me.toFixed(2)}`, { dy: 12, align: 'center', bg: false, color: ctx.css('--text-2') });
         label(ctx, { x: x0 + 0.1, y: Rc + wallT }, `chamber p₀ ${S.p0.toFixed(0)} kPa`, { dy: -12, bg: false, color: ctx.css('--text-2') });
         label(ctx, { x: b.x1 - 0.2, y: b.y1 - 0.2 }, `ambient pb ${(S.pb * S.p0).toFixed(2)} kPa`, { align: 'right', base: 'top' });
       },
