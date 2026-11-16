@@ -22,3 +22,21 @@ One engine design is shared by every tab (`js/solvers/rocket.js`, no DOM; chemis
   viscosity), adiabatic wall temperature, heat flux along the wall, total heat load and the coolant temperature rise
   against its limit (RP-1 coking, etc.), liner conduction for copper, steel, Inconel or niobium, and the radiation
   equilibrium temperature that shows where an uncooled extension can take over.
+- **Altitude-compensating nozzles**: an aerospike / expansion-deflection nozzle of the same area ratio compared on the thrust and Isp
+  curves (ideally expanded below its design altitude, fixed above it, with a 2% plug penalty), and drawn in place of the bell
+  (truncated aerospike, full plug or E-D) in the same style: temperature-colored gas from the planar plug flow solution at the
+  engine's ε and exhaust γ, with the free jet boundary following the ambient pressure.
+- **Feed & turbopumps** (`js/solvers/rocketSystems.js`): the power balance of every cycle for the current engine: pressure-fed tank
+  pressure, gas-generator turbine flow, expander turbine pressure ratio from the cooling-jacket heat (or why it cannot close),
+  staged-combustion and full-flow pump discharge pressures; a cycle schematic; centrifugal pumps (head, stages, specific speed,
+  impeller size and tip speed, NPSH available and required with or without an inducer, maximum speed); single-row impulse vs
+  Curtis turbine blade efficiency at the actual blade-speed ratio; pump power and turbine pressure ratio against Pc.
+- **Solid motors**: tubular, star, finocyl, moonburner and end-burning grains burned back on a 241 × 241 grid by an exact
+  Euclidean distance transform, ends burning or inhibited, five propellants with r = a·Pcⁿ, quasi-steady ballistics
+  Pc = (Kn ρₚ a c*)^(1/(1−n)); pressure and thrust against time, Kn against web, total impulse and motor class, erosive-burning
+  check, and an animated burning cross-section.
+- **Flight & staging**: the multistage rocket equation stage by stage (ε, λ, mass ratio, Δv) for the lecture 17 example, Atlas V 401,
+  Falcon 9 and Saturn V; optimal staging for a target Δv by a Lagrange multiplier; payload fraction against Δv for 1–4 identical
+  stages; a vertical first-stage flight with variable gravity and drag against the lecture's closed form (burnout, apogee,
+  gravity and drag losses, max-Q).
+

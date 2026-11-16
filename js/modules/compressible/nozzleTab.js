@@ -6,6 +6,7 @@ import { Plot } from '../../lib/plot.js';
 import { FieldStage, poly, line, label, body } from './field.js';
 import { gasPicker, metricsGrid, insightsList, card, stageLayers, fmt } from './common.js';
 import * as G from '../../solvers/gasdyn.js';
+import { plugUpdate, PLUG_TYPES } from './plugScene.js';
 
 const { isen, DEG } = G;
 const REG = {
@@ -15,7 +16,7 @@ const REG = {
 export function isaPressure(hm) { return atmosphere(hm).p; }
 
 export function nozzleTab({ keep = o => o } = {}) {
-  const S = keep({ type: 'conical', eps: 4, half: 15, nChar: 14, g: 1.4, R: 287.05, gas: 'air', pb: 0.4, p0: 1000, T0: 300, At: 10, contraction: 3 });
+  const S = keep({ type: 'conical', eps: 4, half: 15, nChar: 14, trunc: 0.25, g: 1.4, R: 287.05, gas: 'air', pb: 0.4, p0: 1000, T0: 300, At: 10, contraction: 3 });
   const controls = h('div'), main = h('div', { class: 'cf-main-inner' });
 
   // ---------- controls ----------
@@ -23,12 +24,14 @@ export function nozzleTab({ keep = o => o } = {}) {
   const typeSel = select([
     { value: 'converging', label: 'Converging only' }, { value: 'conical', label: 'Conical C-D (cone)' },
     { value: 'bell', label: 'Bell — Rao 80% parabolic' }, { value: 'moc', label: 'Minimum-length (method of characteristics, 2-D)' },
+    { value: 'plug', label: 'Plug — full-length spike (altitude-compensating)' }, { value: 'aerospike', label: 'Aerospike — truncated plug' }, { value: 'ed', label: 'Expansion-deflection (E-D)' },
   ], S.type, v => { S.type = v; sync(); update(); });
   const epsS = slider({ label: 'Area ratio Ae/At', min: 1.05, max: 100, log: true, value: S.eps, format: v => (+v).toFixed(2), info: 'Exit area / throat area. Sets the design exit Mach number. Rockets: 10–80 (vacuum stages 100+). Wind tunnels: 1.7 (M=2) to 25 (M=5).', onInput: v => { S.eps = v; update(); } });
   const meHint = h('div', { class: 'hint' });
   const halfS = slider({ label: 'Cone half-angle', min: 5, max: 30, step: 0.5, value: S.half, format: v => (+v).toFixed(1) + '°', info: 'Wider cones are shorter and lighter but lose thrust because the exhaust leaves at an angle: λ = (1 + cos α)/2.', onInput: v => { S.half = v; update(); } });
   const ncS = slider({ label: 'Characteristics', min: 4, max: 40, step: 1, value: S.nChar, digits: 0, info: 'Number of Mach waves in the corner expansion fan. More = smoother wall, more accurate area ratio.', onInput: v => { S.nChar = Math.round(v); update(); } });
-  secN.body.append(field('Type', typeSel), epsS.el, meHint, halfS.el, ncS.el);
+  const truncS = slider({ label: 'Spike length kept', min: 0.1, max: 0.9, step: 0.01, value: S.trunc, format: v => (v * 100).toFixed(0) + '%', info: 'Fraction of the full plug length kept before the spike is cut off flat. Real aerospikes keep about 20–40%.', onInput: v => { S.trunc = v; update(); } });
+  secN.body.append(field('Type', typeSel), epsS.el, meHint, halfS.el, ncS.el, truncS.el);
 
   const secO = section('Operating point');
   const pbS = slider({ label: 'Back pressure pb/p₀', min: 0.001, max: 1, log: true, value: S.pb, format: v => (+v).toFixed(4), info: 'Ambient (back) pressure divided by chamber stagnation pressure. Drag it down to walk through every regime: subsonic → choked → shock in nozzle → over-expanded → design → under-expanded.', onInput: v => { S.pb = v; altFromPb(); update(); } });
@@ -52,8 +55,8 @@ export function nozzleTab({ keep = o => o } = {}) {
   const AtS = slider({ label: 'Throat area At', min: 0.1, max: 10000, log: true, value: S.At, format: v => (+v).toFixed(2) + ' cm²', onInput: v => { S.At = v; update(); } });
   secC.body.append(gasPicker(S, () => update()), p0S.el, T0S.el, AtS.el,
     h('div', { class: 'hint' }, 'Presets: cold-air tunnel ≈ air, 300 K. Rocket ≈ "Rocket exhaust", 3000–3500 K, 5–20 MPa.'));
-  const preset = select([{ value: '', label: 'Load a preset…' }, { value: 'tunnel', label: 'Supersonic wind tunnel (M≈2.5, air)' }, { value: 'rocket', label: 'Sea-level rocket (ε=16, bell)' }, { value: 'vac', label: 'Upper-stage vacuum nozzle (ε=80)' }, { value: 'shock', label: 'Shock in a C-D nozzle (ε=2)' }, { value: 'f1', label: 'Mach diamonds: under-expanded jet' }, { value: 'f2', label: 'Mach diamonds: over-expanded jet' }], '', v => {
-    const P = { tunnel: { type: 'conical', eps: 2.64, gas: 'air', g: 1.4, R: 287.05, p0: 600, T0: 300, pb: 0.06 }, rocket: { type: 'bell', eps: 16, gas: 'comb', g: 1.22, R: 330, p0: 7000, T0: 3400, pb: 101.325 / 7000 }, vac: { type: 'bell', eps: 80, gas: 'comb', g: 1.22, R: 330, p0: 5000, T0: 3400, pb: 0.0012 }, shock: { type: 'conical', eps: 2, gas: 'air', g: 1.4, R: 287.05, p0: 300, T0: 300, pb: 0.7 }, f1: { type: 'bell', eps: 3, gas: 'comb', g: 1.22, R: 330, p0: 3000, T0: 3200, pb: 0.036 }, f2: { type: 'conical', eps: 2.2, half: 12, gas: 'air', g: 1.4, R: 287.05, p0: 800, T0: 900, pb: 0.115 } }[v];
+  const preset = select([{ value: '', label: 'Load a preset…' }, { value: 'tunnel', label: 'Supersonic wind tunnel (M≈2.5, air)' }, { value: 'rocket', label: 'Sea-level rocket (ε=16, bell)' }, { value: 'vac', label: 'Upper-stage vacuum nozzle (ε=80)' }, { value: 'shock', label: 'Shock in a C-D nozzle (ε=2)' }, { value: 'f1', label: 'Mach diamonds: under-expanded jet' }, { value: 'f2', label: 'Mach diamonds: over-expanded jet' }, { value: 'spike', label: 'Aerospike at sea level (ε=12)' }, { value: 'edsl', label: 'Expansion-deflection at sea level (ε=12)' }], '', v => {
+    const P = { tunnel: { type: 'conical', eps: 2.64, gas: 'air', g: 1.4, R: 287.05, p0: 600, T0: 300, pb: 0.06 }, rocket: { type: 'bell', eps: 16, gas: 'comb', g: 1.22, R: 330, p0: 7000, T0: 3400, pb: 101.325 / 7000 }, vac: { type: 'bell', eps: 80, gas: 'comb', g: 1.22, R: 330, p0: 5000, T0: 3400, pb: 0.0012 }, shock: { type: 'conical', eps: 2, gas: 'air', g: 1.4, R: 287.05, p0: 300, T0: 300, pb: 0.7 }, f1: { type: 'bell', eps: 3, gas: 'comb', g: 1.22, R: 330, p0: 3000, T0: 3200, pb: 0.036 }, f2: { type: 'conical', eps: 2.2, half: 12, gas: 'air', g: 1.4, R: 287.05, p0: 800, T0: 900, pb: 0.115 }, spike: { type: 'aerospike', eps: 12, trunc: 0.25, gas: 'comb', g: 1.22, R: 330, p0: 7000, T0: 3400, pb: 101.325 / 7000 }, edsl: { type: 'ed', eps: 12, gas: 'comb', g: 1.22, R: 330, p0: 7000, T0: 3400, pb: 101.325 / 7000 } }[v];
     if (P) { Object.assign(S, P); sync(); update(); }
     preset.value = '';
   });
@@ -86,10 +89,17 @@ export function nozzleTab({ keep = o => o } = {}) {
     const conv = S.type === 'converging';
     epsS.el.style.display = conv ? 'none' : ''; meHint.style.display = conv ? 'none' : '';
     halfS.el.style.display = S.type === 'conical' ? '' : 'none'; ncS.el.style.display = S.type === 'moc' ? '' : 'none';
-    for (const b of jump.children) b.style.display = conv && !/1st|Under/.test(b.textContent) ? 'none' : '';
+    truncS.el.style.display = S.type === 'aerospike' ? '' : 'none'; truncS.set(S.trunc);
+    const plugT = PLUG_TYPES.includes(S.type);
+    for (const b of jump.children) b.style.display = (conv && !/1st|Under/.test(b.textContent)) || (plugT && /1st|Shock|2nd/.test(b.textContent)) ? 'none' : '';
   }
 
   function update() {
+    if (PLUG_TYPES.includes(S.type)) {
+      const css = getComputedStyle(document.documentElement);
+      last = plugUpdate(S, { stage, metrics, badge, regBar, pPlot, mPlot, cfPlot, resEl, insEl, meHint, pbHint, insightsList, col: v => css.getPropertyValue(v).trim() });
+      return;
+    }
     const g = S.g, eps = S.type === 'converging' ? 1 : S.eps;
     const geo = G.nozzleGeometry({ type: S.type, eps, halfAngleDeg: S.half, g, nChar: S.nChar, contraction: S.contraction });
     const flow = G.nozzleFlow(geo, g, S.pb);

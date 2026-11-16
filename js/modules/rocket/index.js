@@ -10,6 +10,9 @@ const TABS = [
   { id: 'altitude', label: 'Altitude & expansion', load: () => import('./altitudeTab.js').then(m => m.altitudeTab) },
   { id: 'propellants', label: 'Propellants', load: () => import('./propellantsTab.js').then(m => m.propellantsTab) },
   { id: 'cooling', label: 'Cooling', load: () => import('./coolingTab.js').then(m => m.coolingTab) },
+  { id: 'feed', label: 'Feed & turbopumps', load: () => import('./feedTab.js').then(m => m.feedTab) },
+  { id: 'solid', label: 'Solid motors', load: () => import('./solidTab.js').then(m => m.solidTab) },
+  { id: 'flight', label: 'Flight & staging', load: () => import('./flightTab.js').then(m => m.flightTab) },
 ];
 
 export const rocketModule = {
@@ -21,7 +24,7 @@ export const rocketModule = {
     const main = h('section', { class: 'cf-main' });
     const head = h('div', { class: 'af-head cf-head' });
     const tabs = h('div', { class: 'tabs tabs-wrap', role: 'tablist' });
-    head.append(h('div', {}, h('h2', { class: 'af-title' }, 'Rocket Engines'), h('div', { class: 'af-sub' }, 'Liquid-propellant engines from the chemistry in the chamber to the plume behind the nozzle')), tabs);
+    head.append(h('div', {}, h('h2', { class: 'af-title' }, 'Rocket Engines'), h('div', { class: 'af-sub' }, 'Liquid and solid rocket motors, from the chemistry in the chamber and the pumps that feed it to the plume and the flight')), tabs);
     const body = h('div', { class: 'cf-body' });
     const learn = h('div', { class: 'cf-learn' }, h('h3', {}, 'Learn the concepts'),
       h('div', { class: 'cf-concepts' }, ...concepts.map(c => h('details', { class: 'concept' }, h('summary', {}, c.title), h('div', { class: 'body', html: c.html })))));

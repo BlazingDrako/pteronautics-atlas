@@ -185,6 +185,31 @@ function wings() {
   return svg(s);
 }
 
+function cycles() {
+  // an Otto-cycle loop on p–v axes beside a cylinder whose piston pushes up and down
+  const g = 1.4, V1 = 1, V2 = 1 / 8, sx = V => 30 + (V - V2) / (V1 - V2) * 170, sy = p => 108 - p * 2.1;
+  const c = [], e = [], p3 = 2.6 * 8 ** g;
+  for (let i = 0; i <= 30; i++) { const V = V1 + (V2 - V1) * i / 30; c.push([sx(V), sy((V1 / V) ** g)]); }
+  for (let i = 0; i <= 30; i++) { const V = V2 + (V1 - V2) * i / 30; e.push([sx(V), sy(p3 * (V2 / V) ** g)]); }
+  const loop = pts(c) + ' ' + pts(e).replace('M', 'L') + ' Z';
+  let s = `<path class="pv-axis" d="M26 6 L26 112 L214 112"/>`;
+  s += `<path class="pv-fin" d="${loop}"/>${trace(loop)}`;
+  s += `<path class="pv-rbody" d="M250 14 L250 106 M298 14 L298 106 M250 14 L298 14"/>`;
+  s += `<g class="press"><rect class="pv-support" x="252" y="46" width="44" height="16" rx="2"/><path class="pv-mline" d="M274 62 L274 100"/></g>`;
+  s += `<path class="pv-flame flicker" d="M266 22 Q274 34 282 22 Q278 40 274 42 Q270 40 266 22 Z"/>`;
+  return svg(s);
+}
+
+function heat() {
+  // a layered wall: hot gas on the left, the temperature falling through each layer, and heat radiating away on the right
+  let s = `<rect class="pv-fin" x="120" y="10" width="30" height="100"/><rect class="pv-beam" x="150" y="10" width="44" height="100"/><rect class="pv-fin" x="194" y="10" width="16" height="100"/>`;
+  s += `<path class="pv-stream flow" d="M0 24 L110 24 M0 60 L110 60 M0 96 L110 96"/>`;
+  const T = 'M20 18 L110 22 L120 26 L150 44 L194 92 L210 98 L300 102';
+  s += `<path class="pv-lo" d="${T}"/>${trace(T)}`;
+  for (const y of [30, 60, 90]) s += `<path class="pv-shock jitter" d="M220 ${y} q6 -6 12 0 t12 0 t12 0 t12 0"/>`;
+  return svg(s);
+}
+
 function rotors() {
   // a three-bladed propeller seen from the front: tapered blades round a spinner, the disk they sweep, and air flowing past
   let blades = '';
@@ -260,4 +285,4 @@ function design() {
   return svg(s);
 }
 
-export const PREVIEWS = { airfoil, compressible, cfd, turbine: propulsion, structures, flight, gnc, formulas, rocket, orbits, wings, rotors, materials, launch, spacecraft, design };
+export const PREVIEWS = { cycles, heat, airfoil, compressible, cfd, turbine: propulsion, structures, flight, gnc, formulas, rocket, orbits, wings, rotors, materials, launch, spacecraft, design };

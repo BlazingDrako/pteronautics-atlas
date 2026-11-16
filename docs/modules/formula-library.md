@@ -2,7 +2,7 @@
 
 [← Back to the README](../../README.md)
 
-- **161 formulas in 12 topics**: atmosphere and gas properties, fluid mechanics and potential flow, low-speed aerodynamics
+- **178 formulas in 12 topics**: atmosphere and gas properties, fluid mechanics and potential flow, low-speed aerodynamics
   (with thin-airfoil and lifting-line theory, vortex filaments and boundary layers), compressible flow (with linearized
   theory and the critical Mach number), jet propulsion,
   rockets, flight performance, stability, structures, vibration, orbital mechanics, thermodynamics and heating.

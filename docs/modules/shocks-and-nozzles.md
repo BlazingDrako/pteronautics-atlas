@@ -13,7 +13,10 @@
 - **Nozzles & plumes**: converging, conical, Rao 80% bell (approximate angles) and minimum-length MOC contours; quasi-1D
   flow through every back-pressure regime including the normal-shock location; thrust, CF, Isp, mass flow; CF vs back
   pressure; exhaust plume by a planar wave-lattice method of characteristics, giving Mach diamonds (with an exhaust-glow
-  view), Mach-disk and separation warnings.
+  view), Mach-disk and separation warnings. Altitude-compensating nozzles (`js/solvers/plugNozzle.js`): a full-length
+  plug, a truncated aerospike and an expansion-deflection nozzle, contoured by Angelino's method (planar), with the
+  corner-centered Prandtl–Meyer fan and a free jet boundary that follows back pressure; wall pressure and Mach number along
+  the contour, and CF against a fixed nozzle of the same area ratio.
 - **Live CFD (Euler)**: a GPU (WebGL2) finite-volume solver of the 2-D Euler equations — HLLC fluxes, MUSCL
   reconstruction, SSP-RK2, ghost-cell immersed boundaries — for every scenario except the Mach cone, with the exact theory
   overlaid as dashed lines and a convergence plot. Validated on a Mach 2.5, 15° ramp: M₂ 1.8737 vs 1.8735 exact, p₂/p₁

@@ -25,13 +25,16 @@ The same folder can be hosted as-is on any static web host (for example GitHub P
 | [Wings & 3D Aero](docs/modules/wings-and-3d-aero.md) | Finite wings by vortex lattice and lifting line: spanwise lift, induced drag, tip stall with Airfoil Lab polars, downwash at the tail, ground effect, winglets, Glauert's Fourier solution and the Biot–Savart law, in a 3-D view |
 | [Shocks & Nozzles](docs/modules/shocks-and-nozzles.md) | Compressible-flow calculator, shocks and expansion fans you can see, nozzles and plumes, the θ–β–M chart, a shock tube, linearized theory with critical Mach numbers, and a live Euler CFD solver |
 | [Fluid Flow Sandbox](docs/modules/fluid-flow-sandbox.md) | Real-time 2-D viscous flow on the GPU (lattice Boltzmann): 12 scenes, obstacles you draw and drag, forces, probes and spectra; potential flow by superposition or a typed F(z) with images and Kutta–Joukowski lift; exact Couette, pipe and Stokes flows |
-| [Rocket Engines](docs/modules/rocket-engines.md) | Liquid engines sized from a thrust requirement with equilibrium chemistry, compared with eight real engines; altitude, plumes, propellants and cooling |
-| [Jet Engine Cycles](docs/modules/jet-engine-cycles.md) | Turbojet to scramjet cycles station by station, trade studies, stage calculators, inlets, turbomachinery and chemical equilibrium |
+| [Thermodynamic Cycles](docs/modules/thermodynamic-cycles.md) | Otto and Diesel piston engines in a running cylinder with imep, power and boost; Brayton gas turbines with regeneration, intercooling and reheat; the Humphrey pulse cycle; γ from degrees of freedom, mixtures and real-gas Z |
+| [Rocket Engines](docs/modules/rocket-engines.md) | Liquid engines sized from a thrust requirement with equilibrium chemistry, compared with eight real engines; altitude, plumes and aerospikes, propellants, cooling, feed cycles and turbopumps; solid motors with grain burnback; staging and vertical flight |
+| [Jet Engine Cycles](docs/modules/jet-engine-cycles.md) | Turbojet to scramjet cycles station by station, trade studies, stage calculators, inlets, turbomachinery, blade design and cooling, compressor–turbine matching and chemical equilibrium |
+| [Heat Transfer](docs/modules/heat-transfer.md) | Conduction through layered walls, convection correlations with the Reynolds analogy, and radiation from the Planck spectrum to shields and view factors |
+| [Propellers & Rotors](docs/modules/propellers-and-rotors.md) | Blade element momentum theory with propeller maps, actuator-disk momentum theory and propulsive efficiency, helicopter power and autorotation, multirotor endurance |
 | [Structures Workbench](docs/modules/structures-workbench.md) | Free-body diagrams and statics, 2-D and 3-D frames, 2-D FEA, sections, Mohr's circle, vibration and buckling |
 | [Flight & Atmosphere](docs/modules/flight-and-atmosphere.md) | Standard atmosphere, airspeeds and turbulence; performance, envelope, stability and dynamic modes for five aircraft |
 | [Orbital Mechanics](docs/modules/orbital-mechanics.md) | The six elements in 3D with the satellite moving by Kepler's equation, Hohmann, bi-elliptic and plane-change transfers, ground tracks with J2 drift, and Δv budgets from the pad to Mars |
 | [Guidance, Navigation & Control](docs/modules/gnc.md) | Control loops, fly-by-wire, autopilots, navigation, INS/GNSS Kalman filtering and collaborative flight |
-| [Formula Library](docs/modules/formula-library.md) | 161 formulas in 12 topics: solve for any variable, plot, switch units, read what each one means |
+| [Formula Library](docs/modules/formula-library.md) | 178 formulas in 12 topics: solve for any variable, plot, switch units, read what each one means |
 
 Planned: Propellers & Rotors, Fatigue & Composites, Launch & Reentry,
 Spacecraft Systems and Aircraft Design.

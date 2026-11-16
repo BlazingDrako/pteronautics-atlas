@@ -20,3 +20,12 @@
 - **Chemical equilibrium** (`js/solvers/thermo.js`): Gibbs minimization by the NASA CEA method (Gordon & McBride, RP-1311) for
   TP, HP and SP problems and the CEA rocket problem (equilibrium or frozen), using NASA TM-4513 polynomials for 28 species
   (`js/solvers/thermoData.js`). Validated: H₂/O₂ flame 3078.7 K (CEA 3079 K), CH₄/air 2225.7 K (CEA 2226 K).
+- **Blade design & cooling** (`js/solvers/turboDesign.js`): compressor or turbine velocity triangles at hub, mean and tip under a
+  free-vortex or constant-reaction law, blade angles and reaction along the span, de Haller, twist, total-to-total vs
+  total-to-static efficiency; turbine work against reaction with zero exit swirl (impulse vs 50% reaction); Holland–Thake coolant
+  flow for convection, film and transpiration cooling; centrifugal root stress against the creep strength of titanium, Inconel,
+  directionally solidified and single-crystal nickel and CMC.
+- **Component matching**: a single-spool turbojet with choked turbine and nozzle: the running line on the compressor map from the
+  flow and work compatibility conditions, the operating point for any fuel setting T₀₄/T₀₁, surge margin along the line, and
+  the effect of the nozzle area.
+

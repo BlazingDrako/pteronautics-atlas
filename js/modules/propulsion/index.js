@@ -9,6 +9,8 @@ const TABS = [
   { id: 'stages', label: 'Stage calculators', load: () => import('./stagesTab.js').then(m => m.stagesTab) },
   { id: 'inlet', label: 'Inlets & shocks', load: () => import('./inletTab.js').then(m => m.inletTab) },
   { id: 'turbo', label: 'Turbomachinery', load: () => import('./turboTab.js').then(m => m.turboTab) },
+  { id: 'blade', label: 'Blade design & cooling', load: () => import('./bladeTab.js').then(m => m.bladeTab) },
+  { id: 'match', label: 'Component matching', load: () => import('./matchTab.js').then(m => m.matchTab) },
   { id: 'cea', label: 'Chemical equilibrium (CEA)', load: () => import('./ceaTab.js').then(m => m.ceaTab) },
 ];
 

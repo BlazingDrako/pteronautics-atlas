@@ -4,6 +4,7 @@ import { flight } from './data/flight.js';
 import { solids } from './data/solids.js';
 import { space } from './data/space.js';
 import { fundamentals } from './data/fundamentals.js';
+import { engines } from './data/engines.js';
 
 export const TOPICS = [
   {
@@ -128,7 +129,7 @@ export const TOPICS = [
   },
 ];
 
-export const FORMULAS = [...fluids, ...fundamentals, ...flight, ...solids, ...space];
+export const FORMULAS = [...fluids, ...fundamentals, ...flight, ...solids, ...space, ...engines];
 export const byId = Object.fromEntries(FORMULAS.map(f => [f.id, f]));
 export const topicById = Object.fromEntries(TOPICS.map(t => [t.id, t]));
 

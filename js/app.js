@@ -12,6 +12,9 @@ import { gncModule } from './modules/gnc/index.js';
 import { rocketModule } from './modules/rocket/index.js';
 import { orbitsModule } from './modules/orbits/index.js';
 import { wingsModule } from './modules/wings/index.js';
+import { cyclesModule } from './modules/cycles/index.js';
+import { heatModule } from './modules/heat/index.js';
+import { rotorsModule } from './modules/rotors/index.js';
 import { PREVIEWS } from './previews.js';
 import { watchViews } from './lib/export.js';
 import { initSearch, openSearch, searchShortcut } from './lib/search.js';
@@ -31,15 +34,21 @@ const modules = [
   { ...cfdModule, icon: 'wind', group: 'Aerodynamics', status: 'live',
     blurb: 'Real-time 2-D viscous flow on your GPU: vortex streets, stalling wings, jets and cavities. Draw obstacles and drag them through the fluid, then compare with potential flow and the exact viscous solutions.',
     features: ['Lattice-Boltzmann solver with a turbulence model, 12 scenes', 'Potential flow from sources, vortices and doublets or a typed F(z), with images and Kutta–Joukowski lift', 'Exact viscous flows: Couette, pipe and Stokes\' problems'] },
+  { ...cyclesModule, icon: 'thermo', group: 'Propulsion', status: 'live',
+    blurb: 'The engines behind the engines: Otto and Diesel piston cycles in a running cylinder, Brayton gas turbines with regeneration and reheat, pulse cycles, and the gas properties that set them.',
+    features: ['Otto and Diesel cycles with imep, shaft power, superchargers and turbochargers', 'Brayton cycles: optimum pressure ratio, back-work ratio, regenerator, intercooling and reheat', 'Humphrey pulse cycle, γ from degrees of freedom, mixtures and real-gas Z'] },
   { ...rocketModule, icon: 'flame', group: 'Propulsion', status: 'live',
-    blurb: 'Design a liquid rocket engine from a thrust requirement: equilibrium chamber chemistry, a to-scale chamber and bell, and the plume changing from sea level to vacuum.',
-    features: ['Sizing, Isp and thrust compared with Merlin, RS-25, Raptor and more', 'Over/under-expansion, flow separation and Mach diamonds vs altitude', 'Propellant comparison and Bartz wall heat flux for cooling'] },
+    blurb: 'Design a liquid rocket engine from a thrust requirement, feed it with turbopumps, burn a solid grain back layer by layer, and stage a launcher: from the chemistry in the chamber to the flight.',
+    features: ['Sizing, Isp and thrust compared with Merlin, RS-25, Raptor and more', 'Altitude and aerospikes, propellants, cooling, feed cycles and turbopumps', 'Solid motors with grain burnback, staging and vertical flight'] },
   { ...propulsionModule, icon: 'nozzle', group: 'Propulsion', status: 'live',
     blurb: 'Turbojets, turbofans, turboprops, ramjets and scramjets station by station, with an animated cut-away, a T–s diagram and design trade studies.',
     features: ['Cycle analysis with ideal, two-γ or real-gas models', 'Inlet shock systems, stage calculators and turbomachinery', 'Chemical equilibrium (CEA method) for flames and rocket Isp'] },
-  { id: 'rotors', title: 'Propellers & Rotors', icon: 'rotor', group: 'Propulsion', status: 'planned',
-    blurb: 'Propellers, helicopter rotors and drones by blade element momentum theory: see the flow through the disk, why blades are twisted, and how a rotor autorotates.',
-    features: ['Blade element momentum theory, propeller maps and efficiency', 'Helicopter hover, forward flight and autorotation', 'Multirotor drones: hover power, endurance and payload'] },
+  { ...heatModule, icon: 'wave', group: 'Propulsion', status: 'live',
+    blurb: 'How heat gets through walls, into flows and across space: layered walls and insulation, convection correlations for plates, cylinders and pipes, and radiation from the Planck spectrum to radiation shields.',
+    features: ['Plane, cylindrical and spherical walls with a thermal-resistance network', 'Nusselt correlations, fluid properties and the Reynolds analogy', 'Planck spectrum, gray enclosures, shields, view factors and radiative equilibrium'] },
+  { ...rotorsModule, icon: 'rotor', group: 'Propulsion', status: 'live',
+    blurb: 'Propellers, helicopter rotors and drones by momentum and blade element theory: see the flow through the disk, why blades are twisted, and how a rotor autorotates.',
+    features: ['Blade element momentum theory: C_T, C_P and efficiency maps vs advance ratio', 'Actuator disk and propulsive efficiency from propellers to rockets', 'Helicopter power curve, autorotation and multirotor endurance'] },
   { ...structuresModule, icon: 'beam', group: 'Structures', status: 'live',
     blurb: 'Draw a beam, truss or frame and get its free-body diagram, reactions, shear and moment diagrams, deflection and stress, step by step.',
     features: ['Statics with determinacy, friction and tipping checks', 'Stiffness-method 2-D and 3-D frames, trusses and 2-D finite elements', 'Sections, Mohr\'s circle, vibration modes and buckling'] },

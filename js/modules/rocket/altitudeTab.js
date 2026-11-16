@@ -1,12 +1,16 @@
 // Altitude & expansion: the designed engine flown from the pad to vacuum. Thrust and Isp vs altitude, the
 // over-/under-expansion regimes and flow separation, the plume changing shape, and the expansion ratio that would
 // be ideal at each altitude.
-import { h, section, select, field, icon, hexToRgb } from '../../lib/ui.js';
+import { h, section, select, field, icon, hexToRgb, toggle } from '../../lib/ui.js';
 import { Plot } from '../../lib/plot.js';
 import * as R from '../../solvers/rocket.js';
 import { store, schedule, bound, metricsGrid, insightsList, card, put, kN, bar, REGIMES } from './common.js';
 import { EngineView } from './engineView.js';
+import { drawAltNozzle } from './altNozzles.js';
+import { canvasBox } from '../propulsion/common.js';
+import { segmented } from '../../lib/ui.js';
 
+const SPIKE_EFF = 0.98; // truncation and base losses of a real plug nozzle
 const ALTS = (() => { const a = []; for (let z = 0; z <= 90; z += z < 20 ? 0.5 : z < 40 ? 1 : 2.5) a.push(z); return a; })();
 
 export function altitudeTab() {
@@ -14,9 +18,15 @@ export function altitudeTab() {
   const controls = h('div'), main = h('div', { class: 'cf-main-inner' });
   const metrics = metricsGrid();
   const view = new EngineView();
-  const vcard = card('Plume at altitude', 'The same engine at the ambient pressure of the chosen altitude. Low down the nozzle is over-expanded (lip shocks pinch the jet; it may separate); higher up it is under-expanded (the jet balloons); in vacuum it fans out.');
+  const vcard = card('Plume at altitude', 'The same engine at the ambient pressure of the chosen altitude. Low down the bell is over-expanded (lip shocks pinch the jet; it may separate); higher up it is under-expanded (the jet balloons); in vacuum it fans out. Switch to an aerospike, a full plug or an expansion-deflection nozzle of the same area ratio to see a free jet boundary (dashed) follow ambient pressure instead; schematic, not to the engine\'s scale.');
   const regime = h('div', { class: 'row', style: { gap: '8px', flexWrap: 'wrap', marginBottom: '8px' } });
-  vcard.append(regime, view.el);
+  // nozzle picture: the bell (live engine view) or an altitude-compensating nozzle drawn for the same ε
+  let nozType = 'bell';
+  const altBox = canvasBox('cf-chart', 'clamp(260px, 34vh, 380px)');
+  altBox.el.style.display = 'none';
+  const nozSeg = segmented([{ value: 'bell', label: 'Bell (this engine)' }, { value: 'aerospike', label: 'Aerospike' }, { value: 'plug', label: 'Full plug' }, { value: 'ed', label: 'Expansion-deflection' }], nozType, v => { nozType = v; view.el.style.display = v === 'bell' ? '' : 'none'; altBox.el.style.display = v === 'bell' ? 'none' : ''; regime.style.display = v === 'bell' ? '' : 'none'; paintAlt(); altLoop(); });
+  nozSeg.el.classList.add('seg-wrap');
+  vcard.append(h('div', { style: { marginBottom: '8px' } }, nozSeg.el), regime, view.el, altBox.el);
   const fCard = card('Thrust vs altitude', 'Fixed geometry: F = CF,vac·Pc·At − pₐAₑ until the flow separates. Dashed: the same throat and chamber with half and double the expansion ratio.');
   const fPlot = new Plot(fCard, { xlabel: 'altitude (km)', ylabel: 'thrust (kN)', xname: 'altitude', yname: 'thrust', xfmt: v => v.toFixed(1) + ' km', yfmt: v => v.toFixed(1) + ' kN', legendPos: 'bottom' });
   const iCard = card('Specific impulse vs altitude', 'The envelope (dotted) is an ideally expanded nozzle at every altitude (pₑ = pₐ): no fixed nozzle can beat it, and a fixed nozzle touches it only at its design altitude.');
@@ -58,14 +68,16 @@ export function altitudeTab() {
     put(secS.body, field('Criterion', select(Object.entries(R.SEP_CRITERIA).map(([value, label]) => ({ value, label })), S.sepModel || 'kb', v => { S.sepModel = v; build(); schedule(); }),
       'Where an over-expanded nozzle separates is empirical. <b>Kalt–Badal</b>: p_sep/pₐ = 0.667(Pc/pₐ)^−0.2. <b>Schmucker</b>: p_sep/pₐ = (1.88 M − 1)^−0.64. <b>Summerfield</b>: a fixed fraction k (0.25–0.4).'),
       S.sepModel === 'summerfield' ? bound(S, 'sep', 'Separation pressure k', 0.15, 0.6, { step: 0.01, digits: 2, onInput: () => schedule(), tip: 'Separation where wall pressure < k·pₐ.' }) : null);
+    const secN = section('Nozzle comparison');
+    put(secN.body, toggle('Compare an aerospike / E-D nozzle', spike, v => { spike = v; paintCurves(); }, { tip: 'An altitude-compensating nozzle with the same area ratio, idealized.' }).el);
     const secD = section('Design (shared with Engine design)');
     put(secD.body, bound(S, 'eps', 'Expansion ratio Ae/At', 1.5, 300, { log: true, digits: 1, onInput: () => { S.preset = ''; schedule(); } }),
       bound(S, 'Pc', 'Chamber pressure Pc', 3, 350, { log: true, digits: 1, unit: 'bar', onInput: () => { S.preset = ''; schedule(); } }),
       h('div', { class: 'hint' }, 'Changing these resizes the engine for the same thrust requirement.'));
-    controls.replaceChildren(secA.el, secS.el, secD.el);
+    controls.replaceChildren(secA.el, secS.el, secN.el, secD.el);
   };
 
-  let curves = null;
+  let curves = null, spike = true;
   const computeCurves = () => {
     const D = store.D;
     const alt = (eps) => {
@@ -75,6 +87,9 @@ export function altitudeTab() {
     const G = R.G0;
     const env = ALTS.map(z => { const pa = R.ambient(z * 1000); return pa > 0 ? R.adaptedIsp(D, pa) : { Isp: NaN, eps: NaN }; });
     curves = { cur: alt(S.eps), half: alt(Math.max(1.5, S.eps / 2)), dbl: alt(Math.min(400, S.eps * 2)), env };
+    // altitude-compensating nozzle (aerospike / expansion-deflection) of the same area ratio: the free jet boundary
+    // follows ambient pressure, so it stays near ideally expanded until ambient falls below its design exit pressure
+    curves.spike = ALTS.map((z, i) => { const pa = R.ambient(z * 1000), base = curves.cur[i]; if (pa > D.pe) { const Isp = env[i].Isp * SPIKE_EFF; return { Isp, F: Isp * G * D.mdot / 1e3 }; } return { Isp: base.Isp * SPIKE_EFF, F: base.F * SPIKE_EFF }; });
     // design altitude: where pe = pa
     let zd = NaN; for (let i = 1; i < ALTS.length; i++) { const a = R.ambient(ALTS[i - 1] * 1000), b = R.ambient(ALTS[i] * 1000); if (a >= D.pe && b < D.pe) { zd = ALTS[i - 1] + (ALTS[i] - ALTS[i - 1]) * Math.log(a / D.pe) / Math.log(a / b); break; } }
     curves.zd = zd;
@@ -92,12 +107,14 @@ export function altitudeTab() {
       { x: ALTS, y: c.cur.map(v => v.F), color: css('--accent'), label: `ε ${S.eps.toFixed(0)}`, width: 2.4 },
       { x: ALTS, y: c.half.map(v => v.F), color: css('--lower'), dash: [5, 4], label: `ε ${(S.eps / 2).toFixed(0)}` },
       { x: ALTS, y: c.dbl.map(v => v.F), color: css('--turb'), dash: [5, 4], label: `ε ${(S.eps * 2).toFixed(0)}` },
+      ...(spike ? [{ x: ALTS, y: c.spike.map(v => v.F), color: css('--good'), label: 'aerospike (ideal)' }] : []),
     ], vlines: vl, vbands: vband });
     iPlot.setData({ series: [
       { x: ALTS, y: c.cur.map(v => v.Isp), color: css('--accent'), label: `ε ${S.eps.toFixed(0)}`, width: 2.4 },
       { x: ALTS, y: c.half.map(v => v.Isp), color: css('--lower'), dash: [5, 4], label: `ε ${(S.eps / 2).toFixed(0)}` },
       { x: ALTS, y: c.dbl.map(v => v.Isp), color: css('--turb'), dash: [5, 4], label: `ε ${(S.eps * 2).toFixed(0)}` },
       { x: ALTS, y: c.env.map(v => v.Isp), color: css('--text-3'), dash: [1.5, 3], label: 'ideal expansion' },
+      ...(spike ? [{ x: ALTS, y: c.spike.map(v => v.Isp), color: css('--good'), label: 'aerospike (ideal)' }] : []),
     ], vlines: vl, vbands: vband });
     ePlot.setData({ series: [{ x: ALTS, y: c.env.map(v => v.eps), color: css('--accent'), label: 'ideal ε' }], hlines: [{ y: S.eps, color: css('--text-3'), label: `this nozzle: ε ${S.eps.toFixed(0)}` }], vlines: vl });
     const L = [];
@@ -106,6 +123,7 @@ export function altitudeTab() {
     if (isFinite(c.sepTop)) L.push({ type: 'b', t: `Separated below ${c.sepTop.toFixed(1)} km`, d: `The ${R.SEP_CRITERIA[S.sepModel || 'kb']} criterion predicts the jet leaves the wall inside the nozzle until the ambient pressure falls enough. Thrust shown there is for the separated (shorter-acting) nozzle.` });
     const g = c.cur[0].Isp > 0 ? (c.cur[c.cur.length - 1].Isp / c.cur[0].Isp - 1) * 100 : NaN;
     if (isFinite(g)) L.push({ type: 'i', t: `Vacuum Isp is ${g.toFixed(0)}% above sea level`, d: `All of the gain is the pressure term: the atmosphere pushes back on the exit area with pₐAₑ = ${kN(101325 * D.Ae)} at sea level.` });
+    if (spike) L.push({ type: 'i', t: `Aerospike at sea level: ${c.spike[0].Isp.toFixed(1)} s vs ${c.cur[0].Isp.toFixed(1)} s`, d: 'A plug (aerospike) or expansion-deflection nozzle has no outer wall: the jet\'s outer boundary is set by ambient pressure, so it expands only as far as the atmosphere allows and never separates. Above its design altitude it behaves like a fixed nozzle of the same area ratio. ' + (c.spike[0].Isp < c.cur[0].Isp ? 'With this modest expansion ratio the bell is already close to ideal low down, so the plug\'s losses outweigh its compensation; try a vacuum-sized ε to see it pay off. ' : '') + 'Shown with a 2% penalty for the truncated plug; real tests (XRS-2200, the linear aerospike for X-33) lost more to base drag and cooling.' });
     L.push({ type: 'i', t: 'Why not just fit a huge nozzle?', d: 'Doubling ε adds vacuum Isp with diminishing returns while the nozzle mass and length grow roughly with Aₑ. Boosters also cannot separate on the pad, which caps ε near 15–40. Altitude-compensating designs (aerospikes, dual-bell, extendible nozzles) try to follow the envelope.' });
     insightsList(insEl, L);
   };
@@ -124,6 +142,7 @@ export function altitudeTab() {
     regime.replaceChildren(h('span', { class: 'regime' }, h('span', { class: 'dot', style: { background: `var(${rc})` } }), rl),
       h('span', { class: 'hint', style: { margin: 0 } }, pf.sep ? `separates where p = ${bar(pf.ps)} (A/At ${pf.epsSep.toFixed(1)})` : P.regime === 'over' ? `lip shock angle ${(P.beta * 57.3).toFixed(1)}°${P.machDisk ? ', Mach disk' : ''}` : P.regime === 'under' ? `jet turns out ${(P.delta * 57.3).toFixed(1)}° at the lip` : ''));
     view.set({ D, pa });
+    if (nozType !== 'bell') drawAlt(performance.now() / 1000);
     if (curves) {
       const vl = [{ x: S.alt, color: css('--text-2'), dash: [3, 3] }]; if (isFinite(curves.zd)) vl.push({ x: curves.zd, color: css('--good'), dash: [2, 4] });
       for (const p of [fPlot, iPlot, ePlot]) { p.data.vlines = vl; p.draw(); }
@@ -131,13 +150,22 @@ export function altitudeTab() {
   };
   const paint = () => { if (!store.D) return; computeCurves(); paintCurves(); paintAlt(); };
 
+  // the alternative nozzle flickers and ripples like the bell plume (redrawn from a cached flow field)
+  let altRaf = null;
+  const drawAlt = t => { const D = store.D; if (!D) return; const pa = R.ambient(S.alt * 1000); altBox.set(({ W, H, g }) => drawAltNozzle(g, W, H, { type: nozType, D, pa, alt: S.alt, t })); };
+  const altLoop = () => {
+    cancelAnimationFrame(altRaf);
+    if (nozType === 'bell' || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const step = ts => { if (!visible || nozType === 'bell' || !altBox.el.isConnected) return; drawAlt(ts / 1000); altRaf = requestAnimationFrame(step); };
+    altRaf = requestAnimationFrame(step);
+  };
   let visible = false, dirty = true;
   store.subs.add(() => { if (visible) paint(); else dirty = true; });
   build();
   return {
     controls, main,
-    show() { visible = true; build(); if (dirty) paint(); else paintAlt(); dirty = false; },
-    hide() { visible = false; playing = false; paintPlay(); cancelAnimationFrame(raf); },
-    destroy() { playing = false; cancelAnimationFrame(raf); view.destroy(); },
+    show() { visible = true; build(); if (dirty) paint(); else paintAlt(); dirty = false; altLoop(); },
+    hide() { visible = false; playing = false; paintPlay(); cancelAnimationFrame(raf); cancelAnimationFrame(altRaf); },
+    destroy() { playing = false; cancelAnimationFrame(raf); cancelAnimationFrame(altRaf); view.destroy(); },
   };
 }

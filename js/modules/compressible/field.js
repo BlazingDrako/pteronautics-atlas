@@ -79,7 +79,8 @@ export class FieldStage {
     const b = this.scene.bounds, pad = this.scene.pad ?? 16;
     const s = Math.min((W - 2 * pad) / (b.x1 - b.x0), (H - 2 * pad - (this.scene.padBottom || 0)) / (b.y1 - b.y0));
     const cx = 0.5 * (b.x0 + b.x1), cy = 0.5 * (b.y0 + b.y1);
-    const ox = W / 2 - cx * s, oy = (H - (this.scene.padBottom || 0)) / 2 + cy * s;
+    // anchor 'left': start the scene at the left edge (like a nozzle whose plume runs off to the right) instead of centering it
+    const ox = this.scene.anchor === 'left' ? pad - b.x0 * s : W / 2 - cx * s, oy = (H - (this.scene.padBottom || 0)) / 2 + cy * s;
     this.T = { W, H, dpr, s, sx: x => ox + x * s, sy: y => oy - y * s, wx: X => (X - ox) / s, wy: Y => (oy - Y) / s };
     return true;
   }
