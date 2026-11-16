@@ -254,7 +254,7 @@ export function frame3dTab() {
     } catch { }
     const used = mdl.members.filter(m => m.sec === s.id).length;
     b.append(h('div', { class: 'st-row' }, btn('Assign to all members', () => change(() => { for (const m of mdl.members) m.sec = s.id; mdl.defaults.sec = s.id; })), h('span', { class: 'hint', style: { margin: 0 } }, `${used} member${used === 1 ? '' : 's'} use it`)));
-    b.append(h('div', { class: 'hint' }, 'Custom shapes use the same inertia about both axes. For open sections (I, channel, angle) torsion is carried by thin-wall St Venant action only, which is weak; warping restraint is not modelled.'));
+    b.append(h('div', { class: 'hint' }, 'Custom shapes use the same inertia about both axes. For open sections (I, channel, angle) torsion is carried by thin-wall St Venant action only, which is weak; warping restraint is not modeled.'));
   }
   function renderAnalysisOpts() {
     const b = sAna.body; b.replaceChildren();
@@ -383,7 +383,7 @@ export function frame3dTab() {
     else out.push({ type: 'g', t: 'Stresses are below yield', d: `The worst point (member ${memName(mdl.members[k])}) reaches ${fmtNum(c.stress.util * 100, 3)}% of yield.` });
     // torsion in open sections
     const tors = R.members.map((mr, i) => ({ mr, i })).filter(({ mr, i }) => { const S = P.members[i].sec; return mdl.members[i].type !== 'truss' && ['ibeam', 'channel', 'angle', 'tee', 'zsec', 'hat'].includes(S.shape) && Math.abs(mr.ext.T) * S.kt > 0.25 * Math.max(mr.stress.vm, 1); });
-    if (tors.length) out.push({ type: 'w', t: 'Torsion in open sections', d: `${tors.map(t => memName(mdl.members[t.i])).slice(0, 5).join(', ')}${tors.length > 5 ? '…' : ''} twist${tors.length === 1 ? 's' : ''} noticeably. Open shapes (I, channel, angle) have tiny St Venant stiffness J; a closed tube or box of similar weight is typically 100× stiffer in torsion. (Warping restraint at fixed ends, not modelled here, helps open sections somewhat.)` });
+    if (tors.length) out.push({ type: 'w', t: 'Torsion in open sections', d: `${tors.map(t => memName(mdl.members[t.i])).slice(0, 5).join(', ')}${tors.length > 5 ? '…' : ''} twist${tors.length === 1 ? 's' : ''} noticeably. Open shapes (I, channel, angle) have tiny St Venant stiffness J; a closed tube or box of similar weight is typically 100× stiffer in torsion. (Warping restraint at fixed ends, not modeled here, helps open sections somewhat.)` });
     const biax = R.members.filter((mr, i) => mdl.members[i].type !== 'truss' && Math.abs(mr.ext.My) > 0.2 * Math.abs(mr.ext.Mz) && Math.abs(mr.ext.Mz) > 0.2 * Math.abs(mr.ext.My) && Math.abs(mr.ext.My) > 0);
     if (biax.length) out.push({ type: 'i', t: 'Biaxial bending', d: `${biax.length} member${biax.length === 1 ? ' bends' : 's bend'} about both axes. Bending stresses add at one corner: σ = N/A ± My·z/Iy ± Mz·y/Iz. Rolled I-sections are 5–15× weaker about their weak axis.` });
     const eul = R.members.map((mr, i) => ({ mr, i })).filter(x => x.mr.euler && x.mr.euler.ratio > 0.5).sort((a, b) => b.mr.euler.ratio - a.mr.euler.ratio);

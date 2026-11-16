@@ -29,3 +29,20 @@
   a legend; light and dark themes.
 - **Learning**: notes for each scene at the current Re (regimes, separation, stall, Strouhal numbers, Poiseuille, reattachment,
   jet instability), resolution and stability warnings, and concept cards.
+
+## Theory tabs
+
+- **Potential flow** (`js/solvers/flow.js`, `js/modules/cfd/potentialTab.js`): superpose a uniform stream, sources,
+  sinks, vortices and doublets and drag them in the picture, or type any complex potential F(z) (names other than z
+  become parameters with sliders; expressions are compiled by `js/lib/expr.js`, no `eval`). A ground plane at y = 0 adds
+  the image system. Streamlines (ψ contours by marching squares, skipping log branch cuts), equipotentials, Cp or speed
+  color, velocity arrows and drifting particles. Stagnation points by Newton on the analytic W = dF/dz (and by sign
+  changes of u along the ground) with the dividing streamline through them; the force by Blasius' theorem (zero drag for a
+  closed body, the Kutta–Joukowski lift), or from the roof pressure for the hangar; surface Cp against theory; a probe.
+  Presets: cylinder, lifting cylinder, Rankine oval and half-body, hangar, vortex near the ground, source near a wall,
+  tornado, vortex pair, source–sink pair, and typed corner, wedge and vortex-row flows.
+- **Viscous flows** (`js/modules/cfd/viscousTab.js`): Couette–Poiseuille flow between plates (with the backflow
+  criterion P < −1), Hagen–Poiseuille pipe flow, start-up Couette flow by its Fourier series, and Stokes' first and
+  second problems, animated, with velocity and shear-stress profiles for water, air, oil, glycerin or honey.
+
+While a theory tab is open, the live solver is paused where it was.

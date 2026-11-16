@@ -1,7 +1,7 @@
 // Dense symmetric eigenvalue solvers, Cholesky, and a small linear-programming (simplex) solver.
 // Matrices here are arrays of row arrays (number[][]) unless noted.
 
-// Householder tridiagonalisation + implicit QL (EISPACK tred2/tql2, as in JAMA).
+// Householder tridiagonalization + implicit QL (EISPACK tred2/tql2, as in JAMA).
 // Returns { values (ascending), vectors (vectors[k] is the k-th eigenvector) }.
 export function symEig(A) {
   const n = A.length;
@@ -126,8 +126,8 @@ export function cholSolve(L, b) {
   return y;
 }
 
-// Generalised symmetric problem A x = λ B x with B positive definite (B = L Lᵀ).
-// Returns ascending eigenvalues and B-normalised vectors.
+// Generalized symmetric problem A x = λ B x with B positive definite (B = L Lᵀ).
+// Returns ascending eigenvalues and B-normalized vectors.
 export function symGenEig(A, B) {
   const L = cholesky(B, 1e-14);
   if (L.fail !== undefined) return { error: 'not positive definite', row: L.fail };
@@ -149,7 +149,7 @@ export function symGenEig(A, B) {
   return { values, vectors: X };
 }
 
-// Linear program: maximise c·x subject to Aeq x = beq, Aub x ≤ bub; x[j] ≥ 0 when nonneg[j], otherwise free.
+// Linear program: maximize c·x subject to Aeq x = beq, Aub x ≤ bub; x[j] ≥ 0 when nonneg[j], otherwise free.
 // Dense two-phase simplex with Bland's rule (small problems only).
 // Returns { status: 'optimal' | 'infeasible' | 'unbounded', x, value }.
 export function linprog({ c, Aeq = [], beq = [], Aub = [], bub = [], nonneg }) {
@@ -193,7 +193,7 @@ export function linprog({ c, Aeq = [], beq = [], Aub = [], bub = [], nonneg }) {
     }
     return 'iterlimit';
   };
-  // phase 1: minimise sum of artificials  -> objective row = -sum(rows)
+  // phase 1: minimize sum of artificials  -> objective row = -sum(rows)
   const obj = T[m]; obj.fill(0);
   for (let i = 0; i < m; i++) for (let k = 0; k <= N; k++) if (k < nx + ns || k === N) obj[k] -= T[i][k];
   run(k => true);

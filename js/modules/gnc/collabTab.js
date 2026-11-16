@@ -86,15 +86,15 @@ export function collabTab({ keep = o => o } = {}) {
       field('Aircraft', select(Object.entries(ACS).map(([v, l]) => ({ value: v, label: l })), S.ac, v => { S.ac = v; S.preset = 'custom'; compute(); })),
       field('Pattern', select([{ value: 'echelon', label: 'Echelon' }, { value: 'v', label: 'V' }, { value: 'diamond', label: 'Diamond' }, { value: 'delta', label: 'Delta' }, { value: 'abreast', label: 'Line abreast' }], S.pat, v => { S.pat = v; S.preset = 'custom'; compute(); })),
       sl('Aircraft', 2, 7, 1, () => S.N, v => { S.N = v; }),
-      sl('Lateral spacing (spans, centre to centre)', 0.4, 1.5, 0.01, () => S.lat, v => { S.lat = v; }, { d: 2, info: '1.0 puts the wingtips exactly in line. The best place is a little less: the follower\'s tip just inside the leader\'s tip vortex.' }),
-      sl('Distance behind (spans)', 0.5, 400, 0.1, () => S.lon / acOf(S.ac).b, v => { S.lon = v * acOf(S.ac).b; }, { fmt: v => num(+v, +v < 10 ? 1 : 0), info: 'Centre to centre along the flight path, in wingspans. The airliner preset is 3 km; display teams fly about one span apart.' }),
+      sl('Lateral spacing (spans, center to center)', 0.4, 1.5, 0.01, () => S.lat, v => { S.lat = v; }, { d: 2, info: '1.0 puts the wingtips exactly in line. The best place is a little less: the follower\'s tip just inside the leader\'s tip vortex.' }),
+      sl('Distance behind (spans)', 0.5, 400, 0.1, () => S.lon / acOf(S.ac).b, v => { S.lon = v * acOf(S.ac).b; }, { fmt: v => num(+v, +v < 10 ? 1 : 0), info: 'Center to center along the flight path, in wingspans. The airliner preset is 3 km; display teams fly about one span apart.' }),
       sl('Step down per row (m)', 0, 10, 0.5, () => S.step, v => { S.step = v; }, { d: 1, info: 'Display teams step each row down a little so pilots can see the lead and stay out of the strongest wake.' }),
       sl(`Altitude (${us() ? 'ft' : 'm'})`, 0, 12500 / (us() ? FT : 1), us() ? 500 : 100, () => S.alt / (us() ? FT : 1), v => { S.alt = v * (us() ? FT : 1); }),
       sl('Mach', 0.12, 0.85, 0.01, () => S.mach, v => { S.mach = v; }, { d: 2 }));
     fillGeo();
     inSec.body.replaceChildren(
       field('Preset', select([...Object.entries(PRESETS).map(([v, p]) => ({ value: v, label: p.label })), { value: 'custom', label: 'Custom' }], S.preset, v => { if (PRESETS[v]) { Object.assign(S, PRESETS[v]); S.preset = v; fillGeo(); compute(); } })),
-      geo, h('div', { class: 'hint' }, 'Each aircraft flies level at its default weight. Wakes are modelled as two trailing vortices per aircraft whose cores spread with age.'));
+      geo, h('div', { class: 'hint' }, 'Each aircraft flies level at its default weight. Wakes are modeled as two trailing vortices per aircraft whose cores spread with age.'));
     topC = canvasBox('340px', drawTop); mapC = canvasBox('300px', drawMap); profC = canvasBox('300px', drawProf);
     canvases = [topC, mapC, profC];
     body.replaceChildren(
@@ -131,9 +131,9 @@ export function collabTab({ keep = o => o } = {}) {
     const L = [];
     L.push({ type: 'i', t: 'Why flying in a wake saves fuel', d: 'A lifting wing pushes air down behind it and sheds a vortex from each tip. Outside those vortices the air rises. A follower flying in that rising air has its lift tilted slightly forward, which cancels part of its induced drag: it is flying on the leader\'s wasted energy, the way geese do in a V.' });
     if (S.ac === 'a320') L.push({ type: avg > 0.03 ? 'g' : 'i', t: `Airliners: ${pct(saves[saves.length - 1])} of the follower's fuel, ideally`, d: 'Airbus\'s fello\'fly trials (2021) flew an A350 about 3 km behind another and measured a saving of more than 5% on the follower. In service the expected figure is 5–10% per trip once the follower holds position through the wake\'s wandering and the time spent joining up is counted. At cruise induced drag is about a third of the total, so even a perfect slot saves at most that share.' });
-    if (S.pat === 'diamond' || S.pat === 'delta') L.push({ type: 'w', t: `Display teams fly for the look, not the fuel: the slot ${pct(res[3] ? res[3].ratio : 0)}`, d: 'In a diamond the slot pilot sits directly behind the lead, in its downwash and turbulence, and steps down to stay clear of the strongest flow. The wingmen sit near the lead\'s tips and gain, but they are so close (wingtip to canopy, under a metre apart in the tightest manoeuvres) that the wake mostly means extra stick work. Teams like the Blue Angels and the Red Arrows rehearse for months to fly it smoothly.' });
+    if (S.pat === 'diamond' || S.pat === 'delta') L.push({ type: 'w', t: `Display teams fly for the look, not the fuel: the slot ${pct(res[3] ? res[3].ratio : 0)}`, d: 'In a diamond the slot pilot sits directly behind the lead, in its downwash and turbulence, and steps down to stay clear of the strongest flow. The wingmen sit near the lead\'s tips and gain, but they are so close (wingtip to canopy, under a meter apart in the tightest maneuvers) that the wake mostly means extra stick work. Teams like the Blue Angels and the Red Arrows rehearse for months to fly it smoothly.' });
     if (S.pat === 'v' || S.pat === 'echelon') L.push({ type: 'i', t: 'The leader works hardest', d: `The lead aircraft gains almost nothing (${pct(res[0].ratio)}); each follower sits in the upwash of the one ahead and, in a V, of the others too. Migrating birds rotate the lead position; a fleet would too.` });
-    L.push({ type: 'i', t: `Small errors in position cost a lot`, d: `Move ${num(0.1 * b, 1)} m (a tenth of a span) inboard of the best slot and the saving falls to ${pct(Cb.formation({ pos: [{ x: 0, y: 0, z: 0 }, { x: S.lon, y: (pk[0] - 0.1) * b, z: 0 }], b, W, rho: atm.rho, V })[1].ratio)}. The wake also rolls the follower towards the leader, which needs constant aileron. Automatic formation flight needs precise relative navigation (GNSS between the aircraft) and an autopilot that holds position, not just heading and height.` });
+    L.push({ type: 'i', t: `Small errors in position cost a lot`, d: `Move ${num(0.1 * b, 1)} m (a tenth of a span) inboard of the best slot and the saving falls to ${pct(Cb.formation({ pos: [{ x: 0, y: 0, z: 0 }, { x: S.lon, y: (pk[0] - 0.1) * b, z: 0 }], b, W, rho: atm.rho, V })[1].ratio)}. The wake also rolls the follower toward the leader, which needs constant aileron. Automatic formation flight needs precise relative navigation (GNSS between the aircraft) and an autopilot that holds position, not just heading and height.` });
     insightsList(ins, L);
     eq.replaceChildren(h('span', { class: 'eq', html: [
       `Lift W = ${num(W / 1000, 1)} kN, elliptic loading: circulation Γ = W/(ρ V b₀), b₀ = πb/4 = ${num(Math.PI * b / 4, 2)} m → Γ = ${num(res[0].G, 1)} m²/s`,
@@ -198,7 +198,7 @@ export function collabTab({ keep = o => o } = {}) {
       sl('Aircraft in the fleet', 2, 7, 1, () => S.nA, v => { S.nA = v; S.lost = S.lost.filter(k => k < v); fillLost(); }),
       sl('Survey jobs', 2, 8, 1, () => S.nT, v => { S.nT = v; }),
       field('Plan for', (() => { const g = segmented([{ value: 'sum', label: 'Least total flying' }, { value: 'max', label: 'Earliest finish' }, { value: 'auction', label: 'Auction' }], S.obj, v => { S.obj = v; buildTask(); compute(); }); g.el.classList.add('seg-wrap'); return g.el; })(),
-        'Least total flying: the Hungarian algorithm. Earliest finish: the bottleneck assignment, which minimises the slowest job. Auction: each aircraft bids for jobs and prices rise until no one wants to switch; it needs no central planner.'),
+        'Least total flying: the Hungarian algorithm. Earliest finish: the bottleneck assignment, which minimizes the slowest job. Auction: each aircraft bids for jobs and prices rise until no one wants to switch; it needs no central planner.'),
       S.obj === 'auction' ? sl('Auction bid increment ε (s)', 0.5, 60, 0.5, () => S.eps, v => { S.eps = v; }, { d: 1, info: 'Larger steps finish in fewer bids but can end up to n·ε from the best plan.' }) : h('div'),
       field('Data link', lostBox, 'Click an aircraft to cut its link to the ground station. Its jobs are re-planned across the others.'),
       seg('On link loss', [{ value: 'home', label: 'Return to base' }, { value: 'finish', label: 'Finish job, then return' }], () => S.lostMode, v => { S.lostMode = v; }, 'What a lost-link aircraft does is agreed before flight, so the rest of the team and air traffic control know what to expect.'),
@@ -208,7 +208,7 @@ export function collabTab({ keep = o => o } = {}) {
     canvases = [taskC, ganttC];
     draggable(taskC, () => taskTr, () => [...S.fleet.slice(0, S.nA), ...S.tasks.slice(0, S.nT)], (i, x, y) => { if (i < S.nA) S.fleet[i] = [x, y]; else S.tasks[i - S.nA] = [x, y]; compute(); });
     body.replaceChildren(
-      card('Who flies where', 'Blue: aircraft and their routes to the job they were given. Grey squares: jobs. Red dashed: an aircraft that has lost its link, flying its agreed lost-link route.', taskC.el),
+      card('Who flies where', 'Blue: aircraft and their routes to the job they were given. Gray squares: jobs. Red dashed: an aircraft that has lost its link, flying its agreed lost-link route.', taskC.el),
       card('When each job starts', 'Flying time from each aircraft to its job. The plan for least total flying and the plan for the earliest finish are often different.', ganttC.el));
   }
   function computeTask() {
@@ -243,14 +243,14 @@ export function collabTab({ keep = o => o } = {}) {
     ]);
     const L = [];
     L.push({ type: 'i', t: 'Sharing out the jobs is an assignment problem', d: `With ${S.nA} aircraft and ${S.nT} jobs there are ${num([...Array(Math.min(S.nA, S.nT))].reduce((a, _, k) => a * (Math.max(S.nA, S.nT) - k), 1), 0)} possible pairings. The Hungarian algorithm (Kuhn, 1955) finds the best one in about n³ steps instead of trying them all: it adjusts a price on each job and each aircraft until the cheapest pairings line up.` });
-    L.push({ type: 'i', t: 'Least total flying or earliest finish?', d: 'Minimising the total saves fuel but can leave one aircraft with a long trip. For a search or a fire, finishing the slowest job soonest matters more: the bottleneck plan accepts more total flying to bring the last start forward.' });
+    L.push({ type: 'i', t: 'Least total flying or earliest finish?', d: 'Minimizing the total saves fuel but can leave one aircraft with a long trip. For a search or a fire, finishing the slowest job soonest matters more: the bottleneck plan accepts more total flying to bring the last start forward.' });
     if (S.obj === 'auction') L.push({ type: 'i', t: 'An auction needs no central planner', d: 'Each aircraft bids for the job worth most to it, raising its price by the margin over its second choice plus ε. Outbid aircraft bid again. When nobody wants to switch the auction ends, within n·ε of the best plan (Bertsekas, 1988). Aircraft can run it among themselves over a data link, so the team keeps working if the ground station drops out.' });
     if (S.lost.length) L.push({ type: 'w', t: 'Lost link: predictable beats clever', d: 'An uncrewed aircraft that loses its command link follows a procedure agreed before flight: carry on for a set time, then fly a published route home or to a holding point, squawking 7400 on its transponder. Everyone (the team, the operator, air traffic control) knows what it will do. The rest of the fleet re-plans around the gap.' });
     insightsList(ins, L);
     eq.replaceChildren(h('span', { class: 'eq', html: [
       `Cost cᵢⱼ = distance from aircraft i to job j ÷ ${spd(V)}`,
-      'Least total: minimise Σ cᵢ,σ(i) over pairings σ (Hungarian, O(n³))',
-      'Earliest finish: minimise maxᵢ cᵢ,σ(i): binary-search a threshold, check a full matching exists using only cheaper pairs, then least total among those',
+      'Least total: minimize Σ cᵢ,σ(i) over pairings σ (Hungarian, O(n³))',
+      'Earliest finish: minimize maxᵢ cᵢ,σ(i): binary-search a threshold, check a full matching exists using only cheaper pairs, then least total among those',
       'Auction: aircraft i bids for j* = argmax(−cᵢⱼ − pⱼ), raising pⱼ* by (best − second best) + ε',
     ].join('<br>') }));
   }
@@ -298,7 +298,7 @@ export function collabTab({ keep = o => o } = {}) {
     sarC = canvasBox('460px', drawSar);
     canvases = [sarC];
     draggable(sarC, () => sarTr, () => [...S.sensors.slice(0, S.nS), S.beacon], (i, x, y) => { if (i < S.nS) S.sensors[i] = [x, y]; else S.beacon = [x, y]; compute(); });
-    body.replaceChildren(card('Locating the beacon', 'Lines: what each measurement says (bearing lines, or hyperbolas of constant time difference). Grey dots: fixes from 200 sets of noisy measurements. Ellipses: the best any method could do (Cramér–Rao bound, 1σ and 2σ). Shading: that bound across the map (lighter is better).', sarC.el));
+    body.replaceChildren(card('Locating the beacon', 'Lines: what each measurement says (bearing lines, or hyperbolas of constant time difference). Gray dots: fixes from 200 sets of noisy measurements. Ellipses: the best any method could do (Cramér–Rao bound, 1σ and 2σ). Shading: that bound across the map (lighter is better).', sarC.el));
   }
   function computeSar() {
     const sens = S.sensors.slice(0, S.nS), sig = S.mode === 'bearing' ? S.sigB * D : S.sigT * 1e-9 * 299792458, p = S.beacon;
@@ -316,14 +316,14 @@ export function collabTab({ keep = o => o } = {}) {
       { k: 'Measurement error', v: S.mode === 'bearing' ? `${f3(S.sigB)}°` : `${num(S.sigT, 0)} ns`, s: S.mode === 'bearing' ? `${len(sig * Math.hypot(p[0] - sens[0][0], p[1] - sens[0][1]))} sideways at aircraft 1's range` : `${len(sig)} of range difference` },
     ]);
     const L = [];
-    L.push({ type: 'i', t: 'Search and rescue from several aircraft', d: 'Emergency beacons (406 MHz ELTs on aircraft, EPIRBs on boats, personal locator beacons) are located first by satellites (Cospas-Sarsat), to a few kilometres, then by search aircraft homing on the signal. Several aircraft sharing their measurements fix the beacon far faster than one flying a search pattern.' });
+    L.push({ type: 'i', t: 'Search and rescue from several aircraft', d: 'Emergency beacons (406 MHz ELTs on aircraft, EPIRBs on boats, personal locator beacons) are located first by satellites (Cospas-Sarsat), to a few kilometers, then by search aircraft homing on the signal. Several aircraft sharing their measurements fix the beacon far faster than one flying a search pattern.' });
     if (S.mode === 'bearing') L.push({ type: 'i', t: 'Bearings: crossing lines', d: 'Each direction finder gives a line; where they cross is the beacon. A bearing error σ becomes a sideways error of σ × range, so distant aircraft contribute little, and lines crossing at a shallow angle smear the fix along them. Lines crossing near 90° are best.' });
-    else L.push({ type: 'i', t: 'Time differences: crossing hyperbolas', d: 'The signal reaches each aircraft at a slightly different time. The difference between two of them fixes the difference in distance, which puts the beacon on a hyperbola with the two aircraft as its foci. Three aircraft give two hyperbolas and a fix. Accuracy depends on timing, not range: 100 ns is 30 m. The aircraft need well-synchronised clocks, which GNSS provides.' });
+    else L.push({ type: 'i', t: 'Time differences: crossing hyperbolas', d: 'The signal reaches each aircraft at a slightly different time. The difference between two of them fixes the difference in distance, which puts the beacon on a hyperbola with the two aircraft as its foci. Three aircraft give two hyperbolas and a fix. Accuracy depends on timing, not range: 100 ns is 30 m. The aircraft need well-synchronized clocks, which GNSS provides.' });
     L.push({ type: sr > 2000 ? 'w' : 'g', t: 'Geometry matters as much as the sensors', d: 'Aircraft spread around the beacon pin it from every side; aircraft bunched together or in a line leave it poorly fixed in one direction (the long axis of the ellipse). The shading shows where this layout works: move an aircraft and watch the good region move. The Cramér–Rao bound is the smallest error any unbiased method can achieve with these measurements; the least-squares fix here reaches it.' });
     insightsList(ins, L);
     eq.replaceChildren(h('span', { class: 'eq', html: [
       S.mode === 'bearing' ? 'Bearing from aircraft i: θᵢ = atan2(x − xᵢ, y − yᵢ) + noise σ' : 'Range difference to aircraft 0: Δᵢ = |p − sᵢ| − |p − s₀| + noise (shared s₀ noise: R = σ²(I + 11ᵀ))',
-      S.mode === 'bearing' ? 'Start: the bearing lines\' least-squares crossing; then Gauss–Newton on θ' : 'Start: centre of the aircraft; then Gauss–Newton on Δ',
+      S.mode === 'bearing' ? 'Start: the bearing lines\' least-squares crossing; then Gauss–Newton on θ' : 'Start: center of the aircraft; then Gauss–Newton on Δ',
       'Cramér–Rao: J = Hᵀ R⁻¹ H (H the measurement gradients), covariance ≥ J⁻¹',
       C ? `Here: σx = ${len(Math.sqrt(C[0][0]))}, σy = ${len(Math.sqrt(C[1][1]))}, radial ${len(sr)}` : 'Here: not enough aircraft for a fix',
     ].join('<br>') }));
@@ -364,7 +364,7 @@ export function collabTab({ keep = o => o } = {}) {
       sl('Aircraft joining', 2, 6, 1, () => S.nR, v => { S.nR = v; }),
       sl('Join-up time (× earliest possible)', 1, 2.5, 0.01, () => S.Tfac, v => { S.Tfac = v; }, { d: 2, info: 'Meeting later lets everyone fly slower, which can save fuel, until the near ones are down to their minimum speed and have to hold.' }),
       h('button', { class: 'btn', type: 'button', onclick: () => { S.seedR++; seedRv(); compute(); } }, icon('reset', 14), 'New starting positions'),
-      h('div', { class: 'hint' }, 'Drag the aircraft on the map. Each flies straight to the join-up point at the centre at a constant speed, holding first if it would arrive early even at its slowest.'));
+      h('div', { class: 'hint' }, 'Drag the aircraft on the map. Each flies straight to the join-up point at the center at a constant speed, holding first if it would arrive early even at its slowest.'));
     rvC = canvasBox('380px', drawRv); distC = canvasBox('260px', drawDist); fuelC = canvasBox('260px', drawFuel);
     canvases = [rvC, distC, fuelC];
     draggable(rvC, () => R && R.tr, () => S.rset.slice(0, S.nR), (i, x, y) => { S.rset[i] = [x, y]; compute(); });
@@ -392,8 +392,8 @@ export function collabTab({ keep = o => o } = {}) {
       { k: 'Speed range', v: `${spd(vmin)} – ${spd(vmax)}`, s: `1.3 × stall to the limit; least drag at ${spd(vmd)}` },
     ]);
     const L = [];
-    L.push({ type: 'i', t: 'Meeting at the same moment', d: 'The earliest everyone can arrive is set by the farthest aircraft flying flat out. Each of the others then flies its distance in that same time, so the nearer ones slow down. An aircraft that cannot slow down enough (it would drop below its minimum safe speed) arrives at that speed and holds first. Join-ups for formation flights, air-to-air refuelling and display teams all work this way, and air traffic control uses the same timing to sequence arrivals.' });
-    if (bestF[0] > 1.05) L.push({ type: 'g', t: `Waiting a little saves fuel: best at ${f3(bestF[0])}× the earliest`, d: `Racing costs fuel because drag rises with the square of speed above the minimum-drag speed (${spd(vmd)} here). Meeting later lets the far aircraft slow towards it. Wait too long and the near ones spend the time holding, burning fuel to stay in the same place. The best join-up time is where those balance.` });
+    L.push({ type: 'i', t: 'Meeting at the same moment', d: 'The earliest everyone can arrive is set by the farthest aircraft flying flat out. Each of the others then flies its distance in that same time, so the nearer ones slow down. An aircraft that cannot slow down enough (it would drop below its minimum safe speed) arrives at that speed and holds first. Join-ups for formation flights, air-to-air refueling and display teams all work this way, and air traffic control uses the same timing to sequence arrivals.' });
+    if (bestF[0] > 1.05) L.push({ type: 'g', t: `Waiting a little saves fuel: best at ${f3(bestF[0])}× the earliest`, d: `Racing costs fuel because drag rises with the square of speed above the minimum-drag speed (${spd(vmd)} here). Meeting later lets the far aircraft slow toward it. Wait too long and the near ones spend the time holding, burning fuel to stay in the same place. The best join-up time is where those balance.` });
     else L.push({ type: 'i', t: 'Here the earliest join-up is also the cheapest', d: `These aircraft cruise close to their most economical speed already (least drag at ${spd(vmd)}), so slowing the far ones saves little, while every extra minute is a minute of holding for the near ones. Faster aircraft with a wider speed range, such as the airliner, show a real minimum.` });
     insightsList(ins, L);
     eq.replaceChildren(h('span', { class: 'eq', html: [

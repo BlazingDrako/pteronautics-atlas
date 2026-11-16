@@ -1,5 +1,5 @@
 // Augmentation checks: the time simulator against the linear closed-loop transfer function, the rate limiter
-// against its describing-function result, actuator limits and transport delay honoured, integral command tracking,
+// against its describing-function result, actuator limits and transport delay honored, integral command tracking,
 // the washed-out yaw damper, turbulence attenuation, and the relaxed-stability fighter's fly-by-wire law
 // (stable, Level 1, margins at least 6 dB and 40°).
 import * as Au from '../js/solvers/augment.js';
@@ -10,7 +10,7 @@ import { geometric, atmosphere } from '../js/solvers/atmosphere.js';
 export function augmentTests(log) {
   const D = Math.PI / 180, FT = 0.3048;
   const near = (name, v, ref, tol, unit = '') => log(name, Math.abs(v - ref) <= tol, `got ${(+v).toPrecision(6)}${unit}, expected ${(+ref).toPrecision(6)}${unit} (±${tol})`);
-  const cond = (id, mass, zft, M, cg) => { const z = geometric(zft * FT); return St.analyse({ id, mass, z, V: M * atmosphere(z).a, cg }); };
+  const cond = (id, mass, zft, M, cg) => { const z = geometric(zft * FT); return St.analyze({ id, mass, z, V: M * atmosphere(z).a, cg }); };
   const a320 = cond('a320', 65000, 35000, 0.78, 0.30), f16 = cond('f16', 9295, 15000, 0.8, 0.35);
   const ideal = { wa: 20, rate: Infinity, pos: Infinity, delay: 0, fs: 0 };
 

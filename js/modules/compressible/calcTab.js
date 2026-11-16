@@ -66,7 +66,7 @@ export function calcTab(shell) {
   controls.append(secR.el, secD.el, secE.el);
 
   const status = h('div', { class: 'row', style: { flexWrap: 'wrap' } });
-  const resCard = card('Results', 'Every quantity for this state. Ratios are to stagnation (₀), sonic (*) or upstream (₁) values as labelled.');
+  const resCard = card('Results', 'Every quantity for this state. Ratios are to stagnation (₀), sonic (*) or upstream (₁) values as labeled.');
   const resEl = h('div', { class: 'cf-res' }); resCard.append(resEl);
   const dimCard = card('Dimensional values', 'From the static p and T you entered for state 1, using the gas constant R.');
   const dimEl = h('div', { class: 'cf-res' }); dimCard.append(dimEl);

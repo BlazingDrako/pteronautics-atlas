@@ -147,7 +147,7 @@ void main() {
   o = d;
 }`;
 
-// Force on each solid cell from its fluid neighbours (momentum exchange; same formula as LBM.cellForces)
+// Force on each solid cell from its fluid neighbors (momentum exchange; same formula as LBM.cellForces)
 const FS_FORCE = COMMON + `
 uniform sampler2D uA, uB, uC, uMask;
 uniform ivec2 uN;

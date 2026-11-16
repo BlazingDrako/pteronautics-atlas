@@ -62,7 +62,7 @@ function sizeField(geom, opts) {
     return h;
   };
 }
-// coarse inside test straight from the curves (polygonised finely), used only for corner classification
+// coarse inside test straight from the curves (polygonized finely), used only for corner classification
 function insideLoopsCurves(geom, x, y) {
   let inside = false;
   for (const loop of geom.loops) {
@@ -81,7 +81,7 @@ function pip(pts, x, y) {
   return ins;
 }
 
-// ---------------------------------------------------------------- boundary discretisation
+// ---------------------------------------------------------------- boundary discretization
 function discretize(geom, hf) {
   const loops = [];
   geom.loops.forEach((loop, li) => {

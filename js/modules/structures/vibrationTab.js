@@ -429,7 +429,7 @@ export function vibrationTab({ go, keep = o => o }) {
         { k: 'Resonant peak (Q ≈ 1/2ζ)', v: z > 0 ? fmtNum(1 / (2 * z), 3) : '∞', s: 'amplification of a lone mode' },
       ]);
       insightsList(insights, [
-        { type: 'i', t: 'Peaks at the natural frequencies', d: 'Each mode adds a resonant peak (grey lines). A peak is missing if the mode has a node (no motion) at the load or response point — that is why shakers and sensors are placed carefully in a ground vibration test.' },
+        { type: 'i', t: 'Peaks at the natural frequencies', d: 'Each mode adds a resonant peak (gray lines). A peak is missing if the mode has a node (no motion) at the load or response point — that is why shakers and sensors are placed carefully in a ground vibration test.' },
         { type: Math.abs(near.f - p.f) / near.f < 0.05 ? 'w' : 'i', t: Math.abs(near.f - p.f) / near.f < 0.05 ? `Resonance with mode ${md.modes.indexOf(near) + 1}` : 'Operating deflection shape', d: 'The animation shows how the structure moves at this frequency: near a resonance it looks like that mode, between modes it is a blend.' },
         { type: 'i', t: 'Check: low-frequency limit', d: `As f → 0 the modal sum (${units.fmt('disp', re0, 4)}) approaches the static stiffness solution${st0 !== null ? ` (${units.fmt('disp', st0, 4)})` : ''}; the gap is the contribution of modes not included.` },
       ]);

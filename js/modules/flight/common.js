@@ -33,7 +33,7 @@ const U = {
 export const unit = key => U[key][sys];
 export const toDisp = (key, v) => v * U[key][sys].k;
 export const fromDisp = (key, v) => v / U[key][sys].k;
-// Altitude axes on plots: thousands of feet or kilometres (keeps tick labels short)
+// Altitude axes on plots: thousands of feet or kilometers (keeps tick labels short)
 export const altAxis = { k: z => z * U.alt[sys].k / 1000, label: () => (sys === 'us' ? 'Altitude (1,000 ft)' : 'Altitude (km)'), fmt: v => (sys === 'us' ? `${(v * 1000).toFixed(0)} ft` : `${(v * 1000).toFixed(0)} m`) };
 
 // Number formatting: fixed digits, scientific for very large/small values, thousands separators for big ones

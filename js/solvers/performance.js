@@ -133,7 +133,7 @@ export function speedLimit(ac, atm) {
 // Search ceiling for level-flight speeds (beyond the limits, so the aerodynamic maximum is found)
 const vSearchMax = (ac, atm) => (ac.limits.Mmax ? 3.0 : ac.wave ? 2.6 : ac.mcrit + 0.35) * atm.a;
 
-function golden(f, a, b, it = 50) { // maximise f on [a, b]
+function golden(f, a, b, it = 50) { // maximize f on [a, b]
   const r = (Math.sqrt(5) - 1) / 2; let c = b - r * (b - a), d = a + r * (b - a), fc = f(c), fd = f(d);
   for (let i = 0; i < it; i++) { if (fc > fd) { b = d; d = c; fd = fc; c = b - r * (b - a); fc = f(c); } else { a = c; c = d; fc = fd; d = a + r * (b - a); fd = f(d); } }
   return (a + b) / 2;

@@ -144,7 +144,7 @@ export function baseSRS(ag, dt, zeta, fs) {
 }
 
 // ---------------------------------------------------------------- modal superposition
-// modes: [{omega, phi (M-normalised, full DOF vector)}]. Harmonic force F (DOF vector, amplitude) at ω:
+// modes: [{omega, phi (M-normalized, full DOF vector)}]. Harmonic force F (DOF vector, amplitude) at ω:
 // complex response at DOF `out`.
 export function modalFRF(modes, zeta, inDof, outDof, w, F0 = 1) {
   let re = 0, im = 0;

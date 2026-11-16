@@ -1,5 +1,5 @@
 // Vehicle side profiles for the Vehicle aero tab, with published reference data. No DOM.
-// Coordinates in metres; air flows in +x (the vehicle faces −x); the ground is y = 0.
+// Coordinates in meters; air flows in +x (the vehicle faces −x); the ground is y = 0.
 //
 // Each build(p) returns
 //   parts    computed outlines (panel method): [{ name, short, role, pts | [pts…], lifting }]
@@ -8,13 +8,13 @@
 //            [{ kind: 'wheel', x, y, r, rim, arch? } | { kind: 'fill', role, pts, front? } | { kind: 'line', role, pts, w, front? }]
 //            roles: dark (mounts, floor edge), ghost (faded fuselage, fin and engine beside the slice)
 //   axles, cg, ground, wake
-// Cars are a centre-line slice, drawn as their side silhouette; wheels sit beside it. Planes are a slice through the
+// Cars are a center-line slice, drawn as their side silhouette; wheels sit beside it. Planes are a slice through the
 // wing and tailplane about a third of the way out, so the fuselage, fin and engine beside it are drawn faded.
 //
 // Dimensions (rounded, public figures for the class):
-//   F1 (2022+)       wheelbase 3.60 m, height 0.95 m, tyres 720 mm on 18-inch rims, 798 kg with driver
-//   GT3 coupé        length ≈ 4.6 m, wheelbase ≈ 2.6 m, height ≈ 1.24 m, tyres ≈ 680 mm
-//   hatchback        Golf Mk2-class: length 3.98 m, wheelbase 2.55 m, height 1.45 m, tyres ≈ 580 mm
+//   F1 (2022+)       wheelbase 3.60 m, height 0.95 m, tires 720 mm on 18-inch rims, 798 kg with driver
+//   GT3 coupé        length ≈ 4.6 m, wheelbase ≈ 2.6 m, height ≈ 1.24 m, tires ≈ 680 mm
+//   hatchback        Golf Mk2-class: length 3.98 m, wheelbase 2.55 m, height 1.45 m, tires ≈ 580 mm
 //   A320             length 37.6 m, fuselage 3.95 m, height 11.76 m, wing area 122.6 m²
 //   F-16             length 15.0 m, height 5.1 m, wing area 27.9 m²
 //   AIM-9 Sidewinder length 2.85 m, body 127 mm, 85 kg
@@ -84,7 +84,7 @@ const shiftDetails = (D, dy) => D.map(d => (d.kind === 'wheel' || d.fixed ? d : 
 
 // ---------------------------------------------------------------- Formula 1 (2022+ rules)
 // Traced from assets/Vehicle profiles/f1.webp: wheelbase scaled to 3.6 m, heights scaled so the top is ≈ 1 m. The
-// airbox is faired into a level top, so it does not make a sharp, localised pressure spike.
+// airbox is faired into a level top, so it does not make a sharp, localized pressure spike.
 function f1Car(p) {
   const dh = p.ride / 1000 - 0.04;
   const body = outline([
@@ -103,7 +103,7 @@ function f1Car(p) {
   const r1 = wing('6409', 0.22, te(r0)[0] - 0.04, te(r0)[1] + 0.03, p.rear + 18, true);
   const fr = 1.0, rr = 4.6, R = 0.36;
   const details = shiftDetails([
-    // endplates and the halo sit beside the centre line, so they are drawn faded behind the slice
+    // endplates and the halo sit beside the center line, so they are drawn faded behind the slice
     { kind: 'fill', role: 'ghost', pts: [[4.555, 0.93], [4.6, 0.99], [4.85, 0.99], [5.12, 0.965], [5.30, 0.91], [5.28, 0.77], [5.17, 0.55], [5.08, 0.50], [5.01, 0.29], [4.89, 0.16], [4.80, 0.085], [4.67, 0.21], [4.58, 0.53]] },
     { kind: 'fill', role: 'ghost', pts: [[-0.14, 0.25], [-0.105, 0.31], [-0.02, 0.245], [0.01, 0.08], [-0.13, 0.08]] },
     { kind: 'fill', role: 'ghost', pts: smoothClosed([[1.86, 0.70], [1.95, 0.84], [2.04, 0.885], [2.2, 0.89], [2.4, 0.865], [2.6, 0.83], [2.74, 0.80], [2.74, 0.76], [2.58, 0.79], [2.4, 0.82], [2.2, 0.845], [2.05, 0.84], [1.97, 0.80], [1.9, 0.70]], 5) }, // halo
@@ -165,7 +165,7 @@ function roadCar(p) {
 }
 
 // ---------------------------------------------------------------- planes and missile (slice beside the fuselage)
-// The aircraft pitches about its centre of gravity by the angle of attack.
+// The aircraft pitches about its center of gravity by the angle of attack.
 function rotateAbout(P, cx, cy, deg) {
   const r = -deg * Math.PI / 180, c = Math.cos(r), s = Math.sin(r);
   return P.map(([x, y]) => [cx + (x - cx) * c - (y - cy) * s, cy + (x - cx) * s + (y - cy) * c]);
@@ -230,7 +230,7 @@ export const VEHICLES = [
     blurb: 'A GT3 racer: a front splitter, a smooth floor ending in a diffuser, and a big rear wing on swan-neck mounts. All three pull the car onto the track.',
     params: [speed(220, 320), ride(70, 40, 140), { key: 'rear', label: 'Rear wing angle', min: 0, max: 16, step: 0.5, value: 8, fmt: x => x.toFixed(1) + '°', info: 'Trailing edge up = more downforce (and, on a real car, more drag).' }] },
   { id: 'f1', group: 'Cars', label: 'Formula 1 car (2022+)', kind: 'car', mass: 798, CdA: 1.3, CLA: -4.5, calibrate: true, build: f1Car,
-    blurb: 'A Formula 1 car: a three-element front wing, a rear wing with its DRS flap, and a floor shaped to work with the road (ground effect). Downforce lets it corner and brake far harder than its tyres alone could.',
+    blurb: 'A Formula 1 car: a three-element front wing, a rear wing with its DRS flap, and a floor shaped to work with the road (ground effect). Downforce lets it corner and brake far harder than its tires alone could.',
     params: [speed(250, 340), ride(40, 20, 100),
       { key: 'front', label: 'Front wing angle', min: -2, max: 10, step: 0.5, value: 3, fmt: x => x.toFixed(1) + '°', info: 'Angle of the front wing mainplane (the flaps follow it). More angle = more front downforce, moving the balance forward.' },
       { key: 'rear', label: 'Rear wing angle', min: -2, max: 14, step: 0.5, value: 5, fmt: x => x.toFixed(1) + '°', info: 'Angle of the rear wing mainplane (the flap follows it). Teams run low angles at fast tracks like Monza and high angles at Monaco.' }] },

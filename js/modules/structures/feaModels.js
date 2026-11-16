@@ -72,7 +72,7 @@ export const FEA_MODELS = [
   },
   {
     id: 'lug', label: 'Pin-loaded lug (attachment fitting)',
-    params: [['W', 'Lug width', 'dim', 0.06], ['H', 'Base to hole centre', 'dim', 0.07], ['d', 'Hole diameter', 'dim', 0.025], ['F', 'Pin load', 'force', 40e3], ['ang', 'Load angle', null, 90]],
+    params: [['W', 'Lug width', 'dim', 0.06], ['H', 'Base to hole center', 'dim', 0.07], ['d', 'Hole diameter', 'dim', 0.025], ['F', 'Pin load', 'force', 40e3], ['ang', 'Load angle', null, 90]],
     check: p => p.d < 0.85 * p.W && p.H > p.W * 0.3,
     build(p, t) {
       const { W, H, d } = p, R = W / 2, cx = R;

@@ -180,7 +180,7 @@ export class FieldStage {
     const amb = dark ? [20, 23, 30] : [233, 236, 241];
     const nx = G.nx, ny = G.ny;
     if (q === 'schlieren') {
-      // knife-edge schlieren: grey background, dark where density rises along the flow, light where it falls
+      // knife-edge schlieren: gray background, dark where density rises along the flow, light where it falls
       const R = G.rho, gx = new Float32Array(R.length), gm = new Float32Array(R.length), mags = [];
       for (let j = 1; j < ny - 1; j++) for (let i = 1; i < nx - 1; i++) {
         const c = j * nx + i; if (G.k[c] !== 1) continue;

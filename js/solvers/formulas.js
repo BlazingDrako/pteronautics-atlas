@@ -58,6 +58,11 @@ export const UNITS = {
   circulation: [['m²/s', 1], ['ft²/s', 0.09290304]],
   liftpu: [['N/m', 1], ['kN/m', 1e3], ['lbf/ft', 14.593903]],
   vol: [['m³', 1], ['L', 1e-3], ['ft³', 0.028316847]],
+  kinvisc: [['m²/s', 1], ['cSt', 1e-6], ['ft²/s', 0.09290304]],
+  pgrad: [['Pa/m', 1], ['kPa/m', 1e3], ['psi/ft', 22620.59]],
+  qdepth: [['m²/s', 1], ['L/(s·m)', 1e-3], ['ft²/s', 0.09290304]],
+  vflow: [['m³/s', 1], ['L/s', 1e-3], ['L/min', 1 / 60000], ['ft³/s', 0.028316847], ['gal/min', 6.30902e-5]],
+  rate: [['1/s', 1]],
 };
 
 // preferred display unit per kind in each system (first entry is used when not listed)
@@ -67,7 +72,7 @@ const US_PREF = {
   density: 'slug/ft³', temp: '°R', dtemp: '°F', power: 'hp', energy: 'BTU', spenergy: 'BTU/lb', gasconst: 'ft·lbf/(slug·°R)',
   cp: 'BTU/(lb·°R)', lapse: '°F/1000 ft', tsfc: 'lb/(lbf·h)', bsfc: 'lb/(hp·h)', stiff: 'lbf/in', damping: 'lbf·s/in',
   moment: 'lbf·ft', dist_load: 'lbf/ft', lmass: 'lb/ft', alpha: 'µ/°F', heatflux: 'BTU/(ft²·s)', conduct: 'BTU/(h·ft·°F)',
-  htc: 'BTU/(h·ft²·°F)', circulation: 'ft²/s', liftpu: 'lbf/ft', vol: 'ft³',
+  htc: 'BTU/(h·ft²·°F)', circulation: 'ft²/s', liftpu: 'lbf/ft', vol: 'ft³', kinvisc: 'ft²/s', pgrad: 'psi/ft', qdepth: 'ft²/s', vflow: 'gal/min',
 };
 
 export function unitList(kind) { return UNITS[kind] || UNITS.dimless; }

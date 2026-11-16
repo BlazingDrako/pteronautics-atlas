@@ -15,7 +15,7 @@ including the ω = 0 crossing of an open-loop-unstable aircraft.
   with the surface deflection, a Bode plot with gain and phase margins marked, and a Nyquist plot with distances above 1
   compressed logarithmically and the encirclement count. Metrics give closed-loop stability, phase, gain (up and, for a
   conditionally stable loop, down) and delay margins, closed-loop damping, step figures and peak surface deflection.
-  The transfer functions are written out factored, with every pole labelled by mode. Scenarios: a light-single pitch
+  The transfer functions are written out factored, with every pole labeled by mode. Scenarios: a light-single pitch
   damper, an airliner yaw damper, the relaxed-stability fighter with pitch-rate feedback only (the q/δe zero at the origin
   leaves a slow divergence) and with α feedback (stable but lightly damped), the same with 120 ms of delay, and an
   airliner attitude hold with integral action.
@@ -56,7 +56,7 @@ including the ω = 0 crossing of an open-loop-unstable aircraft.
 - **INS & GNSS** (`js/solvers/ins.js`, no DOM), three tools. *Inertial drift*: the 12-state phi-angle error model of a
   local-level INS for a slow vehicle (Titterton & Weston §12.3; Groves §14.2: position, velocity and attitude errors,
   three gyro and two accelerometer biases), propagated exactly with e^(FΔt), for four sensor grades or any biases, with
-  or without self-alignment (levelling and gyrocompassing) and Earth rotation: position error and its 1σ envelope from
+  or without self-alignment (leveling and gyrocompassing) and Earth rotation: position error and its 1σ envelope from
   random biases and noise, the error track (Schuler loops turned by the Foucault effect), attitude errors, and the
   unstable vertical channel with and without baro aiding. *GNSS fix & DOP*: a nominal 24-satellite GPS constellation
   (Walker 24/6/1, circular orbits), sky plot with satellites you can switch off, elevation mask, iterative least squares

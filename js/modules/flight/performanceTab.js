@@ -255,9 +255,9 @@ export function performanceTab({ keep = o => o } = {}) {
 
   function drawSR(c, Wd, Hd) {
     if (!R || R.glider) return;
-    // metres per kg of fuel → nm per 1,000 lb / km per tonne (or per 100 lb / 100 kg for small aircraft)
+    // meters per kg of fuel → nm per 1,000 lb / km per metric ton (or per 100 lb / 100 kg for small aircraft)
     const us = units() === 'us', small = R.a.mass.max < 5000, per = small ? 100 : 1000;
-    const kk = us ? 0.45359237 * per / 1852 : per / 1000, ll = us ? `nm per ${per.toLocaleString()} lb` : small ? 'km per 100 kg' : 'km per tonne';
+    const kk = us ? 0.45359237 * per / 1852 : per / 1000, ll = us ? `nm per ${per.toLocaleString()} lb` : small ? 'km per 100 kg' : 'km per metric ton';
     const pts = R.srCurve.map(p => [V2d(p.V), p.sr * kk]);
     const ys = pts.map(p => p[1]).filter(isFinite);
     if (!ys.length) { c.fillStyle = cssVar('--text-3'); c.fillText('Cannot hold level flight here', 20, 30); return; }
@@ -313,7 +313,7 @@ export function performanceTab({ keep = o => o } = {}) {
     if (glider) {
       L.push({ type: 'i', t: `Glides 1 : ${sp.LDmax.toFixed(1)} at ${show('speed', sp.Vmd, 0)}`, d: `From ${show('alt', perf.z)} it can glide ${showRange(perf.z * sp.LDmax)} in still air. Adding water ballast does not change the best glide ratio, only the speed it happens at (× √weight): better for fast cross-country flights in strong lift.` });
     } else {
-      L.push({ type: 'i', t: `Best rate ${show('speed', sp.Vy, 0)} vs best angle ${show('speed', sp.Vx, 0)}`, d: 'Vy maximises excess power (T−D)·V: the most height per minute. Vx maximises excess thrust T−D: the most height per distance, for clearing obstacles. Both converge at the absolute ceiling, where only one speed can hold altitude.' });
+      L.push({ type: 'i', t: `Best rate ${show('speed', sp.Vy, 0)} vs best angle ${show('speed', sp.Vx, 0)}`, d: 'Vy maximizes excess power (T−D)·V: the most height per minute. Vx maximizes excess thrust T−D: the most height per distance, for clearing obstacles. Both converge at the absolute ceiling, where only one speed can hold altitude.' });
       if (a.engine === 'piston') L.push({ type: 'i', t: 'Propeller: thrust falls with speed', d: 'Power is roughly constant, so thrust ≈ ηP/V. That is why piston aircraft are compared on power curves, and why max endurance is at the minimum-power speed, slower than best glide.' });
       if (a.engine === 'hbp' || a.engine === 'dry') L.push({ type: 'i', t: 'Jet: thrust roughly constant with speed', d: 'With constant thrust, the best climb angle is at the minimum-drag speed and best rate is much faster. Jets get their range by flying high, where the same equivalent airspeed means a much higher true speed for the same drag.' });
       if (a.engine === 'ab') L.push({ type: 'i', t: perf.rating === 'ab' ? 'Afterburner lit' : 'Military (dry) thrust', d: perf.rating === 'ab' ? 'Burning fuel in the exhaust nearly doubles thrust at the cost of about twice the fuel per newton. Supersonic dash and maximum climb use it; cruise does not.' : 'Without afterburner the transonic drag rise stops the aircraft near Mach 1. Range and endurance are computed at military power.' });

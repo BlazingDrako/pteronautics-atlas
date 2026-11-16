@@ -67,7 +67,7 @@ export function orbitControls({ onChange, angles = ['i', 'raan', 'argp', 'nu'], 
       i: ['Inclination i (°)', 0, 180, 'Tilt of the orbit plane against the equator. Above 90° the orbit is retrograde (against the rotation of the body).'],
       raan: ['Right ascension of the ascending node Ω (°)', 0, 360, 'Where the orbit crosses the equator going north, measured east from the vernal equinox direction ♈ (on the ground track: the longitude of that crossing at the start).'],
       argp: ['Argument of periapsis ω (°)', 0, 360, 'Angle within the orbit plane from the ascending node to periapsis: which way the ellipse points.'],
-      nu: ['True anomaly ν (°)', 0, 360, 'Where the satellite is now: the angle from periapsis to the satellite, seen from the centre of the body.'],
+      nu: ['True anomaly ν (°)', 0, 360, 'Where the satellite is now: the angle from periapsis to the satellite, seen from the center of the body.'],
     };
     for (const k of angles) { const [l, a, b, tip] = ang[k]; sl[k] = slider({ label: l, min: a, max: b, step: 0.1, value: S[k], digits: 1, info: tip, onInput: v => { S[k] = v; k === 'nu' ? onChange('nu') : fire(); } }); }
     sec.body.replaceChildren(body, field('Set the size and shape by', shapeSeg), ...Object.values(sl).map(s => s.el));

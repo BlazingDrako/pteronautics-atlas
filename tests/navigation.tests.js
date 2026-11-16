@@ -28,7 +28,7 @@ export function navigationTests(log) {
   const pts = [[0, 0, 0], [51.47 * D, -0.45 * D, 25], [-33.95 * D, 151.18 * D, 6], [89.9 * D, 45 * D, 11000], [-45 * D, -120 * D, -50]];
   let worst = 0;
   for (const [la, lo, hh] of pts) { const e = N.ecefToGeodetic(N.geodeticToEcef(la, lo, hh)); worst = Math.max(worst, Math.abs(e.lat - la) * 6.4e6, Math.abs(N.wrapPi(e.lon - lo)) * 6.4e6 * Math.cos(la), Math.abs(e.h - hh)); }
-  log('geodetic → ECEF → geodetic round trip (sub-millimetre)', worst < 1e-3, `worst ${(worst * 1000).toFixed(5)} mm`);
+  log('geodetic → ECEF → geodetic round trip (sub-millimeter)', worst < 1e-3, `worst ${(worst * 1000).toFixed(5)} mm`);
   const e0 = N.geodeticToEcef(0, 0, 0), ep = N.geodeticToEcef(Math.PI / 2, 0, 0);
   log('ECEF of (0°, 0°) is (a, 0, 0); of the North Pole (0, 0, b)', Math.abs(e0[0] - N.WGS84.a) < 1e-6 && Math.abs(ep[2] - N.WGS84.b) < 1e-6 && Math.abs(ep[0]) < 1e-6, '');
   const lat0 = 45 * D, s1 = Math.sin(lat0), M = N.WGS84.a * (1 - N.WGS84.e2) / (1 - N.WGS84.e2 * s1 * s1) ** 1.5, dl = 10000 / M;
@@ -60,10 +60,10 @@ export function navigationTests(log) {
   // ---- radio navigation ----
   const n10 = 10 * 1852;
   const a = N.vor(n10, 0, 0), b = N.vor(n10, 0, Math.PI), c = N.vor(n10 * Math.cos(10 * D), n10 * Math.sin(10 * D), 0), e = N.vor(n10 * Math.cos(10 * D), n10 * Math.sin(10 * D), Math.PI);
-  log('VOR: due north on radial 360 → FROM with course 360, TO with course 180, needle centred', Math.abs(a.radial) < 1e-12 && a.from && !b.from && Math.abs(a.dots) < 1e-9 && Math.abs(b.dots) < 1e-9, '');
+  log('VOR: due north on radial 360 → FROM with course 360, TO with course 180, needle centered', Math.abs(a.radial) < 1e-12 && a.from && !b.from && Math.abs(a.dots) < 1e-9 && Math.abs(b.dots) < 1e-9, '');
   log('VOR: on radial 010, outbound 360 → fly left full scale; inbound 180 → fly right full scale', Math.abs(c.dots + 5) < 1e-9 && Math.abs(e.dots - 5) < 1e-9, `dots ${c.dots.toFixed(3)} / ${e.dots.toFixed(3)}`);
   near('DME over the station reads the height (6,000 ft = 0.987 nm)', N.dme(0, 0, 6000 * 0.3048).slant / 1852, 6000 * 0.3048 / 1852, 1e-12, ' nm');
   const il = N.ils({ d: 3 * 1852, y: 0, z: Math.tan(3 * D) * (3 * 1852 + 300) });
-  log('ILS: on the 3° glide path at 3 nm the needles are centred', Math.abs(il.gs) < 1e-12 && Math.abs(il.loc) < 1e-12, '');
+  log('ILS: on the 3° glide path at 3 nm the needles are centered', Math.abs(il.gs) < 1e-12 && Math.abs(il.loc) < 1e-12, '');
   near('3° glide path: about 318 ft of height per nautical mile', Math.tan(3 * D) * 1852 / 0.3048, 318.5, 0.5, ' ft');
 }

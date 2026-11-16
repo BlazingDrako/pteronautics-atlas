@@ -11,6 +11,8 @@ const TABS = [
   { id: 'stall', label: 'Stall', load: () => import('./stallTab.js').then(m => m.stallTab) },
   { id: 'wake', label: 'Wake & downwash', load: () => import('./wakeTab.js').then(m => m.wakeTab) },
   { id: 'winglets', label: 'Winglets & span', load: () => import('./wingletTab.js').then(m => m.wingletTab) },
+  { id: 'llt', label: 'Lifting line', load: () => import('./lltTab.js').then(m => m.lltTab) },
+  { id: 'vortex', label: 'Vortex filaments', load: () => import('./vortexTab.js').then(m => m.vortexTab) },
   { id: 'aircraft', label: 'Aircraft', load: () => import('./aircraftTab.js').then(m => m.aircraftTab) },
 ];
 

@@ -21,7 +21,7 @@ self.onmessage = async (ev) => {
     const order = [...sorted.slice(i0), ...sorted.slice(0, i0).reverse()];
     let n = 0, branchStart = true;
     for (let k = 0; k < order.length; k++) {
-      if (token !== sweepToken) return; // cancelled
+      if (token !== sweepToken) return; // canceled
       const a = order[k];
       if (k === sorted.length - i0) branchStart = true; // switching to the negative branch
       const s = { ...spec, oper: { ...spec.oper, mode: 'alpha', alpha: a }, warm: !branchStart };

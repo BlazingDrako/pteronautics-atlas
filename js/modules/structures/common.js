@@ -4,7 +4,7 @@ import { units, fmtNum } from '../../solvers/units.js';
 export { fmtNum, units };
 export { card, metricsGrid, insightsList } from '../compressible/common.js';
 
-// A labelled numeric input in the current unit system. q = unit quantity key (or null for plain numbers).
+// A labeled numeric input in the current unit system. q = unit quantity key (or null for plain numbers).
 // get() returns the SI value, set(v) receives the SI value.
 export function numField(label, q, get, set, { tip, digits = 5, suffix, hint, min, max } = {}) {
   const inp = h('input', { class: 'num-input st-num', type: 'text', inputmode: 'decimal', 'aria-label': label });

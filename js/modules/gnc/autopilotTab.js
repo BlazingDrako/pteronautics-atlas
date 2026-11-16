@@ -121,7 +121,7 @@ export function autopilotTab({ keep = o => o } = {}) {
   const flyCard = h('div', { class: 'plot-card' }, h('div', { class: 'plot-head' }, h('h4', {}, 'Primary flight display and map'), h('div', { class: 'row' }, spSeg.el, replay, playBtn)), h('div', { class: 'flt-grid2e' }, pfd.el, map.el),
     h('div', { class: 'hint', style: { marginTop: '4px' } }, 'Top row of the display: the active modes (thrust, pitch, lateral), with the next mode armed in blue. Magenta bugs mark the targets. The map is north-up; the dashed ghost is the comparison run.'));
   const hist = canvasBox('520px', drawHist);
-  const histCard = card('Time histories', 'Solid: this run. Dashed grey: the comparison. Dotted: the targets.', hist.el);
+  const histCard = card('Time histories', 'Solid: this run. Dashed gray: the comparison. Dotted: the targets.', hist.el);
   const loopHost = h('div');
   const bod = canvasBox('340px', (c, W, H) => { if (R && R.selLoop) drawBode(c, W, H, R.selLoop.L, R.selLoop.mg); });
   const loopCard = card('The loops, inner to outer', 'Each loop broken in turn with every other loop closed (successive loop closure). Click a row to see its Bode plot. A cascade works when each inner loop is several times faster than the loop around it.', loopHost, bod.el);
@@ -134,7 +134,7 @@ export function autopilotTab({ keep = o => o } = {}) {
 
   // ---------- compute ----------
   function compute() {
-    const inp = stabInput(), an = St.analyse(inp), ac = Pf.byId(perf.id), eng = Ap.engineOf(an, ac, perf.rating);
+    const inp = stabInput(), an = St.analyze(inp), ac = Pf.byId(perf.id), eng = Ap.engineOf(an, ac, perf.rating);
     const def = Ap.defaults(perf.id, an, eng), key = perf.id + ':' + perf.version;
     if (!S.g || S.gFor !== perf.id) { S.g = { ...def }; S.gFor = perf.id; buildGains(); }
     if (eng.none && S.thr === 'speed') S.thr = 'off';
@@ -146,7 +146,7 @@ export function autopilotTab({ keep = o => o } = {}) {
     let cmp = null, cmpLabel = '';
     const C = { aw: [{ antiWindup: !S.aw }, S.aw ? 'without anti-windup' : 'with anti-windup'], noat: [{ thr: 'off' }, 'autothrottle off'], alt: [{ pitch: eng.none ? 'speed' : 'alt' }, eng.none ? 'speed on elevator' : 'altitude hold'], flch: [{ pitch: eng.none ? 'speed' : 'flch' }, 'level change'], def: [{ g: def }, 'default gains'], noyd: [{ g: { ...S.g, Kr: 0, Kb: 0 } }, 'no yaw damper'] }[S.cmp];
     if (C) { cmp = run(mk(C[0])); cmpLabel = C[1]; }
-    const A = Ap.analyse(an, eng, ap);
+    const A = Ap.analyze(an, eng, ap);
     R = { an, ac, eng, ap, sim, cmp, cmpLabel, A, def, cmds };
     const loops = [...Object.entries(A.lon).filter(([k]) => k !== 'roots').map(([k, v]) => ({ k, ax: 'lon', ...v })), ...Object.entries(A.lat).filter(([k]) => k !== 'roots').map(([k, v]) => ({ k, ax: 'lat', ...v }))];
     R.loops = loops; R.selLoop = loops.find(l => l.ax + l.k === S.loopSel) || loops[0];
@@ -322,7 +322,7 @@ export function autopilotTab({ keep = o => o } = {}) {
     L.push(`Pitch: ${pl}`, `Elevator (up): δe = Kθ·(θc − θ) − Kq·q${g.Ka ? ' − Kα·α' : ''}`);
     if (S.thr === 'speed' && !R.eng.none) L.push(`Throttle: δT = trim + KV·(Vc − V) + KV,i·∫(Vc − V) dt, between idle and full; engine lag ${R.eng.lag} s`);
     L.push(S.lat === 'hdg' ? 'Bank: φc = Kψ·(ψc − ψ) + Kψ,i·∫(ψc − ψ) dt, limited (error taken the short way round)' : S.lat === 'bank' ? 'Bank: φc = the target bank' : 'No lateral outer loop', `Aileron: δa = Kφ·(φc − φ) − Kp·p;   rudder: δr = −Kr·[τs/(τs + 1)]·r + Kβ·β`);
-    eqHost.replaceChildren(h('span', { class: 'eq', html: L.join('<br>') }), h('p', { class: 'hint' }, 'Small-disturbance dynamics about the trimmed condition, with exact turn kinematics (ψ̇ = r / cos φ, side force from gravity ∝ sin φ), the lift lost by banking, actuator and engine lags and every limit. The loop table uses the linearised model without the limits.'));
+    eqHost.replaceChildren(h('span', { class: 'eq', html: L.join('<br>') }), h('p', { class: 'hint' }, 'Small-disturbance dynamics about the trimmed condition, with exact turn kinematics (ψ̇ = r / cos φ, side force from gravity ∝ sin φ), the lift lost by banking, actuator and engine lags and every limit. The loop table uses the linearized model without the limits.'));
   }
   function insights() {
     const { sim, cmp, A, loops, eng, an } = R, I = sim.I, list = [], x = lastOf(sim), V = an.d.V;
@@ -343,7 +343,7 @@ export function autopilotTab({ keep = o => o } = {}) {
     else list.push({ type: 'g', t: 'Successive loop closure', d: `Each loop wraps a faster one: the pitch inner loop crosses over ${rp ? f3(rp) + '×' : ''} faster than the altitude loop, the bank loop ${rl ? f3(rl) + '×' : ''} faster than the heading loop. That separation lets each loop be designed as if the one inside it were perfect.` });
     const at = loops.find(l => l.k === 'thr');
     if (at && at.mg.pm && at.mg.pm.pmDeg < 40) list.push({ type: 'i', t: `Autothrottle phase margin ${f3(at.mg.pm.pmDeg)}°`, d: 'Thrust changes speed slowly through the engine lag, and speed and height trade through the phugoid, so autothrottles are kept gentle: a crossover around 0.2 rad/s, with modest margins.' });
-    if (R.ap.g.Ka) list.push({ type: 'i', t: 'Autopilot on top of stability augmentation', d: 'The fighter is unstable on its own, so the pitch inner loop includes α feedback (the job its fly-by-wire does). The autopilot loops then wrap that stabilised aircraft like any other.' });
+    if (R.ap.g.Ka) list.push({ type: 'i', t: 'Autopilot on top of stability augmentation', d: 'The fighter is unstable on its own, so the pitch inner loop includes α feedback (the job its fly-by-wire does). The autopilot loops then wrap that stabilized aircraft like any other.' });
     if (eng.none) list.push({ type: 'i', t: 'No engine', d: 'A sailplane holds speed with the elevator and trades height for it; it cannot hold an altitude except in rising air.' });
     if (S.turb !== 'off') list.push({ type: 'i', t: 'Turbulence', d: 'Both runs fly the same Dryden gust history. The altitude hold rides the gusts out with small deviations; a stiffer altitude loop holds height more tightly but works the elevator harder.' });
     insightsList(ins, list);

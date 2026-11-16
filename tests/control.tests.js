@@ -86,24 +86,24 @@ export function controlTests(log) {
   near('lead network: maximum phase asin((p−z)/(p+z)) at √(zp)', lph * DEG, Math.asin(9 / 11) * DEG, 1e-9, '°');
 
   // ---- aircraft loops ----
-  const c172 = St.analyse({ id: 'c172', mass: 1043, z: geometric(5000 * FT), V: 120 * 0.514444, cg: 0.27 });
+  const c172 = St.analyze({ id: 'c172', mass: 1043, z: geometric(5000 * FT), V: 120 * 0.514444, cg: 0.27 });
   const q = Ct.aircraftPlant(c172, 'q');
   log('light single: q per degree of up-elevator is positive at high frequency', q.G.num[0] > 0, `leading coefficient ${q.G.num[0].toFixed(4)}`);
   const sp0 = c172.L.sp.zeta, cl = Ct.clPoles(Ct.tfMul(Ct.gain(0.3), q.G));
   // the two fastest closed-loop roots are the short period (a real pair means more than critically damped)
   const top = cl.slice().sort((a, b) => Math.hypot(...b) - Math.hypot(...a)).slice(0, 2), spz = top[0][1] ? Ct.damping(top[0]).zeta : 1;
   log('pitch damper (0.3°/(°/s)) raises short-period damping', spz > sp0 + 0.1, `ζ ${sp0.toFixed(3)} → ${spz.toFixed(3)}`);
-  const a320 = St.analyse({ id: 'a320', mass: 65000, z: geometric(35000 * FT), V: 0.78 * 296.5, cg: 0.3 });
+  const a320 = St.analyze({ id: 'a320', mass: 65000, z: geometric(35000 * FT), V: 0.78 * 296.5, cg: 0.3 });
   const rG = Ct.aircraftPlant(a320, 'r').G, yd = Ct.tfMul(Ct.gain(1.5), Ct.washout(2), rG);
   const dr0 = a320.Lt.dr.zeta, dr1 = Ct.clPoles(yd).filter(z => z[1] > 0.3).map(Ct.damping).sort((a, b) => a.zeta - b.zeta)[0];
   log('airliner yaw damper with washout: Dutch-roll damping above 0.3', dr1 && dr1.zeta > 0.3 && dr0 < 0.1, `ζ ${dr0.toFixed(3)} → ${dr1 ? dr1.zeta.toFixed(3) : '—'}`);
-  const f16 = St.analyse({ id: 'f16', mass: 9295, z: geometric(15000 * FT), V: 0.6 * 322.2, cg: 0.35 });
+  const f16 = St.analyze({ id: 'f16', mass: 9295, z: geometric(15000 * FT), V: 0.6 * 322.2, cg: 0.35 });
   const fq = Ct.aircraftPlant(f16, 'q').G, up = Ct.poles(fq).find(z => z[1] === 0 && z[0] > 0);
   log('fighter at 35% MAC: q/δe has a right-half-plane pole (doubling 0.4–1.5 s)', up && Math.LN2 / up[0] > 0.4 && Math.LN2 / up[0] < 1.5, up ? `doubles in ${(Math.LN2 / up[0]).toFixed(2)} s` : '');
   const fcl = Ct.clPoles(Ct.tfMul(Ct.gain(0.5), fq)), slow = fcl.filter(z => z[0] > 0);
   log('fighter: pitch-rate feedback alone only slows the divergence (the q/δe zero at the origin traps a root)', slow.length === 1 && Math.LN2 / slow[0][0] > 10, slow.length ? `doubles in ${(Math.LN2 / slow[0][0]).toFixed(1)} s` : 'no divergent root');
   const fa = Ct.aircraftPlant(f16, 'alpha').G, acl = Ct.clPoles(Ct.tfMul(Ct.gain(0.5), fa));
-  log('fighter: angle-of-attack feedback (0.5°/°) stabilises it completely', acl.every(z => z[0] < 0), JSON.stringify(acl.map(z => z.map(v => +v.toFixed(3)))));
+  log('fighter: angle-of-attack feedback (0.5°/°) stabilizes it completely', acl.every(z => z[0] < 0), JSON.stringify(acl.map(z => z.map(v => +v.toFixed(3)))));
   log('fighter: too little α gain and it diverges again (conditionally stable)', Ct.clPoles(Ct.tfMul(Ct.gain(0.02), fa)).some(z => z[0] > 0), '');
   const am = Ct.margins(Ct.tfMul(Ct.gain(0.5), fa));
   log('fighter α loop: margins report a gain-reduction margin', !!am.gmDown && am.gmDown.db > 0, am.gmDown ? `gain can fall ${am.gmDown.db.toFixed(1)} dB` : JSON.stringify(am.ph));

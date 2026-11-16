@@ -19,7 +19,7 @@ Units are switchable (SI kN/m/mm, SI N/m, SI N/mm, US kip/ft/in, US lbf/in); eve
 - **Vibration modes** (consistent mass, effective modal mass) and **linear buckling** (geometric stiffness); members are
   subdivided automatically, truss bars become pin-ended beams so they can buckle on their own.
 - **Sections** (`js/solvers/sections.js`): rectangle, round, tube, box, I, channel, tee, angle, Z, hat stringer: A, centroid,
-  I, principal axes, S, plastic Z, J, Q, shear centre; σ(y) and τ(y) = VQ/Ib through the depth; material library.
+  I, principal axes, S, plastic Z, J, Q, shear center; σ(y) and τ(y) = VQ/Ib through the depth; material library.
 - **2D FEA** (`js/solvers/fem2d.js`): parts bounded by lines and arcs with holes (plate with a hole, U-notched bar, shoulder
   fillet, pin-loaded lug, L-bracket, deep cantilever) or your own drawn outline and holes. Automatic graded mesh (quadtree
   points + conforming Delaunay + smoothing), 6-node quadratic triangles with curved edges on arcs, plane stress or strain,
@@ -34,7 +34,7 @@ Units are switchable (SI kN/m/mm, SI N/m, SI N/mm, US kip/ft/in, US lbf/in); eve
   Exact N, Vy, Vz, T, My, Mz along members from statics, deflections by integrating curvature, combined stress (biaxial
   bending + torsion + shear, von Mises), equilibrium check in all six directions. Vibration modes with effective mass and
   linear buckling (geometric stiffness; open sections get approximate warping stiffness for torsional buckling).
-  Orbitable 3D view (drag, pan, zoom, preset views) with moment/shear diagrams in each bending plane, axial/torque colouring,
+  Orbitable 3D view (drag, pan, zoom, preset views) with moment/shear diagrams in each bending plane, axial/torque coloring,
   stress heat map, deflected and mode shapes. Examples: L-bracket, biaxial cantilever, tripod, grillage, portal, building,
   lattice tower, engine mount, wing spars with drag bracing.
 - **Vibration** (`js/solvers/vibration.js`): spring–mass–damper lab (free, harmonic force, harmonic base motion, step, pulses,

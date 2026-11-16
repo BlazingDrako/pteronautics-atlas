@@ -4,7 +4,7 @@
 //
 // Lattice units: cell size = time step = 1, speed of sound² = 1/3, pressure p = ρ/3,
 // kinematic viscosity ν = (τ − ½)/3.
-// Each step, every fluid cell pulls the populations streaming into it from its neighbours, then relaxes
+// Each step, every fluid cell pulls the populations streaming into it from its neighbors, then relaxes
 // them toward equilibrium (collision). Stored values are post-collision populations.
 //
 // Cell types (cells[k]): 0 fluid, 1 solid, 2 forced (fluid held at equilibrium, ρ = 1, u = vel[k]: jet nozzles).
@@ -46,7 +46,7 @@ export function tauEff(tau0, cs, rho, pxx, pyy, pxy) {
   return 0.5 * (tau0 + Math.sqrt(tau0 * tau0 + 18 * cs * cs * Q / rho));
 }
 
-// Cells inside a circle (cell centres at i + ½, j + ½)
+// Cells inside a circle (cell centers at i + ½, j + ½)
 export function circleMask(nx, ny, cx, cy, r, mask = new Uint8Array(nx * ny)) {
   for (let j = Math.max(0, Math.floor(cy - r - 1)); j < Math.min(ny, Math.ceil(cy + r + 1)); j++)
     for (let i = Math.max(0, Math.floor(cx - r - 1)); i < Math.min(nx, Math.ceil(cx + r + 1)); i++)

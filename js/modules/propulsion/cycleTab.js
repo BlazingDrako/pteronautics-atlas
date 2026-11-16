@@ -33,7 +33,7 @@ export function cycleTab(shell) {
   const ts = card('T–s diagram', 'Temperature vs entropy for the core (solid) and bypass (dashed) streams. Totals at each station; freestream and nozzle-exit static states are joined to their totals by vertical (isentropic) lines. Area enclosed ≈ net work.');
   const tsPlot = new Plot(ts, { xlabel: 's − s₀ (J/kg·K)', ylabel: 'T (K)', xname: 's−s₀', yname: 'T', xfmt: v => v.toFixed(1), yfmt: v => v.toFixed(1) + ' K', xPad: true });
   const along = card('Along the engine', 'Total temperature and total pressure at each station.');
-  const alongSeg = segmented([{ value: 'pt', label: 'pt' }, { value: 'Tt', label: 'Tt' }, { value: 'both', label: 'Both (normalised)' }], 'both', v => { alongMode = v; paintAlong(); });
+  const alongSeg = segmented([{ value: 'pt', label: 'pt' }, { value: 'Tt', label: 'Tt' }, { value: 'both', label: 'Both (normalized)' }], 'both', v => { alongMode = v; paintAlong(); });
   let alongMode = 'both';
   along.querySelector('.plot-head').append(alongSeg.el);
   const alongPlot = new Plot(along, { xlabel: 'station (in flow order; hover for names)', ylabel: '', xname: 'station', yname: 'value', xfmt: v => stationNames[Math.round(v)] || '', yfmt: v => v.toPrecision(4) });
@@ -101,7 +101,7 @@ export function cycleTab(shell) {
     if (S.type === 'turboprop') {
       const secP = section('Propeller');
       const xS = bound(S, 'x', 'Power-turbine share x', 0, 0.995, { step: 0.005, digits: 3, onInput: () => { S.autoX = false; autoT.set(false); run(); }, tip: 'Fraction of the remaining (log) pressure drop taken by the power turbine; the rest accelerates the core jet.' });
-      const autoT = boundToggle(S, 'autoX', 'Optimise x for max thrust', run);
+      const autoT = boundToggle(S, 'autoX', 'Optimize x for max thrust', run);
       put(secP.body, autoT.el, xS.el, bound(S, 'etaProp', 'Propeller efficiency', 0.5, 0.95, { step: 0.005, digits: 3, onInput: run }), bound(S, 'etaG', 'Gearbox efficiency', 0.9, 1, { step: 0.001, digits: 3, onInput: run }));
       controls.append(secP.el);
       S._xSlider = xS;

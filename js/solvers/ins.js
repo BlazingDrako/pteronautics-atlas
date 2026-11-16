@@ -82,7 +82,7 @@ export function rng(seed = 1) {
 // gyro bias °/h, accelerometer bias µg, angle random walk °/√h, accelerometer noise µg/√Hz
 export const GRADES = {
   nav: { label: 'Navigation grade (ring-laser gyro, airliner)', gyro: 0.01, accel: 50, arw: 0.002, vrw: 10 },
-  inter: { label: 'Intermediate (fibre-optic gyro, business jet)', gyro: 0.1, accel: 200, arw: 0.01, vrw: 30 },
+  inter: { label: 'Intermediate (fiber-optic gyro, business jet)', gyro: 0.1, accel: 200, arw: 0.01, vrw: 30 },
   tact: { label: 'Tactical (missile, drone)', gyro: 3, accel: 1000, arw: 0.1, vrw: 100 },
   mems: { label: 'Consumer MEMS (phone class)', gyro: 150, accel: 10000, arw: 0.5, vrw: 300 },
 };
@@ -108,7 +108,7 @@ export function errorModel(lat, fh = [0, 0], earth = true) {
 function noiseQ(si) { const Q = zeros(NX); Q[2][2] = Q[3][3] = si.vrw ** 2; Q[4][4] = Q[5][5] = Q[6][6] = si.arw ** 2; return Q; }
 const discreteQ = (Phi, Qc, dt) => { const A = sandwich(Phi, Qc); addTo(A, Qc); return A.map(r => r.map(v => v * dt / 2)); };
 
-// Self-alignment on the ground: levelling leaves the tilt that cancels the accelerometer biases, and gyrocompassing
+// Self-alignment on the ground: leveling leaves the tilt that cancels the accelerometer biases, and gyrocompassing
 // leaves the heading error that cancels the east gyro bias. b = [εN, εE, εD, ∇N, ∇E].
 export function alignedState(lat, b, earth = true) {
   const x = new Float64Array(NX); for (let i = 0; i < 5; i++) x[7 + i] = b[i];
@@ -200,7 +200,7 @@ export function dop(los) {
   const H = Math.sqrt(Q[0][0] + Q[1][1]), V = Math.sqrt(Q[2][2]), Tt = Math.sqrt(Q[3][3]);
   return { Q, H, V, T: Tt, P: Math.hypot(H, V), G: Math.sqrt(H * H + V * V + Tt * Tt) };
 }
-// Iterative least squares for position and clock bias from pseudoranges ρᵢ = |sᵢ − x| + b (b = c·δt, metres)
+// Iterative least squares for position and clock bias from pseudoranges ρᵢ = |sᵢ − x| + b (b = c·δt, meters)
 export function lsFix(sats, rho, x0 = [0, 0, 0, 0], tol = 1e-4, maxIt = 12) {
   let x = [...x0]; const hist = [];
   for (let it = 1; it <= maxIt; it++) {
@@ -248,13 +248,13 @@ export function kfUpdate(x, P, z, H, R) {
 // Loosely coupled INS/GNSS: the error state above, GNSS position fixes every gpsDt seconds (none during the outage).
 // The truth draws its biases from the grade and adds sensor noise; the filter knows only the statistics.
 // S-turns add a ±2 m/s² sideways acceleration, which makes the heading error observable.
-export function insGnssKF({ lat, T = 3600, dt = 1, grade, gpsDt = 1, gpsSigma = 5, outage = [1200, 2100], manoeuvre = false, aligned = true, seed = 3, earth = true, rec = 5 }) {
+export function insGnssKF({ lat, T = 3600, dt = 1, grade, gpsDt = 1, gpsSigma = 5, outage = [1200, 2100], maneuver = false, aligned = true, seed = 3, earth = true, rec = 5 }) {
   const si = toSI(grade), r = rng(seed), Qc = noiseQ(si), cache = {};
   const model = fE => { const k = fE.toFixed(3); if (!cache[k]) { const Phi = expm(errorModel(lat, [0, fE], earth), dt); cache[k] = { Phi: flat(Phi), Qd: flat(discreteQ(Phi, Qc, dt)) }; } return cache[k]; };
   const sb = [si.gyro, si.gyro, si.gyro, si.accel, si.accel], b = sb.map(s => s * r());
   const M = biasMap(lat, aligned, earth, si.gyro), Pb = zeros(5); sb.forEach((s, i) => { Pb[i][i] = s * s; });
   const gc = canGyrocompass(lat, si.gyro, aligned, earth);
-  const sp0 = gpsSigma, sv0 = 0.1, st0 = 1e-4;   // start: a GNSS-quality position, small velocity and levelling noise
+  const sp0 = gpsSigma, sv0 = 0.1, st0 = 1e-4;   // start: a GNSS-quality position, small velocity and leveling noise
   const P0 = mul(mul(M, Pb), transpose(M)); P0[0][0] += sp0 ** 2; P0[1][1] += sp0 ** 2; P0[2][2] += sv0 ** 2; P0[3][3] += sv0 ** 2; P0[4][4] += st0 ** 2; P0[5][5] += st0 ** 2; if (!gc) P0[6][6] += HEAD_MAX ** 2;
   let P = flat(P0), Pn = new Float64Array(N2); const tmp = new Float64Array(N2);
   let x = mulV(M, b); x[0] += sp0 * r(); x[1] += sp0 * r(); x[2] += sv0 * r(); x[3] += sv0 * r(); x[4] += st0 * r(); x[5] += st0 * r(); if (!gc) x[6] += HEAD_MAX * r();
@@ -266,7 +266,7 @@ export function insGnssKF({ lat, T = 3600, dt = 1, grade, gpsDt = 1, gpsSigma = 
   const save = (k, fE) => { out.t.push(k * dt); out.x.push(x); out.xh.push(Float64Array.from(xh)); out.P.push(Float64Array.from(P)); out.f.push(fE); };
   save(0, 0);
   for (let k = 1; k <= n; k++) {
-    const t = k * dt, fE = manoeuvre ? 2 * Math.sign(Math.sin(2 * Math.PI * t / 300)) : 0, { Phi, Qd } = model(fE);
+    const t = k * dt, fE = maneuver ? 2 * Math.sign(Math.sin(2 * Math.PI * t / 300)) : 0, { Phi, Qd } = model(fE);
     x = propX(Phi, x, new Float64Array(NX)); for (let i = 2; i < 7; i++) x[i] += qs[i] * r();
     xh = propX(Phi, xh, new Float64Array(NX)); propP(Phi, P, Qd, tmp, Pn); [P, Pn] = [Pn, P];
     const dark = t >= outage[0] && t < outage[1];

@@ -122,7 +122,7 @@ export const EXAMPLES_3D = [
   { id: 'tripod', label: 'Tripod (space truss, statically determinate)', group: 'Learn' },
   { id: 'grid', label: 'Floor grillage (beams sharing load by bending and twisting)', group: 'Learn', params: [['nx', 'Beams along X', 3], ['ny', 'Beams along Y', 3], ['L', 'Span', 6, 'len'], ['P', 'Central load', 50e3, 'force']] },
   { id: 'portal', label: '3D portal frame (gravity + wind)', group: 'Buildings' },
-  { id: 'building', label: 'Multi-storey building frame', group: 'Buildings', params: [['bx', 'Bays in X', 2], ['by', 'Bays in Y', 2], ['ns', 'Storeys', 3], ['Lx', 'Bay width X', 6, 'len'], ['Ly', 'Bay width Y', 5, 'len'], ['H', 'Storey height', 3.5, 'len'], ['w', 'Floor beam load', -20e3, 'dist'], ['F', 'Wind per floor node', 8e3, 'force']] },
+  { id: 'building', label: 'Multistory building frame', group: 'Buildings', params: [['bx', 'Bays in X', 2], ['by', 'Bays in Y', 2], ['ns', 'Stories', 3], ['Lx', 'Bay width X', 6, 'len'], ['Ly', 'Bay width Y', 5, 'len'], ['H', 'Storey height', 3.5, 'len'], ['w', 'Floor beam load', -20e3, 'dist'], ['F', 'Wind per floor node', 8e3, 'force']] },
   { id: 'tower', label: 'Lattice tower (space truss, wind)', group: 'Buildings', params: [['nl', 'Panels', 6], ['B', 'Base width', 4, 'len'], ['Bt', 'Top width', 1.5, 'len'], ['H', 'Height', 18, 'len'], ['F', 'Wind at top', 20e3, 'force']] },
   { id: 'engine', label: 'Engine mount (welded 4130 tubes)', group: 'Aerospace' },
   { id: 'wing', label: 'Wing: spars, ribs and drag bracing (lift)', group: 'Aerospace' },

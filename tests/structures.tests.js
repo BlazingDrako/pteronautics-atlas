@@ -58,7 +58,7 @@ export function structuresTests(log) {
   near('fixed-fixed UDL: end moment = wL²/12', -r.members[0].end.M1, w * L * L / 12);
   near('fixed-fixed UDL: midspan deflection = wL⁴/384EI', -r.members[0].sag.v, w * L ** 4 / (384 * E * I), 1e-3);
 
-  // 5. point load off-centre, SS
+  // 5. point load off-center, SS
   const a = 2, b = L - a;
   m = model([[0, 0], [L, 0]], [[0, 1]], [[0, 'pin'], [1, 'roller']], [{ kind: 'point', member: 0, t: a / L, fx: 0, fy: -P }]);
   r = analyze(m);
@@ -144,7 +144,7 @@ export function structuresTests(log) {
   const fr = analyze(m);
   log('stiffness solver reports a mechanism', !fr.ok && fr.error === 'mechanism', fr.error || 'solved');
 
-  // 16. friction: block (b × h) on floor, weight W at centre, push P at height hp
+  // 16. friction: block (b × h) on floor, weight W at center, push P at height hp
   const W = 1000, bw = 1, hb = 2, mu = 0.3;
   const block = (hp, scaleId) => model([[0, 0], [bw, 0], [bw, hb], [0, hb], [bw / 2, hb / 2], [0, hp]],
     [[0, 1], [1, 2], [2, 3], [3, 5], [5, 0], [0, 4], [4, 2]],

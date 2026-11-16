@@ -108,7 +108,7 @@ void main() {
     float w = (a == 1 ? t.x : 1.0 - t.x) * (b == 1 ? t.y : 1.0 - t.y) + 1e-6;
     acc += w * prim(texelFetch(uS, q, 0)); ws += w;
   }
-  if (ws <= 0.0) {                          // fall back to the nearest fluid neighbour
+  if (ws <= 0.0) {                          // fall back to the nearest fluid neighbor
     for (int k = 0; k < 4 && ws <= 0.0; k++) {
       ivec2 q = clamp(c + (k == 0 ? ivec2(1, 0) : k == 1 ? ivec2(-1, 0) : k == 2 ? ivec2(0, 1) : ivec2(0, -1)), ivec2(0), uN - 1);
       if (texelFetch(uMask, q, 0).r < 0.5) { acc = prim(texelFetch(uS, q, 0)); ws = 1.0; }
@@ -265,7 +265,7 @@ export class Euler2D {
     this.prevRho = Float32Array.from(out.rho); this.prevIter = this.iter;
     return out;
   }
-  // bilinear sample of the last readback at world (x, y); skips solid neighbours
+  // bilinear sample of the last readback at world (x, y); skips solid neighbors
   sample(x, y) {
     const o = this.out; if (!o) return null;
     const fx = (x - this.x0) / this.dx - 0.5, fy = (y - this.y0) / this.dy - 0.5;

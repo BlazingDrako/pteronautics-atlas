@@ -6,7 +6,7 @@ import { perf, PERF0 } from '../flight/perfShared.js';
 import { concepts } from './learn.js';
 import { unitsControl } from '../flight/common.js';
 
-// load: null marks a tab that is planned but not built yet (shown greyed out)
+// load: null marks a tab that is planned but not built yet (shown grayed out)
 const TABS = [
   { id: 'loops', label: 'Control loops', load: () => import('./loopsTab.js').then(m => m.loopsTab) },
   { id: 'fbw', label: 'Augmentation & FBW', load: () => import('./fbwTab.js').then(m => m.fbwTab) },

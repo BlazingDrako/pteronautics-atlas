@@ -77,7 +77,7 @@ function turn(s, dth, F) {
   const M2 = G.M_from_nu(nu2, F.g);
   return { type: 'fan', a1: s.th + isen.mu(s.M), a2: s.th + dth + isen.mu(M2), K: nu1 + s.th, p0: s.p0, down: mkState(M2, s.th + dth, s.p0, F) };
 }
-// state inside a centred fan at ray angle a (θ + μ = a with ν + θ = K)
+// state inside a centered fan at ray angle a (θ + μ = a with ν + θ = K)
 function fanState(w, a, F) {
   const f = M => (w.K - isen.nu(M, F.g)) + Math.asin(1 / M) - a;
   const M = G.bisect(f, Math.min(w.Mlo, w.Mhi), Math.max(w.Mlo, w.Mhi), 1e-7, 50);

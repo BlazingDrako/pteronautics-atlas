@@ -1,7 +1,7 @@
 // Easter eggs.
 // - Secret themes: shift-click the theme button for HUD, Blueprint and Mission Control. A secret theme
 //   sits on top of dark mode (data-skin on <html>), so canvases keep their dark drawing and plots pick up
-//   the new colours from the CSS variables.
+//   the new colors from the CSS variables.
 // - Logo flyby: click the logo in the top left and either the jet crosses the screen leaving a contrail,
 //   or the B-2 makes a slow, straight stealth pass that a radar sweep fails to pick up (50/50).
 import { h, cssVar } from './ui.js';

@@ -33,7 +33,7 @@ export const COMBOS = [
   { id: 'loxch4', fuel: 'CH4(L)', ox: 'O2(L)', of: 3.6, range: [2, 5], Lstar: 1.0, label: 'LOX / LCH₄', use: 'Reusable boosters (Raptor, BE-4)' },
   { id: 'loxrp1', fuel: 'RP-1', ox: 'O2(L)', of: 2.6, range: [1.5, 3.6], Lstar: 1.1, label: 'LOX / RP-1', use: 'Boosters (Merlin, F-1, RD-180)' },
   { id: 'loxeth', fuel: 'C2H5OH(L)', ox: 'O2(L)', of: 1.5, range: [0.8, 2.6], Lstar: 1.1, label: 'LOX / ethanol', use: 'Early rockets (V-2, Redstone used diluted ethanol)' },
-  { id: 'ntommh', fuel: 'MMH(L)', ox: 'N2O4(L)', of: 1.65, range: [0.9, 3], Lstar: 0.8, label: 'N₂O₄ / MMH', use: 'Spacecraft and orbital manoeuvring (AJ10, Draco)' },
+  { id: 'ntommh', fuel: 'MMH(L)', ox: 'N2O4(L)', of: 1.65, range: [0.9, 3], Lstar: 0.8, label: 'N₂O₄ / MMH', use: 'Spacecraft and orbital maneuvering (AJ10, Draco)' },
   { id: 'ntoudmh', fuel: 'UDMH(L)', ox: 'N2O4(L)', of: 2.1, range: [1.1, 3.6], Lstar: 0.8, label: 'N₂O₄ / UDMH', use: 'Storable boosters (Proton RD-275, Long March YF-20)' },
   { id: 'ntohz', fuel: 'N2H4(L)', ox: 'N2O4(L)', of: 1.25, range: [0.7, 2.2], Lstar: 0.8, label: 'N₂O₄ / N₂H₄', use: 'Storable (Titan used a 50/50 hydrazine–UDMH blend)' },
   { id: 'htprp1', fuel: 'RP-1', ox: 'H2O2(L)', of: 7.0, range: [4, 10], Lstar: 1.3, label: 'H₂O₂ / RP-1', use: 'Non-toxic storable (Gamma, modern small launchers)' },
@@ -142,7 +142,7 @@ const KEYS = ['P', 'T', 'rho', 'u', 'a', 'M', 'eps', 'W', 'cpf', 'gf'];
 function pick(a, b, t, keys = KEYS) { const o = {}; for (const k of keys) o[k] = a[k] + t * (b[k] - a[k]); o.comp = t < 0.5 ? a.comp : b.comp; return o; }
 
 // ---------- chamber + nozzle contour ----------
-// Dimensions in metres, throat at x = 0. Chamber: cylinder, fillet R2, 30° cone, upstream throat arc 1.5 Rt.
+// Dimensions in meters, throat at x = 0. Chamber: cylinder, fillet R2, 30° cone, upstream throat arc 1.5 Rt.
 // Divergent: arc 0.382 Rt then an 80% Rao bell (parabola) or a straight cone.
 export function contour({ Rt, eps, contraction, nozzle = 'bell', half = 15, Lstar = 1, conv = 30 }) {
   const Rc = Rt * Math.sqrt(contraction), Re = Rt * Math.sqrt(eps);

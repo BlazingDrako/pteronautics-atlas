@@ -24,7 +24,7 @@ elements and Ground tracks tabs share one orbit, so a preset or edit in one show
   and return, Earth escape, and orbits around Mars, Venus and Jupiter (Juno-like capture). Launch from seven sites:
   circular speed minus the ground's eastward speed along the launch azimuth, plus gravity and drag losses; a plane
   change if the target inclination is below the site latitude; patched-conic departures and captures
-  (√(v∞² + 2μ/r) − √(μ/r)) from Sun-centred Hohmann transfers, or aerocapture. Each leg turned into propellant per
+  (√(v∞² + 2μ/r) − √(μ/r)) from Sun-centered Hohmann transfers, or aerocapture. Each leg turned into propellant per
   kilogram delivered with the rocket equation, and the propellant fraction against Δv for several Isp values.
 
 Solver: Kepler's equation by Newton's method, elements ↔ state vectors (perifocal rotation; circular and equatorial

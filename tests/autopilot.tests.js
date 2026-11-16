@@ -14,7 +14,7 @@ export function autopilotTests(log) {
   const COND = { c172: [1050, 3000 * FT, 105 * KT], glider: [400, 1000, 50 * KT], a320: [65000, 35000 * FT, 'M0.78'], cca: [2300, 30000 * FT, 'M0.7'], f16: [12000, 15000 * FT, 'M0.8'] };
   const setup = id => {
     const [mass, zp, v] = COND[id], z = geometric(zp), V = typeof v === 'string' ? +v.slice(1) * atmosphere(z).a : v, ac = Pf.byId(id);
-    const an = St.analyse({ id, mass, z, V, cg: St.GEOMETRY[id].cg[2] }), eng = Ap.engineOf(an, ac, Pf.defaultRating(ac)), g = Ap.defaults(id, an, eng);
+    const an = St.analyze({ id, mass, z, V, cg: St.GEOMETRY[id].cg[2] }), eng = Ap.engineOf(an, ac, Pf.defaultRating(ac)), g = Ap.defaults(id, an, eng);
     return { an, ac, eng, g, ap: (o = {}) => ({ pitch: eng.none ? 'speed' : 'alt', thr: eng.none ? 'off' : 'speed', lat: 'hdg', g, wa: 20, taue: eng.lag, antiWindup: true, ...o }) };
   };
   const hw = { wa: 20, rate: 60 * D, pos: 25 * D };
@@ -81,7 +81,7 @@ export function autopilotTests(log) {
   const rep = [];
   let allOk = true, sepOk = true;
   for (const id of Object.keys(COND)) {
-    const s = setup(id), A = Ap.analyse(s.an, s.eng, s.ap());
+    const s = setup(id), A = Ap.analyze(s.an, s.eng, s.ap());
     for (const ax of ['lon', 'lat']) if (!A[ax].roots.every(z => z[0] < 2e-3)) { allOk = false; rep.push(`${id} ${ax} unstable`); }
     const wc = (ax, k) => (A[ax][k] && A[ax][k].mg.pm ? A[ax][k].mg.pm.w : NaN);
     const pr = wc('lon', 'elev') / wc('lon', 'theta'), lr = wc('lat', 'ail') / wc('lat', 'bank');

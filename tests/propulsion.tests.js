@@ -53,7 +53,7 @@ export function propulsionTests(log) {
   const fan = C.defaults('turbofan');
   const pf = C.matchFanPR({ ...fan, bpr: 1, piC: 25, mixed: true });
   const mm = C.runCycle({ ...fan, bpr: 1, piC: 25, mixed: true, piF: pf });
-  log('mixed turbofan: matched fan PR equalises pt13 and pt5', Math.abs(mm.mixMismatch) < 1e-4, `πf = ${pf.toFixed(4)}, mismatch ${mm.mixMismatch.toExponential(2)}`);
+  log('mixed turbofan: matched fan PR equalizes pt13 and pt5', Math.abs(mm.mixMismatch) < 1e-4, `πf = ${pf.toFixed(4)}, mismatch ${mm.mixMismatch.toExponential(2)}`);
 
   // --- inlets ---
   near('normal-shock inlet recovery at M2', IN.analyzeInlet(2, []).recovery, 0.72087, 1e-4);

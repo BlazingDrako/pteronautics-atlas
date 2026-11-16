@@ -6,10 +6,17 @@ import { makeInsights } from './insights.js';
 import { session, toast } from '../../lib/state.js';
 import { sendSection, sendTo } from '../../lib/send.js';
 import { encodeSetup } from '../cfd/share.js';
-import { concepts } from './learn.js';
+import { concepts, thinConcepts, joukConcepts, panelConcepts, blConcepts } from './learn.js';
 import { presets, parseCoordinates } from './airfoilIO.js';
 import { supersonicTab } from './supersonicTab.js';
 import { vehicleTab } from './vehicleTab.js';
+import { thinTab } from './thinTab.js';
+import { joukowskiTab } from './joukowskiTab.js';
+import { panelsTab } from './panelsTab.js';
+import { blTab } from './blTab.js';
+
+// every tab, in order: [id, label]
+const TAB_LIST = [['analyze', 'Analyze'], ['polar', 'Polar sweep'], ['thin', 'Thin airfoil'], ['jouk', 'Joukowski'], ['panels', 'Vortex panels'], ['bl', 'Boundary layer'], ['super', 'Supersonic'], ['vehicles', 'Vehicle aero']];
 import { VEHICLES } from './vehicles.js';
 
 class SolverClient {
@@ -48,7 +55,7 @@ const RUN_COLORS = ['#3aa0d8', '#ff7a6b', '#22c55e', '#e5484d', '#a78bfa', '#14b
 export const airfoilModule = {
   id: 'airfoil',
   title: 'Airfoil Lab',
-  tabs: [{ id: 'analyze', label: 'Analyze' }, { id: 'polar', label: 'Polar sweep' }, { id: 'super', label: 'Supersonic' }, { id: 'vehicles', label: 'Vehicle aero' }], concepts,
+  tabs: TAB_LIST.map(([id, label]) => ({ id, label })), concepts: [...concepts, ...thinConcepts, ...joukConcepts, ...panelConcepts, ...blConcepts],
   links: VEHICLES.map(v => ({ title: v.label, sub: 'Vehicle aero · ' + v.group, href: '#/airfoil?tab=vehicles&v=' + v.id, alias: v.id, body: v.blurb })),
   mount(root) {
     const sess = session('airfoil', { title: 'Airfoil Lab', tab: () => (S.tab === 'analyze' ? null : S.tab) });
@@ -137,7 +144,7 @@ export const airfoilModule = {
       onInput: v => { S.oper.Ma = v; schedule(); } });
     // chord only sizes the force readouts (the solver works in coefficients); it never triggers a re-solve
     const chordS = slider({ label: 'Chord (for forces)', min: 0.05, max: 10, log: true, value: S.chord, format: v => fmtLen(v),
-      info: 'Turns the coefficients into forces. With the chord fixed, the airspeed follows from the Reynolds number in sea-level air (V = Re·ν/c). Forces are per metre of span.',
+      info: 'Turns the coefficients into forces. With the chord fixed, the airspeed follows from the Reynolds number in sea-level air (V = Re·ν/c). Forces are per meter of span.',
       onInput: v => { S.chord = v; if (S.res) paintForces(S.res); } });
     secF.body.append(field('Flow model', viscSeg.el, 'Viscous couples a boundary-layer model to the panel method (drag, transition, separation). Inviscid is ideal flow: instant, but no drag.'),
       field('Solve for', modeSeg.el), alpha.el, clT.el, re.el, ma.el, chordS.el);
@@ -196,9 +203,9 @@ export const airfoilModule = {
     el.title = h('h2', { class: 'af-title' }, 'NACA 2412');
     el.sub = h('div', { class: 'af-sub' }, '');
     el.status = h('span', { class: 'status busy' }, h('span', { class: 'dot' }), h('span', {}, 'Solving…'));
-    const tabs = h('div', { class: 'tabs', role: 'tablist' });
+    const tabs = h('div', { class: 'tabs tabs-wrap', role: 'tablist' });
     const tabBtns = {};
-    for (const [k, label] of [['analyze', 'Analyze'], ['polar', 'Polar sweep'], ['super', 'Supersonic'], ['vehicles', 'Vehicle aero']]) {
+    for (const [k, label] of TAB_LIST) {
       const b = h('button', { type: 'button', role: 'tab' }, label);
       b.addEventListener('click', () => setTab(k));
       tabs.append(b); tabBtns[k] = b;
@@ -215,8 +222,8 @@ export const airfoilModule = {
       return { v, s };
     };
     el.m = {
-      lift: metric('Lift', 'Lift force per metre of span: L = cl · ½ρV² · c, in sea-level air with the chord set under Flow conditions.'),
-      drag: metric('Drag', 'Drag force per metre of span: D = cd · ½ρV² · c, in sea-level air with the chord set under Flow conditions.'),
+      lift: metric('Lift', 'Lift force per meter of span: L = cl · ½ρV² · c, in sea-level air with the chord set under Flow conditions.'),
+      drag: metric('Drag', 'Drag force per meter of span: D = cd · ½ρV² · c, in sea-level air with the chord set under Flow conditions.'),
       cl: metric('Lift cl', 'Lift coefficient: lift per unit span divided by dynamic pressure × chord.'),
       cd: metric('Drag cd', 'Drag coefficient (total, from the wake momentum deficit). 1 drag count = 0.0001.'),
       ld: metric('L/D', 'Lift-to-drag ratio — the efficiency of the section.'),
@@ -501,6 +508,10 @@ export const airfoilModule = {
         keep: (o, opt) => sess.keep('vehicles', o, opt),
         setHeader: (title, sub, kind, text) => { if (S.tab !== 'vehicles') return; el.title.textContent = title; el.sub.textContent = sub; setStatus(kind, text); },
       }),
+      ...Object.fromEntries([['thin', thinTab], ['jouk', joukowskiTab], ['panels', panelsTab], ['bl', blTab]].map(([k, fn]) => [k, () => fn({
+        keep: (o, opt) => sess.keep(k, o, opt),
+        setHeader: (title, sub, kind, text) => { if (S.tab !== k) return; el.title.textContent = title; el.sub.textContent = sub; setStatus(kind, text); },
+      })])),
     };
     const alt = {}; let curAlt = null, saved = null;
     function setTab(k) {

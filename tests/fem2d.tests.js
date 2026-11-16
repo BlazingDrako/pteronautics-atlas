@@ -48,7 +48,7 @@ export function fem2dTests(log) {
   const sB = makeSampler(r), tipv = sB(bp.L - 1e-7, bp.h / 2).value(r.fields.uy);
   near('cantilever (L/h = 10): tip deflection vs Timoshenko', -tipv, dB, 0.02);
   const mid = sB(bp.L / 2, bp.h - 1e-7).value(r.fields.sx);
-  near('cantilever: mid-span top-fibre stress = Mc/I', mid, bp.P * bp.L / 2 * (bp.h / 2) / I, 0.02);
+  near('cantilever: mid-span top-fiber stress = Mc/I', mid, bp.P * bp.L / 2 * (bp.h / 2) / I, 0.02);
 
   // 5. lug: reactions balance the pin load
   const lm = model('lug'), lp = defaults(lm), lb = lm.build(lp, t);

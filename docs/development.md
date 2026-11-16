@@ -36,6 +36,12 @@ js/solvers/autopilot.js        autopilot modes and cascades, loop analysis, simu
 js/solvers/navigation.js       WGS-84 geodesy, Vincenty, rhumb lines, wind triangle, dead reckoning, VOR/DME/ILS (no DOM)
 js/solvers/collab.js           formation wakes, Hungarian/bottleneck/auction assignment, beacon location and CRLB, rendezvous (no DOM)
 js/solvers/ins.js              INS error model, Schuler/vertical channel, GPS constellation, least squares, DOP, INS/GNSS Kalman filter (no DOM)
+js/modules/cfd/potentialTab.js, viscousTab.js, fieldCommon.js   the Sandbox's theory tabs and the shared 2-D field canvas (also used by the Airfoil Lab and Wings theory tabs)
+js/solvers/flow.js             potential flow with images, stagnation points, Blasius forces; exact viscous flows (no DOM)
+js/solvers/airfoilTheory.js    thin-airfoil theory, inverse design, discrete vortices, linear vortex panels, Joukowski (no DOM)
+js/solvers/boundaryLayer.js    Falkner–Skan, momentum integral, Thwaites, turbulent profiles and plate friction (no DOM)
+js/solvers/linearized.js       compressibility corrections, critical Mach number, supersonic ramp in a duct (no DOM)
+js/lib/expr.js, contour.js     safe expression compiler (real and complex), marching-squares contours
 js/modules/formulas/           Formula Library UI; data/ holds the formulas, library.js the topics and constants
 js/solvers/formulas.js         Formula Library solver and unit tables (no DOM)
 js/solvers/frame2d.js, frame3d.js, statics.js, sections.js, units.js   structures solvers (no DOM)

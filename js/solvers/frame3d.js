@@ -542,7 +542,7 @@ function memberResult(P, e, U) {
   integ1(N.map(x => x / EA), q => q.N / EA, ul[0], ul[6], ua);
   const R = m.R, dg = [];
   for (let k = 0; k < n; k++) dg.push([0, 1, 2].map(c => R[0][c] * ua[k] + R[1][c] * v[k] + R[2][c] * w[k]));
-  // stresses: peak normal stress at the extreme fibres, shear from torsion plus transverse shear
+  // stresses: peak normal stress at the extreme fibers, shear from torsion plus transverse shear
   let worst = { util: 0, vm: 0, sigma: 0, tau: 0, s: 0 };
   const sig = [], tau = [], vm = [];
   for (let k = 0; k < n; k++) {
@@ -555,7 +555,7 @@ function memberResult(P, e, U) {
   }
   let sMax = 0, tMax = 0; for (let k = 0; k < n; k++) { sMax = Math.max(sMax, sig[k]); tMax = Math.max(tMax, tau[k]); }
   const ext = arr => { let lo = 0, hi = 0; for (const x of arr) { if (x < lo) lo = x; if (x > hi) hi = x; } return Math.abs(lo) > Math.abs(hi) ? lo : hi; };
-  // axial buckling check for compression members (Euler, pinned ends or as-modelled K = 1)
+  // axial buckling check for compression members (Euler, pinned ends or as-modeled K = 1)
   const Nmin = Math.min(...N), Imin = Math.min(m.Iy, m.Iz);
   const Pcr = Math.PI ** 2 * m.E * Imin / (m.L * m.L);
   return {

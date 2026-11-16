@@ -38,10 +38,10 @@ export function insTests(log) {
   // ---- alignment ----
   const bAcc = [0, 0, 0, acc, acc];
   const al = I.insRun({ lat: 45 * D, T: HR, dt: 5, bias: bAcc, aligned: true, earth: false });
-  log('levelling cancels accelerometer biases exactly (no Earth rate)', Math.hypot(at(al, HR)[0], at(al, HR)[1]) < 1e-6, `${Math.hypot(at(al, HR)[0], at(al, HR)[1]).toExponential(2)} m after 1 h`);
+  log('leveling cancels accelerometer biases exactly (no Earth rate)', Math.hypot(at(al, HR)[0], at(al, HR)[1]) < 1e-6, `${Math.hypot(at(al, HR)[0], at(al, HR)[1]).toExponential(2)} m after 1 h`);
   const alE = I.insRun({ lat: 45 * D, T: HR, dt: 5, bias: bAcc, aligned: true }), unE = I.insRun({ lat: 45 * D, T: HR, dt: 5, bias: bAcc, aligned: false });
   const eA = Math.max(...alE.x.map(x => Math.hypot(x[0], x[1]))), eU = Math.max(...unE.x.map(x => Math.hypot(x[0], x[1])));
-  log('…with Earth rate the levelled tilt mis-resolves Earth rate, but under 10% of the unaligned error remains', eA < 0.1 * eU, `${eA.toFixed(1)} m vs ${eU.toFixed(0)} m`);
+  log('…with Earth rate the leveled tilt mis-resolves Earth rate, but under 10% of the unaligned error remains', eA < 0.1 * eU, `${eA.toFixed(1)} m vs ${eU.toFixed(0)} m`);
   const x0 = I.alignedState(45 * D, [0, eps, 0, 0, 0]);
   near('gyrocompassing: heading error εE/(Ω cos L) = 0.054° for 0.01°/h at 45°', x0[6] / D, 0.0539, 0.0005, '°');
   const F = I.errorModel(45 * D), dphiE = F[5].reduce((s, f, j) => s + f * x0[j], 0);
@@ -67,7 +67,7 @@ export function insTests(log) {
   const sats = I.gpsSats(5000);
   log('satellites stay on their 26 560 km orbit (Earth rotation applied)', sats.every(s => Math.abs(Math.hypot(...s.pos) - I.A_GPS) < 1e-6), '24 satellites');
   const ep = I.gnssEpoch({ lat: 40 * D, lon: -75 * D, h: 100, t: 3600, sigma: 0, clock: 1e-3, nMC: 0 });
-  log('least squares from the Earth\'s centre recovers the position (< 1 mm, zero noise)', Math.hypot(...ep.fixErr) < 1e-3, `${(Math.hypot(...ep.fixErr) * 1000).toFixed(4)} mm in ${ep.fix.iter} iterations, ${ep.used.length} satellites`);
+  log('least squares from the Earth\'s center recovers the position (< 1 mm, zero noise)', Math.hypot(...ep.fixErr) < 1e-3, `${(Math.hypot(...ep.fixErr) * 1000).toFixed(4)} mm in ${ep.fix.iter} iterations, ${ep.used.length} satellites`);
   near('…and a 1 ms receiver clock error as 299 792.458 m of range', ep.fix.x[3], 299792.458, 1e-3, ' m');
   log('…converging in at most 8 iterations', ep.fix.iter <= 8, `${ep.fix.iter}`);
   const n = 4, e = 20 * D, los = [...Array(n)].map((_, k) => { const a = k * 2 * Math.PI / n; return [Math.cos(e) * Math.sin(a), Math.cos(e) * Math.cos(a), Math.sin(e)]; }).concat([[0, 0, 1]]);
@@ -97,7 +97,7 @@ export function insTests(log) {
   log('…and within 10 s it is near the pre-outage level again', sA < 3 * sB, `${sA.toFixed(1)} m vs ${sB.toFixed(1)} m before`);
   let inside = 0; kf.t.forEach((_, k) => { const ex = kf.x[k][0] - kf.xh[k][0]; if (Math.abs(ex) <= 2 * Math.sqrt(kf.P[k][0])) inside++; });
   log('…filter is consistent: north error within 2σ most of the time', inside / kf.t.length > 0.88, `${(100 * inside / kf.t.length).toFixed(0)}% of samples`);
-  const hs = man => { const r = I.insGnssKF({ lat: 45 * D, T: 1800, grade: I.GRADES.tact, outage: [1e9, 1e9], manoeuvre: man, seed: 2 }); return Math.sqrt(r.P[r.P.length - 1][6 * 12 + 6]); };
+  const hs = man => { const r = I.insGnssKF({ lat: 45 * D, T: 1800, grade: I.GRADES.tact, outage: [1e9, 1e9], maneuver: man, seed: 2 }); return Math.sqrt(r.P[r.P.length - 1][6 * 12 + 6]); };
   const h0 = hs(false), h1 = hs(true);
   log('heading is barely observable flying straight; S-turns reveal it', h1 < 0.5 * h0, `heading σ ${(h0 / D).toFixed(2)}° straight vs ${(h1 / D).toFixed(2)}° with S-turns`);
 }

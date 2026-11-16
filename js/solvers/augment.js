@@ -85,7 +85,7 @@ export function loopTf(an, law, axis, hw = {}) {
 export function closedLoopRoots(L) { return Ct.roots(Ct.polyAdd(L.den, L.num)); }
 
 // ---------- handling-quality levels (MIL-F-8785C) ----------
-// Short period by CAP and ζ; Dutch roll by ζ, ζωn and ωn. Category A: precise manoeuvring (fighters in combat),
+// Short period by CAP and ζ; Dutch roll by ζ, ζωn and ωn. Category A: precise maneuvering (fighters in combat),
 // B: cruise and climb, C: takeoff and landing. Level 1 clearly adequate, 2 extra workload, 3 controllable.
 export const SP_LIMITS = {
   A: [{ z: [0.35, 1.30], cap: [0.28, 3.6] }, { z: [0.25, 2.0], cap: [0.16, 10] }],
@@ -122,7 +122,7 @@ export function simulate(an, law, axis, hw, opts) {
   const wa = hw.wa > 0 ? hw.wa : 0, R = hw.rate > 0 ? hw.rate : Infinity, pos = hw.pos > 0 ? hw.pos : Infinity;
   const fs = hw.fs > 0 ? hw.fs : 0, Ts = fs ? 1 / fs : dt, delay = Math.max(0, hw.delay || 0);
   const lon = axis === 'lon', U = P.U, A = P.A, B = P.B, gc = P.gustCol;
-  // controller realisations
+  // controller realizations
   const blocks = ch.map(c => ({ y: c.y, ss: Ct.tfToSs(c.tf) })), Fss = Ct.tfToSs(F);
   const nx = 4, nb = blocks.reduce((s, b) => s + b.ss.A.length, 0), nf = Fss.A.length, N = nx + 1 + nb + nf;
   // gust (m/s): vertical for pitch, lateral for yaw

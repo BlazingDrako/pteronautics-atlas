@@ -328,7 +328,7 @@ export function supersonicTab({ getAnalyzeGeom, setHeader, keep = o => o }) {
           add('g', `Best L/D ≈ ${ld.toFixed(1)} near α ≈ ${(aOpt / DEG).toFixed(1)}°`, `Linear estimate: L/D peaks where drag due to lift (4α²/β) equals the zero-lift drag (${r0.cd.toFixed(4)}). Supersonic L/D is far below subsonic values because of wave drag.`);
         }
         const xcp = 0.25 - R.cm / (R.cl || 1e-9);
-        if (Math.abs(R.cl) > 0.01) add('i', `Centre of pressure near ${(xcp * 100).toFixed(0)}% chord`, 'In subsonic flow lift acts near the quarter chord; in supersonic flow it moves back toward mid-chord. That shift is why aircraft pitch nose-down and need more trim when they go supersonic.');
+        if (Math.abs(R.cl) > 0.01) add('i', `Center of pressure near ${(xcp * 100).toFixed(0)}% chord`, 'In subsonic flow lift acts near the quarter chord; in supersonic flow it moves back toward mid-chord. That shift is why aircraft pitch nose-down and need more trim when they go supersonic.');
         if (S.M < 1.3) add('w', 'Low supersonic Mach number', 'Close to Mach 1 the theory is least accurate (shocks are strong and curved, and linear theory blows up as 1/√(M²−1)). Compare with Live CFD.');
         add('i', `Trailing edge: ${D[0].te.type === 'shock' ? 'shock on top' : 'fan on top'}, ${D[1].te.type === 'shock' ? 'shock below' : 'fan below'}`, `The two streams leave with different pressures, so a shock and an expansion form at the trailing edge until both match, leaving a slip line at ${(R.delta / DEG).toFixed(2)}° (dashed).`);
       }

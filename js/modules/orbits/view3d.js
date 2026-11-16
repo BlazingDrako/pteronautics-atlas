@@ -49,7 +49,7 @@ export class OrbitView {
     const rgt = [-Math.sin(az), Math.cos(az), 0], upv = [-Math.sin(ce) * Math.cos(az), -Math.sin(ce) * Math.sin(az), Math.cos(ce)];
     const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
     const S = p => [cx + k * dot(p, rgt), cy - k * dot(p, upv), dot(p, dir)];
-    // hidden behind the body: inside its disc on screen and further away than its front surface
+    // hidden behind the body: inside its disk on screen and further away than its front surface
     const hidden = p => { const dp = dot(p, dir), q = dot(p, p) - dp * dp; return q < R * R && dp < Math.sqrt(R * R - q); };
     const col = { accent: css('--accent'), text: css('--text'), t2: css('--text-2'), t3: css('--text-3'), border: css('--border'), strong: css('--border-strong'), warn: css('--warn'), good: css('--good'), bad: css('--bad'), turb: css('--turb'), lower: css('--lower'), upper: css('--upper') || css('--accent'), sunk: css('--bg-sunk'), elev: css('--bg-elev'), font: css('--font'), mono: css('--mono') };
     const dark = document.documentElement.dataset.resolvedTheme === 'dark';
@@ -104,7 +104,7 @@ export class OrbitView {
     const pts = O.orbitPoints(el, 360).map(p => [p[0], p[1], p[2]]);
     const rNow = O.coe2rv(el, B.mu);
 
-    // equatorial plane: a translucent disc with rings, reaching a little beyond the orbit
+    // equatorial plane: a translucent disk with rings, reaching a little beyond the orbit
     const pr = Math.max(ra, 1.6 * R) * 1.15;
     if (L.plane) {
       const ring = rr => Array.from({ length: 121 }, (_, j) => { const t = j / 120 * 2 * Math.PI; return [rr * Math.cos(t), rr * Math.sin(t), 0]; });
@@ -113,7 +113,7 @@ export class OrbitView {
       for (const f of [0.25, 0.5, 0.75, 1]) poly(ring(pr * f), col.border, f === 1 ? 1.1 : 0.8);
       for (let a = 0; a < 180; a += 30) { const c = Math.cos(a * D), s = Math.sin(a * D); poly(Array.from({ length: 61 }, (_, m) => [pr * c * (m / 30 - 1), pr * s * (m / 30 - 1), 0]), col.border, 0.7); }
     }
-    // the body: shaded disc lit from the camera's upper left, then an equator and a few meridians
+    // the body: shaded disk lit from the camera's upper left, then an equator and a few meridians
     const [bx, by] = S([0, 0, 0]), br = R * k;
     const grad = g.createRadialGradient(bx - br * 0.35, by - br * 0.4, br * 0.1, bx, by, br);
     const bc = d.color || B.color;

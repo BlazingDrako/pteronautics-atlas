@@ -91,13 +91,13 @@ export function feaTab({ keep = o => o } = {}) {
       b.append(h('div', { class: 'hint' }, 'Use the canvas tools: Outline (click corners, click the first point to close), Hole (press and drag), Probe (drag a line). Click an edge to set its boundary condition.'));
       const holes = st.custom.holes;
       holes.forEach((ho, k) => b.append(h('div', { class: 'st-matbox' }, h('div', { class: 'st-selhead' }, h('b', {}, `Hole ${k + 1}`), btn('Remove', () => { holes.splice(k, 1); renderControls(); schedule(); })),
-        h('div', { class: 'st-grid2' }, numField('Centre x', 'dim', () => ho.x, v => { ho.x = v; schedule(); }), numField('Centre y', 'dim', () => ho.y, v => { ho.y = v; schedule(); }), numField('Radius', 'dim', () => ho.r, v => { if (v > 0) { ho.r = v; schedule(); } })))));
+        h('div', { class: 'st-grid2' }, numField('Center x', 'dim', () => ho.x, v => { ho.x = v; schedule(); }), numField('Center y', 'dim', () => ho.y, v => { ho.y = v; schedule(); }), numField('Radius', 'dim', () => ho.r, v => { if (v > 0) { ho.r = v; schedule(); } })))));
       b.append(h('div', { class: 'st-row' }, btn('Reset to example', () => { st.custom = defaultCustom(); st.bc.custom = {}; renderControls(); fitView(); schedule(); })));
     }
     sMat.body.replaceChildren(
       selField('Material', MATERIALS.map(m => ({ value: m.id, label: m.name })), st.mat, v => { st.mat = v; schedule(); }),
       numField('Thickness', 'dim', () => st.t, v => { if (v > 0) { st.t = v; schedule(); } }, { tip: 'Out-of-plane thickness. Forces are totals through the thickness; stresses do not depend on it in plane stress.' }),
-      segField('Idealisation', [{ value: 'stress', label: 'Plane stress', title: 'Thin plates loaded in their plane: σz = 0.' }, { value: 'strain', label: 'Plane strain', title: 'Long or thick bodies restrained along z: εz = 0.' }], st.plane, v => { st.plane = v; schedule(); }));
+      segField('Idealization', [{ value: 'stress', label: 'Plane stress', title: 'Thin plates loaded in their plane: σz = 0.' }, { value: 'strain', label: 'Plane strain', title: 'Long or thick bodies restrained along z: εz = 0.' }], st.plane, v => { st.plane = v; schedule(); }));
     renderBCs();
     sMesh.body.replaceChildren(
       segField('Mesh density', LEVELS.map((L, k) => ({ value: k, label: L.label.replace('Extra fine', 'Extra') })), st.level, v => { st.level = v; schedule(); }),
@@ -106,7 +106,7 @@ export function feaTab({ keep = o => o } = {}) {
       h('div', { class: 'st-row' }, btn('Run convergence study', runConvergence)));
     sView.body.replaceChildren(
       selField('Contour', FIELDS, st.field, v => { st.field = v; render(); }),
-      checkField('Contour bands', st.bands, v => { st.bands = v; draw(); }, 'Banded colours make iso-stress lines easy to read; off gives a smooth gradient.'),
+      checkField('Contour bands', st.bands, v => { st.bands = v; draw(); }, 'Banded colors make iso-stress lines easy to read; off gives a smooth gradient.'),
       checkField('Deformed shape', st.deformed, v => { st.deformed = v; draw(); }),
       st.deformed ? rangeField('Exaggeration', st.defScale, 0.1, 10, v => { st.defScale = v; draw(); }) : null);
   }
@@ -159,7 +159,7 @@ export function feaTab({ keep = o => o } = {}) {
     ['select', 'Select edges, pan and zoom', '<path d="M5 3l14 8-6 1.5L10 19z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>'],
     ['probe', 'Probe: drag a line to plot stresses along it', '<path d="M4 20L20 4" stroke="currentColor" stroke-width="1.6" stroke-dasharray="3 2"/><circle cx="4" cy="20" r="2" fill="currentColor"/><circle cx="20" cy="4" r="2" fill="currentColor"/>'],
     ['outline', 'Outline: click corners, click the first point to close (custom geometry)', '<path d="M4 18L7 5l12 3-2 11z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>'],
-    ['hole', 'Hole: press at the centre and drag out the radius (custom geometry)', '<circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/>'],
+    ['hole', 'Hole: press at the center and drag out the radius (custom geometry)', '<circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/>'],
   ];
   const toolBtns = {};
   for (const [id, tip, svg] of TOOLS) { const b = h('button', { type: 'button', class: 'st-tool', title: tip, html: `<svg viewBox="0 0 24 24" width="18" height="18">${svg}</svg>` }); b.addEventListener('click', () => setTool(id)); toolbar.append(b); toolBtns[id] = b; }
@@ -223,7 +223,7 @@ export function feaTab({ keep = o => o } = {}) {
       }
       ctx.stroke();
     }
-    // boundary curves with BC colours (undeformed)
+    // boundary curves with BC colors (undeformed)
     const bcs = built?.bcs || {};
     for (const c of curves()) {
       const bc = bcs[c.id] || { type: 'free' }, n = c.kind === 'arc' ? 48 : 1;
@@ -508,7 +508,7 @@ export function feaTab({ keep = o => o } = {}) {
   };
 }
 
-// ---------------------------------------------------------------- contour rasteriser
+// ---------------------------------------------------------------- contour rasterizer
 const LUT = (() => {
   const stops = [[0, [38, 70, 200]], [0.2, [30, 150, 235]], [0.4, [40, 200, 160]], [0.6, [150, 215, 60]], [0.8, [250, 190, 40]], [1, [220, 45, 35]]];
   const out = new Uint8ClampedArray(256 * 3);

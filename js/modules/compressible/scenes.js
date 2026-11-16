@@ -265,7 +265,7 @@ export function buildScene(id, P) {
           if (th > 0.85 * w.os.thetaMax) R.insights.push({ type: 'w', t: 'Close to detachment', d: `θ is ${(100 * th / w.os.thetaMax).toFixed(0)}% of θmax. A little more turning (or a little less Mach) and the shock pops off the corner.` });
         } else if (w.type === 'fan') {
           R.metrics.push({ k: 'Turn angle', v: deg(-th) }, { k: 'ν₁ → ν₂', v: `${deg(isen.nu(F.M, F.g))} → ${deg(isen.nu(w.down.M, F.g))}` }, { k: 'M₂', v: w.down.M.toFixed(4) }, { k: 'p₂/p₁', v: w.down.p.toFixed(4) }, { k: 'Fan head μ₁', v: deg(isen.mu(F.M)) }, { k: 'Fan tail μ₂−|θ|', v: deg(w.a2) });
-          R.insights.push({ type: 'i', t: 'Expansion fan: smooth, isentropic', d: `A continuous fan of Mach waves centred on the corner accelerates the flow from M ${F.M.toFixed(2)} to ${w.down.M.toFixed(3)}. Total pressure is unchanged — expansions are reversible, unlike shocks.` });
+          R.insights.push({ type: 'i', t: 'Expansion fan: smooth, isentropic', d: `A continuous fan of Mach waves centered on the corner accelerates the flow from M ${F.M.toFixed(2)} to ${w.down.M.toFixed(3)}. Total pressure is unchanged — expansions are reversible, unlike shocks.` });
         } else if (w.type === 'vacuum') {
           R.insights.push({ type: 'b', t: 'Turn exceeds ν_max', d: `The flow can turn at most ν_max − ν₁ = ${deg(isen.numax(F.g) - isen.nu(F.M, F.g))}. Beyond that it expands to vacuum and separates from the wall.` });
         }
@@ -338,7 +338,7 @@ export function buildScene(id, P) {
     const nW = W.length;
     // f > 0: point is ahead of (above) wave k
     const side = (k, x, y) => { const w = W[k]; return (y - w.y) * w.c - (x - w.x) * w.s; };
-    // where neighbouring waves first cross: the shock starts here (cusp of the envelope)
+    // where neighboring waves first cross: the shock starts here (cusp of the envelope)
     let cusp = null;
     for (let i = 1; i < nW; i++) {
       const a = W[i - 1], c = W[i], s1 = Math.tan(a.ang), s2 = Math.tan(c.ang);
@@ -414,7 +414,7 @@ export function buildScene(id, P) {
     R.regions.push({ name: '1 · free stream', s: free }, { name: '2 · after isentropic turn (near wall)', s: sEnd }, ...(sShock ? [{ name: '3 · same turn by one oblique shock', s: sShock }] : []));
     R.metrics.push({ k: 'Total turn', v: deg(thFinal) }, { k: 'M after (isentropic)', v: sEnd.M.toFixed(3) }, { k: 'p/p∞ isentropic', v: sEnd.p.toFixed(3) }, ...(os ? [{ k: 'p/p∞ via shock', v: os.p2_p1.toFixed(3) }, { k: 'p₀ loss via shock', v: (100 * (1 - os.p02_p01)).toFixed(2) + '%' }] : []), ...(cusp ? [{ k: 'Shock forms at', v: `x=${cusp.x.toFixed(2)}, y=${cusp.y.toFixed(2)}` }] : []));
     R.insights.push({ type: 'i', t: 'Compression waves converge', d: 'Each bit of concave wall sends out a weak Mach wave. Behind each wave the flow is slower, so the Mach angle is larger and the next wave is steeper: the waves converge and coalesce into a shock away from the wall. The shock grows stronger (and steeper) as it swallows more waves.' });
-    R.insights.push({ type: 'g', t: 'Why inlets use curved ramps', d: `Near the wall the compression is isentropic: same pressure rise with no total-pressure loss${os ? ` (vs ${(100 * (1 - os.p02_p01)).toFixed(2)}% for a single shock of the same turn)` : ''}. Isentropic-spike inlets exploit this. Switch the colour field to total-pressure loss to see the loss appear only above the shock's starting point.` });
+    R.insights.push({ type: 'g', t: 'Why inlets use curved ramps', d: `Near the wall the compression is isentropic: same pressure rise with no total-pressure loss${os ? ` (vs ${(100 * (1 - os.p02_p01)).toFixed(2)}% for a single shock of the same turn)` : ''}. Isentropic-spike inlets exploit this. Switch the color field to total-pressure loss to see the loss appear only above the shock's starting point.` });
     return { ...R, scene: { bounds: b, speed, sample,
       spawn: init => { const x = init ? b.x0 + Math.random() * 7 : b.x0 + 0.02; return { x, y: Math.max(0, yw(x)) + 0.03 + Math.random() * 3.6 }; },
       seeds: () => Array.from({ length: 12 }, (_, i) => ({ x: b.x0 + 1e-3, y: 0.05 + 3.6 * (i + 0.5) / 12 })),
@@ -583,9 +583,9 @@ export function buildScene(id, P) {
       const M = lerp(sS.M, bp.st.M), th = lerp(sS.th, bp.st.th);
       return mkState(M, th, sS.p0, F);
     };
-    R.regions.push({ name: 'free stream', s: free }, { name: 'behind normal shock (centreline)', s: mkState(ns.M2, 0, ns.p02_p01, F) }, { name: 'stagnation point', s: mkState(1e-6, 0, ns.p02_p01, F) });
+    R.regions.push({ name: 'free stream', s: free }, { name: 'behind normal shock (centerline)', s: mkState(ns.M2, 0, ns.p02_p01, F) }, { name: 'stagnation point', s: mkState(1e-6, 0, ns.p02_p01, F) });
     R.metrics.push({ k: 'Stand-off Δ/Rn', v: (det.delta / Rn).toFixed(3) }, { k: 'Pitot p₀₂/p∞', v: p02.toFixed(4), s: 'Rayleigh pitot formula' }, { k: 'p₀₂/p₀∞', v: ns.p02_p01.toFixed(4) }, { k: 'T stag / T∞', v: isen.T0_T(F.M, F.g).toFixed(3) }, { k: 'Cp max', v: ((p02 - 1) / (0.5 * F.g * F.M * F.M)).toFixed(4) });
-    R.insights.push({ type: 'i', t: 'Bow shock with a subsonic pocket', d: `A blunt nose can't be wrapped by an attached shock. The bow shock stands off by Δ ≈ ${(det.delta / Rn).toFixed(2)} nose radii; it is normal on the centreline (subsonic behind it) and weakens toward a Mach wave far out. The dotted line marks where the flow becomes sonic again.` });
+    R.insights.push({ type: 'i', t: 'Bow shock with a subsonic pocket', d: `A blunt nose can't be wrapped by an attached shock. The bow shock stands off by Δ ≈ ${(det.delta / Rn).toFixed(2)} nose radii; it is normal on the centerline (subsonic behind it) and weakens toward a Mach wave far out. The dotted line marks where the flow becomes sonic again.` });
     R.insights.push({ type: 'g', t: 'Pitot tubes in supersonic flow', d: `A pitot probe sits in this stagnation region, so it reads p₀₂ (after the shock), not p₀∞. Use the Rayleigh pitot formula to get the Mach number: here p₀₂/p∞ = ${p02.toFixed(3)} ↔ M = ${F.M.toFixed(2)}. (The Calculator tab inverts it.)` });
     R.insights.push({ type: 'w', t: 'Model', d: 'Shock shape from Billig\'s correlation; shock-layer colors interpolate between local oblique-shock states and a modified-Newtonian surface pressure. Good for intuition, not a CFD solution.' });
     return { ...R, scene: { bounds: b, speed, sample, sonic: true,

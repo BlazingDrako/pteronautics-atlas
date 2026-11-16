@@ -188,9 +188,10 @@ input[type=range]:hover::-webkit-slider-thumb, input[type=range]:focus-visible::
 
 .metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
 .metric { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 13px; min-width: 0; box-shadow: var(--shadow); }
-.metric .k { font-size: 11.5px; color: var(--text-3); display: flex; align-items: center; gap: 5px; white-space: nowrap; }
-.metric .v { font-family: var(--mono); font-size: 19px; font-weight: 600; letter-spacing: -0.03em; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.metric .s { font-size: 11px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.metric .k { font-size: 11.5px; color: var(--text-3); display: flex; align-items: flex-start; gap: 5px; line-height: 1.3; overflow-wrap: anywhere; } /* long labels wrap inside the card */
+.metric .k .info { flex: none; }
+.metric .v { font-family: var(--mono); font-size: 19px; font-weight: 600; letter-spacing: -0.03em; margin-top: 2px; line-height: 1.25; overflow-wrap: anywhere; }
+.metric .s { font-size: 11px; color: var(--text-3); line-height: 1.35; overflow-wrap: anywhere; }
 
 .stage { position: relative; min-height: 340px; flex: 1 0 380px; border-radius: 14px; overflow: hidden; background: var(--stage); border: 1px solid var(--border); box-shadow: var(--shadow-lg); }
 .stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
@@ -1096,3 +1097,16 @@ select.select.fl-psel { width: auto; max-width: 220px; padding: 3px 6px; font-si
 .wg-trefftz canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .wg-table td, .wg-table th { white-space: nowrap; }
 @media (max-width: 600px) { .wg-view .wg-views { top: auto; bottom: 10px; left: 10px; right: auto; } .wg-view .legend { display: none !important; } }
+
+/* ---- Flow Fundamentals ---- */
+.fl-add { flex-wrap: wrap; gap: 6px; margin: 8px 0 4px; }
+.fl-elements { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.fl-el { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px 0; background: var(--bg-sunk); }
+.fl-el-head { display: flex; align-items: center; gap: 6px; margin-bottom: 2px; font-size: 13px; }
+.fl-el-head .btn { margin-left: auto; padding: 0 7px; }
+.fl-el-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; background: var(--text); }
+.fl-el-dot.fl-source { background: var(--lower); } .fl-el-dot.fl-source.sink { background: var(--text-2); }
+.fl-el-dot.fl-vortex { background: var(--accent); } .fl-el-dot.fl-doublet { background: var(--warn); }
+.fl-canvas canvas { cursor: crosshair; }
+.fl-expr { font-family: var(--mono); width: 100%; }
+.fl-tensor { font-family: var(--mono); font-size: 12px; }

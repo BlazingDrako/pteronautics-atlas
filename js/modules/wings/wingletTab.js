@@ -85,7 +85,7 @@ export function wingletTab() {
     L.push({ type: 'i', t: 'How a winglet works', d: 'Air spills round the tip from the high-pressure underside to the low-pressure top. A winglet in that swirl is a small wing meeting the air at an angle: its lift points inward and slightly forward, a thrust that cancels part of the induced drag. Seen from the wake, it spreads the vorticity higher and further out, which is what lowers the drag.' });
     L.push({ type: k1 < kExt ? 'g' : 'w', t: k1 < kExt ? 'Better than the equal-moment extension here' : 'A span extension does better here', d: `For the same added root bending moment, a +${(ext.ext * 100).toFixed(1)}% span extension changes induced drag by ${pct(kExt / k0 - 1)} against the winglet's ${pct(k1 / k0 - 1)}. Jones and Lasinski found the two are close when compared this way; winglets earn their place where gate width limits the span, and on existing wings that cannot take a longer spar.` });
     if (W.winglet.cant > 70) L.push({ type: 'i', t: 'Nearly flat', d: 'A winglet canted this far is really a span extension (a raked tip).' });
-    L.push({ type: 'i', t: 'Not modelled', d: 'Profile drag of the winglet\'s own surface and junction (which can eat most of a small winglet\'s saving at low lift), and the structure\'s weight. Winglets pay off most when CL is high: climb and heavy cruise.' });
+    L.push({ type: 'i', t: 'Not modeled', d: 'Profile drag of the winglet\'s own surface and junction (which can eat most of a small winglet\'s saving at low lift), and the structure\'s weight. Winglets pay off most when CL is high: climb and heavy cruise.' });
     insightsList(insEl, L);
   };
 

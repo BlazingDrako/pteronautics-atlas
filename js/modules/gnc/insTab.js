@@ -16,7 +16,7 @@ const PLACES = [
 const us = () => units() === 'us';
 const bigU = () => (us() ? NM : 1000), bigL = () => (us() ? 'nm' : 'km');
 const smU = () => (us() ? FT : 1), smL = () => (us() ? 'ft' : 'm');
-// a length in the most readable unit: feet/metres when small, nautical miles/kilometres when large
+// a length in the most readable unit: feet/meters when small, nautical miles/kilometers when large
 const len = m => { const a = Math.abs(m); if (us()) return a < NM ? `${num(m / FT, a / FT < 10 ? 1 : 0)} ft` : `${f3(m / NM)} nm`; return a < 1000 ? `${num(m, a < 10 ? 1 : 0)} m` : `${f3(m / 1000)} km`; };
 const CAP = 2e5, capLen = m => (Math.abs(m) > CAP ? `> ${len(CAP)}` : len(m));
 const ang = r => { const a = Math.abs(r * DEG); return a >= 1 ? `${f3(r * DEG)}°` : a * 60 >= 1 ? `${f3(r * DEG * 60)}′` : `${f3(r * DEG * 3600)}″`; };
@@ -29,7 +29,7 @@ function band(c, tr, xs, lo, hi, color, alpha = 0.16) {
   for (let i = xs.length - 1; i >= 0; i--) c.lineTo(tr.sx(xs[i]), tr.sy(lo[i]));
   c.closePath(); c.fill(); c.restore();
 }
-// axes with equal scales on x and y, centred on (cx, cy), at least ±ext in both
+// axes with equal scales on x and y, centered on (cx, cy), at least ±ext in both
 function eqAxes(c, W, H, ext, o, cx = 0, cy = 0) {
   const iw = W - (o.pl ?? 58) - 16, ih = H - 54, ex = iw >= ih ? ext * iw / ih : ext, ey = iw >= ih ? ext : ext * ih / iw;
   return axes(c, W, H, { x0: cx - ex, x1: cx + ex, y0: cy - ey, y1: cy + ey, ...o });
@@ -84,7 +84,7 @@ export function insTab({ keep = o => o } = {}) {
       sl('Duration (h)', 1, 24, 1, () => S.hours, v => { S.hours = v; }),
       seg('Start', [{ value: true, label: 'Self-aligned' }, { value: false, label: 'Perfect attitude' }], () => S.aligned, v => { S.aligned = v; }, 'Self-aligned: the INS levels itself and finds north on the ground, which bakes the biases into the starting attitude (and cancels some of them). Perfect attitude: the biases act on an exactly right start.'),
       seg('Earth rotation', [{ value: true, label: 'On' }, { value: false, label: 'Off (textbook)' }], () => S.earth, v => { S.earth = v; }, 'Off gives the single-channel textbook results; on adds the 24-hour and Foucault coupling.'),
-      h('div', { class: 'hint' }, 'A stationary or slow vehicle, body pointing north. The linear error model is only indicative once errors reach many kilometres.'));
+      h('div', { class: 'hint' }, 'A stationary or slow vehicle, body pointing north. The linear error model is only indicative once errors reach many kilometers.'));
     pc = canvasBox('300px', drawPos); tc = canvasBox('300px', drawTrack); ac = canvasBox('240px', drawAtt); vc = canvasBox('240px', drawVert);
     canvases = [pc, tc, ac, vc];
     body.replaceChildren(
@@ -115,11 +115,11 @@ export function insTab({ keep = o => o } = {}) {
     if (rad[imax] > CAP) L.push({ type: 'b', t: 'This INS is lost', d: `With these sensors the error passes ${len(CAP)} ${run.t[rad.findIndex(v => v > CAP)] < HR ? `within ${num(run.t[rad.findIndex(v => v > CAP)] / 60, 0)} minutes` : 'within hours'}. The plots follow the linear error model, which stops meaning anything long before the curves end: the INS has no idea where it is. Sensors of this class are only useful blended with GNSS, a camera or a magnetometer (see the INS + GNSS filter).` });
     if (!S.aligned) L.push({ type: 'i', t: `An accelerometer bias gives a bounded error: up to ${len(amp)}`, d: `You might expect a constant acceleration error to grow as ½∇t². Instead the INS tilts: the position error makes it think it is somewhere else on the curved Earth, where "down" points differently, and gravity then pushes the error back. The result is an oscillation of period 2π√(R/g) = 84.4 min and peak 2∇R/g. Max Schuler (1923) showed a gyrocompass tuned this way ignores the ship's accelerations.` });
     else L.push({ type: 'g', t: 'Alignment cancels the accelerometer biases', d: `On the ground the INS levels itself by nulling what its accelerometers read sideways, so it settles with exactly the tilt that hides each accelerometer bias (∇/g = ${ang(acc / I.G0)} here). The bias and the tilt then cancel in flight, and the horizontal error comes from the gyros.${S.earth ? ' With Earth rotation on, the tilted platform resolves Earth\'s spin slightly wrongly, which acts like a small extra gyro drift.' : ''}` });
-    L.push({ type: rate / NM > 20 ? 'b' : rate / NM > 2 ? 'w' : 'g', t: `Gyro drift makes the error grow: about ${f3(I.R_E * gy * HR / NM)} nm per hour`, d: `A gyro bias ε tilts the computed vertical steadily, so the error grows as R·ε·t with the Schuler wiggle on top: 0.6 nm/h for each 0.01°/h. Airliners' ring-laser units (0.01°/h) cross an ocean with a few miles of error; a phone-grade MEMS gyro (100°/h and more) would be lost by kilometres within minutes.` });
+    L.push({ type: rate / NM > 20 ? 'b' : rate / NM > 2 ? 'w' : 'g', t: `Gyro drift makes the error grow: about ${f3(I.R_E * gy * HR / NM)} nm per hour`, d: `A gyro bias ε tilts the computed vertical steadily, so the error grows as R·ε·t with the Schuler wiggle on top: 0.6 nm/h for each 0.01°/h. Airliners' ring-laser units (0.01°/h) cross an ocean with a few miles of error; a phone-grade MEMS gyro (100°/h and more) would be lost by kilometers within minutes.` });
     if (S.aligned && !run.gyrocompass) L.push({ type: 'w', t: 'Too much gyro bias to find north', d: `Gyrocompassing finds north by sensing Earth's rotation, 15°/h × cos(latitude) on the horizontal. With a ${sig2(S.gyro)}°/h bias the heading would be off by ${ang(I.gyrocompassError(lat, gy))}: useless. Units like this take heading from a magnetometer, a transfer alignment from the aircraft, or GNSS while moving; here it is assumed good to 1°.` });
-    else if (S.aligned && S.earth) L.push({ type: 'i', t: `Gyrocompassing leaves a ${ang(run.x[0][6])} heading error`, d: 'The INS finds north by sensing the horizontal part of Earth\'s rotation. An east gyro bias looks like a slightly different north, giving a heading error εE/(Ω cos L). It grows towards the poles, where there is little horizontal Earth rate to measure: at 80° it is 5.8 times the equator\'s value.' });
+    else if (S.aligned && S.earth) L.push({ type: 'i', t: `Gyrocompassing leaves a ${ang(run.x[0][6])} heading error`, d: 'The INS finds north by sensing the horizontal part of Earth\'s rotation. An east gyro bias looks like a slightly different north, giving a heading error εE/(Ω cos L). It grows toward the poles, where there is little horizontal Earth rate to measure: at 80° it is 5.8 times the equator\'s value.' });
     if (S.earth) L.push({ type: 'i', t: `Earth's rotation turns the loops once every ${f3(2 * Math.PI / (I.OMEGA_E * Math.sin(lat)) / HR)} h`, d: `Coriolis acceleration acts on the velocity error just as on a Foucault pendulum, rotating the Schuler oscillation at Ω·sin(latitude): the two frequencies ωs ± Ω sin L beat. A third, 24-hour mode comes from the attitude errors resolving Earth's rotation wrongly.${S.lat < 1 ? ' At the equator there is no rotation of the loops.' : ''}` });
-    L.push({ type: v30 > 300 ? 'b' : 'w', t: `Without a barometer the altitude error is ${capLen(v30)} after 30 minutes`, d: `Gravity falls by about 3 µg per metre of height. If the INS thinks it is too high, it computes too little gravity, reads the difference as climbing, and climbs further: the error grows as cosh(t/τ) with τ = √(R/2g) = 9.5 min. Every aircraft INS therefore blends in barometric altitude (here a second-order loop with a 2-minute time constant), and the error stays at ${len(vb.h[vb.h.length - 1])}.` });
+    L.push({ type: v30 > 300 ? 'b' : 'w', t: `Without a barometer the altitude error is ${capLen(v30)} after 30 minutes`, d: `Gravity falls by about 3 µg per meter of height. If the INS thinks it is too high, it computes too little gravity, reads the difference as climbing, and climbs further: the error grows as cosh(t/τ) with τ = √(R/2g) = 9.5 min. Every aircraft INS therefore blends in barometric altitude (here a second-order loop with a 2-minute time constant), and the error stays at ${len(vb.h[vb.h.length - 1])}.` });
     insightsList(ins, L);
     const t1 = Math.min(T, HR);
     eq.replaceChildren(h('span', { class: 'eq', html: [
@@ -127,7 +127,7 @@ export function insTab({ keep = o => o } = {}) {
       `Accelerometer bias, perfect start: δp = (∇/ωs²)(1 − cos ωs t) → peak 2∇R/g = ${len(amp)}`,
       `Gyro drift: δp = −Rε(t − sin ωs t / ωs) → at ${f3(t1 / HR)} h: ${len(I.R_E * gy * (t1 - Math.sin(I.SCHULER * t1) / I.SCHULER))}`,
       `Initial tilt φ: δp = Rφ(1 − cos ωs t);  initial velocity error δv: δp = δv·sin(ωs t)/ωs`,
-      `Levelling: φN = ∇E/g, φE = −∇N/g = ${ang(acc / I.G0)};  gyrocompassing: ψ = εE/(Ω cos L) = ${ang(I.gyrocompassError(lat, gy))}`,
+      `Leveling: φN = ∇E/g, φE = −∇N/g = ${ang(acc / I.G0)};  gyrocompassing: ψ = εE/(Ω cos L) = ${ang(I.gyrocompassError(lat, gy))}`,
       `Vertical: δḧ = (2g/R)δh + ∇ → δh = ∇τ²(cosh(t/τ) − 1), τ = √(R/2g) = ${num(vu.tau / 60, 2)} min`,
       `Error state (12): δpN, δpE, δvN, δvE, φN, φE, ψ, three gyro and two accelerometer biases; propagated exactly with Φ = e^(FΔt), Δt = ${dt} s`,
     ].join('<br>') }));
@@ -203,7 +203,7 @@ export function insTab({ keep = o => o } = {}) {
       S.off = S.off.includes(best.id) ? S.off.filter(i => i !== best.id) : [...S.off, best.id]; dopCache = null; compute();
     });
     body.replaceChildren(h('div', { class: 'flt-grid2' },
-      card('Sky plot', 'Looking up: the centre is overhead, the rim is the horizon, north at the top. Filled: used in the fix. Hollow: switched off. Faint: below the mask. Tails show the next hour of motion.', sky.el),
+      card('Sky plot', 'Looking up: the center is overhead, the rim is the horizon, north at the top. Filled: used in the fix. Hollow: switched off. Faint: below the mask. Tails show the next hour of motion.', sky.el),
       card('Where the fixes land', 'Each dot is one fix from a fresh set of noisy pseudoranges. Ellipses: 1σ and 2σ predicted from the geometry, σ·√(DOP matrix). The big dot is the fix the step-by-step uses.', fx.el)),
       card('Dilution of precision over the day', 'How much the geometry multiplies the range error, for this place, mask and set of satellites. The line marks the chosen time.', dc.el));
   }
@@ -233,15 +233,15 @@ export function insTab({ keep = o => o } = {}) {
     const L = [];
     L.push({ type: 'i', t: `A ${num(Math.abs(S.clockUs), 0)} µs clock error is ${len(Math.abs(S.clockUs) * 1e-6 * I.C_LIGHT)} of range, and it does not matter`, d: 'The satellites carry atomic clocks; the receiver has a cheap quartz one. Its error adds the same amount to every pseudorange, so the receiver treats it as a fourth unknown and solves for it with the position. That is why four satellites are needed, and why a GNSS receiver is also a very good clock.' });
     L.push({ type: d.V > 1.5 * d.H ? 'i' : 'g', t: `Vertical ${f3(d.V / d.H)}× worse than horizontal`, d: 'The satellites are all above you: none can be seen through the Earth. Horizontal errors are pinned from all sides, but a height error and a clock error look alike (both lengthen every range, the overhead ones most), so they trade off against each other. Aircraft use GNSS height for approaches only with augmentation (SBAS/WAAS), and keep barometric altitude for separation.' });
-    if (Math.abs(p[2]) > 60) L.push({ type: 'i', t: 'High latitude: no satellite ever passes overhead', d: 'GPS orbits are inclined 55°, so above about 60° latitude the satellites are always towards the equator side of the sky and low. There are plenty of them, so horizontal accuracy is fine, but vertical suffers. Galileo (56°) and GLONASS (64.8°) help a little.' });
+    if (Math.abs(p[2]) > 60) L.push({ type: 'i', t: 'High latitude: no satellite ever passes overhead', d: 'GPS orbits are inclined 55°, so above about 60° latitude the satellites are always toward the equator side of the sky and low. There are plenty of them, so horizontal accuracy is fine, but vertical suffers. Galileo (56°) and GLONASS (64.8°) help a little.' });
     if (S.off.length) L.push({ type: d.P > 4 ? 'w' : 'i', t: `${S.off.length} satellite${S.off.length > 1 ? 's' : ''} switched off`, d: 'Removing a satellite never improves the geometry. Losing the ones low and spread around the horizon hurts horizontal accuracy; losing the high ones hurts vertical. Receiver autonomous integrity monitoring (RAIM) needs a fifth satellite to detect a faulty one and a sixth to exclude it.' });
     if (S.mask >= 20) L.push({ type: 'w', t: 'A high mask throws away the satellites that matter', d: 'Low satellites spread the lines of sight and pin the vertical and the clock apart. A banked aircraft\'s wing or a valley wall has the same effect as a high mask.' });
-    L.push({ type: 'i', t: 'What is not modelled', d: 'Real ranges have biases that do not average out: the ionosphere (several metres, removed by dual-frequency receivers or SBAS corrections), the troposphere, orbit and satellite-clock errors, and multipath. Here each range error is independent noise of σ.' });
+    L.push({ type: 'i', t: 'What is not modeled', d: 'Real ranges have biases that do not average out: the ionosphere (several meters, removed by dual-frequency receivers or SBAS corrections), the troposphere, orbit and satellite-clock errors, and multipath. Here each range error is independent noise of σ.' });
     insightsList(ins, L);
     eq.replaceChildren(h('span', { class: 'eq', html: [
       `Pseudorange: ρᵢ = |sᵢ − x| + b + εᵢ,   b = c·δt = ${num(ep.b, 1)} m,   εᵢ ~ N(0, ${len(S.sigma)})`,
-      `Linearise about a guess x₀: δρᵢ = −eᵢ·δx + δb,  eᵢ the unit line of sight;  solve δx = (GᵀG)⁻¹Gᵀ δρ and repeat`,
-      `Starting from the Earth's centre: step sizes ${ep.fix.hist.map(v => len(v)).join(' → ')}`,
+      `Linearize about a guess x₀: δρᵢ = −eᵢ·δx + δb,  eᵢ the unit line of sight;  solve δx = (GᵀG)⁻¹Gᵀ δρ and repeat`,
+      `Starting from the Earth's center: step sizes ${ep.fix.hist.map(v => len(v)).join(' → ')}`,
       `Q = (GᵀG)⁻¹ in east–north–up–clock;  HDOP = √(Q_EE + Q_NN) = ${f3(d.H)},  VDOP = √Q_UU = ${f3(d.V)},  TDOP = √Q_bb = ${f3(d.T)}`,
       `Expected error = σ × DOP: ${len(S.sigma * d.H)} horizontal, ${len(S.sigma * d.V)} vertical (1σ)`,
       `Orbit: a = 26 560 km, period 2π√(a³/μ) = ${num(I.GPS_PERIOD / 60, 1)} min (half a sidereal day), 6 planes at 55°`,
@@ -327,7 +327,7 @@ export function insTab({ keep = o => o } = {}) {
   }
   function computeKf() {
     const T = S.kT * 60, o0 = Math.min(S.oStart, S.kT) * 60, o1 = Math.min(T, o0 + S.oLen * 60), outage = S.oLen > 0 ? [o0, o1] : [1e9, 1e9], lat = 45 * D;
-    const r = I.insGnssKF({ lat, T, dt: 1, grade: I.GRADES[S.kgrade], gpsDt: S.kdt, gpsSigma: S.ksig, outage, manoeuvre: S.man, seed: S.seed, rec: 5 });
+    const r = I.insGnssKF({ lat, T, dt: 1, grade: I.GRADES[S.kgrade], gpsDt: S.kdt, gpsSigma: S.ksig, outage, maneuver: S.man, seed: S.seed, rec: 5 });
     const n = r.t.length, sr = k => Math.sqrt(r.P[k][0] + r.P[k][13]), er = k => Math.hypot(r.x[k][0] - r.xh[k][0], r.x[k][1] - r.xh[k][1]), fr = k => Math.hypot(r.x[k][0], r.x[k][1]);
     const idx = t => { const i = r.t.findIndex(v => v >= t); return i < 0 ? n - 1 : i; };
     const hasOut = S.oLen > 0 && o0 < T;
@@ -347,9 +347,9 @@ export function insTab({ keep = o => o } = {}) {
     ]);
     const L = [];
     L.push({ type: 'g', t: `Better than any single fix: ${len(sr(kB))} against ${len(single)}`, d: 'The INS is smooth but drifts; GNSS fixes are noisy but do not drift. The filter weights each by its uncertainty: between fixes it trusts the INS, and each fix pulls the estimate part of the way. Over many fixes the noise averages out, and the filter also learns the INS\'s own errors (velocity, tilt, gyro biases).' });
-    if (hasOut) L.push({ type: sr(kE) > 1000 ? 'b' : sr(kE) > 100 ? 'w' : 'i', t: `Coasting through the outage: ${len(er(kE))} after ${S.oLen} min, against ${len(fr(kE))} for the INS alone`, d: `When GNSS goes, the INS carries on from a well-calibrated state: its velocity and tilt errors are small and its gyro biases partly known, so it drifts far more slowly than an INS that was never corrected. How long it can coast depends on the grade: an airliner's unit holds a mile for well over an hour; a phone-grade unit loses kilometres within minutes, which is why jamming matters so much for drones.` });
+    if (hasOut) L.push({ type: sr(kE) > 1000 ? 'b' : sr(kE) > 100 ? 'w' : 'i', t: `Coasting through the outage: ${len(er(kE))} after ${S.oLen} min, against ${len(fr(kE))} for the INS alone`, d: `When GNSS goes, the INS carries on from a well-calibrated state: its velocity and tilt errors are small and its gyro biases partly known, so it drifts far more slowly than an INS that was never corrected. How long it can coast depends on the grade: an airliner's unit holds a mile for well over an hour; a phone-grade unit loses kilometers within minutes, which is why jamming matters so much for drones.` });
     if (hasOut && o1 < T) L.push({ type: 'i', t: 'One fix collapses the uncertainty', d: 'The first fix after the outage brings position straight back to a single fix\'s accuracy. Velocity and tilt take a few more fixes, and the filter uses the error it accumulated during the outage to sharpen its estimate of the biases that caused it.' });
-    L.push({ type: S.man ? 'g' : 'i', t: S.man ? 'S-turns make heading visible' : 'Flying straight, heading is nearly unobservable', d: 'A heading error only shows in the velocity when the aircraft accelerates: the INS resolves the acceleration in the wrong direction. Flying straight and level the filter can barely see it, so its heading uncertainty stays near where it started; turns (or a transfer alignment manoeuvre) reveal it within a minute.' });
+    L.push({ type: S.man ? 'g' : 'i', t: S.man ? 'S-turns make heading visible' : 'Flying straight, heading is nearly unobservable', d: 'A heading error only shows in the velocity when the aircraft accelerates: the INS resolves the acceleration in the wrong direction. Flying straight and level the filter can barely see it, so its heading uncertainty stays near where it started; turns (or a transfer alignment maneuver) reveal it within a minute.' });
     L.push({ type: 'i', t: 'Accelerometer bias and tilt cannot be told apart when level', d: 'A tilt makes an accelerometer feel g·φ; a bias adds ∇. In level flight only their sum shows, so the accelerometer-bias estimate never improves (pick it in "Bias to plot"). Changing attitude, as real aircraft do, separates them.' });
     insightsList(ins, L);
     eq.replaceChildren(h('span', { class: 'eq', html: [

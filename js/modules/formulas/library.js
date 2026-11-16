@@ -1,8 +1,9 @@
-// Formula Library catalogue: topics (with concept overviews), every formula, and reference constants.
+// Formula Library catalog: topics (with concept overviews), every formula, and reference constants.
 import { fluids } from './data/fluids.js';
 import { flight } from './data/flight.js';
 import { solids } from './data/solids.js';
 import { space } from './data/space.js';
+import { fundamentals } from './data/fundamentals.js';
 
 export const TOPICS = [
   {
@@ -13,6 +14,16 @@ export const TOPICS = [
       { title: 'The standard atmosphere', html: '<p>The International Standard Atmosphere (ISA) is an agreed average: 15 °C and 101 325 Pa at sea level, temperature falling 6.5 K per km up to 11 km, then constant to 20 km. Real days differ, so pilots and engineers correct to ISA ("ISA + 20" means 20 K warmer than standard).</p><span class="eq">T = 288.15 − 0.0065 h    (h ≤ 11 km)<br>p = 101 325 (T / 288.15)^5.2559</span>' },
       { title: 'State of a gas', html: '<p>Pressure, density and temperature are tied by the ideal gas law p = ρRT. The speed of sound, a = √(γRT), depends only on temperature — so it falls with altitude in the troposphere and then holds steady.</p>' },
       { title: 'Different airspeeds', html: '<p><b>True airspeed</b> is speed through the air. <b>Equivalent airspeed</b> is the sea-level speed with the same dynamic pressure — what the wing "feels". <b>Indicated</b> airspeed is what the instrument reads (EAS plus instrument and compressibility errors). <b>Ground speed</b> adds the wind.</p>' },
+    ],
+  },
+  {
+    id: 'fluid', title: 'Fluid mechanics & potential flow', icon: 'stream',
+    blurb: 'Fluid statics, potential flow, exact viscous flows and the momentum equation: the foundations under every aerodynamic method.',
+    concepts: [
+      { title: 'Potential flow', html: '<p>If a flow is incompressible and irrotational, its velocity is the gradient of a potential that satisfies Laplace\'s equation. The equation is linear, so simple flows (uniform stream, source, vortex, doublet) add up to complicated ones, such as flow past a cylinder or a lifting body.</p><span class="eq">F(z) = φ + iψ,   u − iv = dF/dz</span>' },
+      { title: 'Exact viscous flows', html: '<p>In a few geometries the Navier–Stokes equations lose their non-linear term and can be solved exactly: flow between plates (Couette), in a pipe (Hagen–Poiseuille), next to a plate set in motion (Stokes). They show viscous momentum spreading by diffusion, a distance of about √(νt) in time t.</p>' },
+      { title: 'Momentum on a control volume', html: '<p>For steady flow through a fixed control volume, the net force on the fluid inside equals the momentum flowing out minus the momentum flowing in. It gives the force of a jet on a plate, of water on a pipe bend, or an engine\'s thrust without knowing anything about the flow inside.</p>' },
+      { title: 'Pressure in curved flow', html: '<p>Bernoulli\'s equation links pressure and speed along a streamline. Across streamlines, the pressure gradient must supply the centripetal force, ∂p/∂n = ρV²/R: pressure rises toward the outside of every curve.</p>' },
     ],
   },
   {
@@ -70,8 +81,8 @@ export const TOPICS = [
     id: 'stab', title: 'Stability & control', icon: 'balance',
     blurb: 'Static margin, tail sizing and natural motions.',
     concepts: [
-      { title: 'Static stability', html: '<p>An aircraft is statically stable if, after a disturbance, it tends to return. In pitch this means the centre of gravity must be ahead of the neutral point. The distance between them (static margin) measures how stable it is.</p>' },
-      { title: 'The tail\'s job', html: '<p>The wing alone is unstable in pitch about its aerodynamic centre if the CG is behind it. The horizontal tail, far behind, adds a restoring moment. Its strength is the tail volume coefficient V<sub>H</sub>; wing downwash reduces its effectiveness.</p>' },
+      { title: 'Static stability', html: '<p>An aircraft is statically stable if, after a disturbance, it tends to return. In pitch this means the center of gravity must be ahead of the neutral point. The distance between them (static margin) measures how stable it is.</p>' },
+      { title: 'The tail\'s job', html: '<p>The wing alone is unstable in pitch about its aerodynamic center if the CG is behind it. The horizontal tail, far behind, adds a restoring moment. Its strength is the tail volume coefficient V<sub>H</sub>; wing downwash reduces its effectiveness.</p>' },
       { title: 'Dynamic modes', html: '<p>Disturbed aircraft oscillate in characteristic modes: the slow <b>phugoid</b> (speed–height exchange), the quick <b>short period</b> (pitch), and lateral modes such as <b>Dutch roll</b>, <b>roll subsidence</b> and the slow <b>spiral</b>. Good handling needs each mode to be well damped or slow enough to correct.</p>' },
     ],
   },
@@ -117,7 +128,7 @@ export const TOPICS = [
   },
 ];
 
-export const FORMULAS = [...fluids, ...flight, ...solids, ...space];
+export const FORMULAS = [...fluids, ...fundamentals, ...flight, ...solids, ...space];
 export const byId = Object.fromEntries(FORMULAS.map(f => [f.id, f]));
 export const topicById = Object.fromEntries(TOPICS.map(t => [t.id, t]));
 

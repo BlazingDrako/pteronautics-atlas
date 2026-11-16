@@ -1,5 +1,5 @@
 // Formula Library module: browse, search and solve aerospace formulas for any variable,
-// with a live plot and an explanation of each formula. Views: library home, topic, formula, favourites.
+// with a live plot and an explanation of each formula. Views: library home, topic, formula, favorites.
 import { h, info, segmented, icon, downloadText, cssVar } from '../../lib/ui.js';
 import { Plot } from '../../lib/plot.js';
 import { solveFormula, sweep, unitList, preferredUnit, toSI, fromSI, fmtVal } from '../../solvers/formulas.js';
@@ -116,7 +116,7 @@ export const formulasModule = {
 
     function navItem(f, active) {
       return h('a', { class: 'fl-item' + (active ? ' on' : ''), href: '#/formulas?f=' + f.id, onclick: e => { e.preventDefault(); go({ f: f.id }); } },
-        h('span', { class: 'n' }, f.name), favs.has(f.id) ? h('span', { class: 'fav', 'aria-label': 'favourite' }, '★') : null);
+        h('span', { class: 'n' }, f.name), favs.has(f.id) ? h('span', { class: 'fav', 'aria-label': 'favorite' }, '★') : null);
     }
     function renderNav() {
       const p = params(), fid = p.get('f'), f = byId[fid];
@@ -131,7 +131,7 @@ export const formulasModule = {
       }
       const top = (label, ic, p, active, count) => h('a', { class: 'fl-top' + (active ? ' on' : ''), href: '#/formulas?' + new URLSearchParams(p), onclick: e => { e.preventDefault(); go(p); } }, icon(ic), label, count != null ? h('span', { class: 'fl-count' }, count) : null);
       nav.append(top('All topics', 'book', {}, !fid && !tid && !p.get('fav')));
-      nav.append(top('Favourites', 'star', { fav: 1 }, !!p.get('fav'), favs.size));
+      nav.append(top('Favorites', 'star', { fav: 1 }, !!p.get('fav'), favs.size));
       nav.append(h('div', { class: 'fl-group' }, 'Topics'));
       for (const t of TOPICS) {
         const list = FORMULAS.filter(x => x.topic === t.id);
@@ -149,7 +149,7 @@ export const formulasModule = {
       renderNav();
       if (f) { document.title = `${f.name} — Formula Library`; main.replaceChildren(formulaView(f)); }
       else if (t) { document.title = `${t.title} — Formula Library`; main.replaceChildren(topicView(t)); }
-      else if (p.get('fav')) { document.title = 'Favourites — Formula Library'; main.replaceChildren(favView()); }
+      else if (p.get('fav')) { document.title = 'Favorites — Formula Library'; main.replaceChildren(favView()); }
       else { document.title = 'Formula Library — Pteronautics'; main.replaceChildren(homeView()); }
     }
 
@@ -193,8 +193,8 @@ export const formulasModule = {
     function favView() {
       const list = FORMULAS.filter(f => favs.has(f.id));
       return h('div', { class: 'fl-page' },
-        h('div', { class: 'fl-crumbs' }, linkTo({}, 'Formula Library'), ' › Favourites'),
-        h('h1', { class: 'fl-h1' }, 'Favourites'),
+        h('div', { class: 'fl-crumbs' }, linkTo({}, 'Formula Library'), ' › Favorites'),
+        h('h1', { class: 'fl-h1' }, 'Favorites'),
         list.length ? h('div', { class: 'fl-fgrid' }, ...list.map(formulaCard))
           : h('div', { class: 'fl-empty' }, h('b', {}, 'Keep the formulas you use most here'), h('p', {}, 'Open any formula and press the star next to its name.'), h('button', { class: 'btn', onclick: () => go({}) }, 'Browse topics')));
     }
@@ -204,7 +204,7 @@ export const formulasModule = {
       plot = null;
       const s = st(f), t = topicById[f.topic];
       const siblings = FORMULAS.filter(x => x.topic === f.topic), idx = siblings.indexOf(f);
-      const star = h('button', { class: 'btn sm fl-star' + (favs.has(f.id) ? ' on' : ''), type: 'button', title: 'Add to favourites', 'aria-pressed': favs.has(f.id) }, icon('star', 15), favs.has(f.id) ? 'Saved' : 'Save');
+      const star = h('button', { class: 'btn sm fl-star' + (favs.has(f.id) ? ' on' : ''), type: 'button', title: 'Add to favorites', 'aria-pressed': favs.has(f.id) }, icon('star', 15), favs.has(f.id) ? 'Saved' : 'Save');
       star.addEventListener('click', () => {
         if (favs.has(f.id)) favs.delete(f.id); else favs.add(f.id);
         save('favs', [...favs]);

@@ -19,7 +19,7 @@ export function wakeTab({ keep }) {
   view.setLayers({ wake: true, arrows: false, pressure: true });
   const vCard = card('Wing, wake and tail', 'The rolled-up sheet behind the wing, and the tail position where the downwash is read.');
   vCard.append(view.el);
-  const eCard = card('Downwash behind the wing', 'Downwash angle ε on the centre line at the tail height, from the flat (not rolled-up) wake. It starts at about half its final value at the wing and grows to the far-wake value 2CL/(πA) (dashed) within a few chords.');
+  const eCard = card('Downwash behind the wing', 'Downwash angle ε on the center line at the tail height, from the flat (not rolled-up) wake. It starts at about half its final value at the wing and grows to the far-wake value 2CL/(πA) (dashed) within a few chords.');
   const ePlot = new Plot(eCard, { xlabel: 'distance behind the wing\'s quarter chord (MACs)', ylabel: 'ε (°)', xname: 'x', yname: 'ε', xfmt: v => v.toFixed(2), yfmt: v => v.toFixed(3) + '°', legendPos: 'above', yZero: true });
   const gCard = card('Ground effect', 'Near the ground the wing\'s mirror image cancels part of its downwash: induced drag falls and the lift slope rises. Lattice (accent) against the image lifting line and Wieselsberger\'s classic fit. h is the height of the root quarter chord; b the span.');
   const gPlot = new Plot(gCard, { xlabel: 'height / span  h/b', ylabel: 'ratio to free air', xname: 'h/b', yname: 'ratio', xfmt: v => v.toFixed(3), yfmt: v => v.toFixed(3), legendPos: 'above' });
@@ -83,7 +83,7 @@ export function wakeTab({ keep }) {
     if (C.ground) { const f = Wg.analyze(W, { alpha: C.alpha, M: store.air.Mc, nS: 16, nC: 4 }); const kG = s.CDi / s.CL ** 2, kF = f.CDi / f.CL ** 2; gTxt = `CDi ×${(kG / kF).toFixed(3)}`; gSub = `CL ${((s.CL / f.CL - 1) * 100).toFixed(1)}% · h ${len(C.hb * P.b)}`; }
     metrics.set([
       { k: 'Downwash at the tail ε', v: eps.toFixed(2) + '°', s: `${S.lt.toFixed(1)} MACs aft, ${(S.zt * 100).toFixed(0)}% semi-span up`, tip: 'The tail meets the air at α − ε plus its own incidence. Trim and tail sizing depend on it.' },
-      { k: 'dε/dα at the tail', v: fmt(deda, 3), s: `simple estimate 2CLα/(πA) = ${fmt(simple, 3)}`, tip: 'How much the downwash grows per degree of α. The tail\'s stabilising lift slope is cut by (1 − dε/dα). Flight & Atmosphere uses the simple far-wake estimate.' },
+      { k: 'dε/dα at the tail', v: fmt(deda, 3), s: `simple estimate 2CLα/(πA) = ${fmt(simple, 3)}`, tip: 'How much the downwash grows per degree of α. The tail\'s stabilizing lift slope is cut by (1 − dε/dα). Flight & Atmosphere uses the simple far-wake estimate.' },
       { k: 'Far-wake downwash', v: far.toFixed(2) + '°', s: `half of it at the wing: ${(far / 2).toFixed(2)}°`, tip: 'For elliptic loading ε∞ = 2CL/(πA) exactly; other loadings are close.' },
       { k: 'Tip-vortex spacing', v: isFinite(bp) ? (bp * 100).toFixed(1) + '% span' : '—', s: 'π/4 = 78.5% for elliptic loading', tip: 'Where the rolled-up vortices settle: the centroid of the vorticity shed by each half-wing. It sets the wake hazard for following aircraft and the gains of formation flight.' },
       { k: 'Ground effect', v: gTxt, s: gSub, cls: C.ground ? 'good' : '' },
@@ -91,7 +91,7 @@ export function wakeTab({ keep }) {
     // downwash along x
     const xs = [], ys = [], x0 = P.xRef;
     for (let i = 0; i <= 70; i++) { const xm = 0.25 + i * 0.12; xs.push(xm); ys.push(Wg.downwash(s, [x0 + xm * P.mac, 0, S.zt * P.s])); }
-    ePlot.setData({ series: [{ x: xs, y: ys, color: css('--accent'), label: 'centre line at tail height', width: 2.4 }],
+    ePlot.setData({ series: [{ x: xs, y: ys, color: css('--accent'), label: 'center line at tail height', width: 2.4 }],
       hlines: [{ y: far, color: css('--text-3'), dash: [5, 4], label: 'far wake 2CL/(πA)' }, { y: far / 2, color: css('--text-3'), dash: [1.5, 3], label: 'half: at the lifting line' }],
       vlines: [{ x: S.lt, color: css('--lower'), dash: [3, 3] }] });
     view.set({ sol: s, wake, tail: tp, ground: groundH() });
@@ -100,7 +100,7 @@ export function wakeTab({ keep }) {
     L.push({ type: 'i', t: 'Why the downwash matters', d: `The tail's lift slope is multiplied by (1 − dε/dα) = ${fmt(1 - deda, 3)}: here ${((deda) * 100).toFixed(0)}% of the tail's response to a gust is lost to the wing's downwash. That shrinks the tail's contribution to the neutral point, so a bigger tail or a longer arm is needed.` });
     if (S.zt < 0.1 && S.zt > -0.1) L.push({ type: 'w', t: 'Tail close to the wake', d: 'At this height the tail sits in the wake core, where downwash is strongest. Raising it (a T-tail) reduces dε/dα in cruise, but at high α a T-tail can drop into the stalled wing\'s wake: the deep stall.' });
     if (C.ground) L.push({ type: 'g', t: 'In ground effect', d: 'The mirror image cuts the downwash: less induced drag (the "float" before touchdown), more lift per degree, and less downwash at the tail, so the nose tends to drop as the aircraft nears the runway.' });
-    L.push({ type: 'i', t: 'Wake vortices', d: 'The rolled-up vortices persist for kilometres behind a heavy aircraft, sinking slowly. Separation rules (for example 4–6 nm behind a heavy jet on approach) exist because of them. The flat-wake downwash plot ignores the roll-up; the end-on view follows it.' });
+    L.push({ type: 'i', t: 'Wake vortices', d: 'The rolled-up vortices persist for kilometers behind a heavy aircraft, sinking slowly. Separation rules (for example 4–6 nm behind a heavy jet on approach) exist because of them. The flat-wake downwash plot ignores the roll-up; the end-on view follows it.' });
     insightsList(insEl, L);
   };
 
@@ -171,7 +171,7 @@ export function wakeTab({ keep }) {
     g.fillText(`${(f.x / b).toFixed(2)} spans (${len(f.x)}) behind the trailing edge`, 10, 16);
     g.fillStyle = css('--text-3'); g.fillText('looking forward, left wing on the left', 10, 31);
     const sink = -(f.z[(n - 1) / 2] - wake[0].z[(n - 1) / 2]);
-    tLeg.textContent = `Sheet sunk ${len(Math.max(0, sink))} at the centre. Dots are sized by how much vorticity each carries: most leaves near the tips.`;
+    tLeg.textContent = `Sheet sunk ${len(Math.max(0, sink))} at the center. Dots are sized by how much vorticity each carries: most leaves near the tips.`;
   };
   const L0 = s => s.L.st.map(p => ({ y: p.y, z: p.z }));
 

@@ -211,7 +211,7 @@ export function transfersTab({ keep }) {
       if (useBi) { g.fillStyle = col('--text-3'); g.font = '10.5px ' + col('--font'); g.fillText('(target timed for the Hohmann)', tx + 8, ty + 18); }
     }
     g.fillStyle = col('--text-3'); g.font = '10.5px ' + col('--font'); g.textAlign = 'left'; g.textBaseline = 'bottom';
-    g.fillText(`t = ${dur(anim * tof)} of ${dur(tof)} · grey: initial orbit · dashed: final orbit`, 10, H - 8);
+    g.fillText(`t = ${dur(anim * tof)} of ${dur(tof)} · gray: initial orbit · dashed: final orbit`, 10, H - 8);
   });
 
   let visible = false;

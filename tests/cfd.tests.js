@@ -130,7 +130,7 @@ export function cfdTests(log) {
       log('momentum balance: drag on the cylinder = driving force on the fluid', Math.abs(fx / (F * nf) - 1) < 0.005 && Math.abs(fy) < 1e-3 * fx, `drag ${fx.toExponential(4)} vs F·N = ${(F * nf).toExponential(4)} (${(100 * (fx / (F * nf) - 1)).toFixed(3)}%), side force ${fy.toExponential(1)}`);
     }
 
-    // lid-driven cavity at Re = 100 vs Ghia, Ghia & Shin (1982), u along the vertical centreline
+    // lid-driven cavity at Re = 100 vs Ghia, Ghia & Shin (1982), u along the vertical centerline
     {
       const N = 96;
       gpu.setup({ nx: N, ny: N, U: U_LAT, inflow: 0, tau: tauForRe(100, U_LAT, N), bc: { x: 'wall', y: 'wall' }, lid: [0, U_LAT], init: () => [1, 0, 0], L: N });

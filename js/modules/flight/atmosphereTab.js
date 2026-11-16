@@ -62,7 +62,7 @@ export function atmosphereTab({ keep = o => o } = {}) {
   // ---- main area ----
   const metrics = metricsGrid();
   const col = canvasBox('560px', drawColumn, 'flt-column');
-  const colCard = card('The atmosphere column', 'Sky colour darkens as the air thins. The white line is the standard temperature profile (bottom axis); drag anywhere to change altitude.', col.el);
+  const colCard = card('The atmosphere column', 'Sky color darkens as the air thins. The white line is the standard temperature profile (bottom axis); drag anywhere to change altitude.', col.el);
   const plotCard = card('Profile', 'The selected property against altitude. The dashed line marks the current altitude.');
   const plotHost = h('div', { class: 'flt-plot-tall' }); plotCard.append(plotHost);
   const plot = new Plot(plotHost, { legend: true });
@@ -85,7 +85,7 @@ export function atmosphereTab({ keep = o => o } = {}) {
     const zTop = RANGES[S.range], pl = 14, pr = 14, pt = 12, pb = 36, iw = W - pl - pr, ih = H - pt - pb;
     const y = z => pt + (1 - z / zTop) * ih;
     colTr = { iz: Y => (1 - (Y - pt) / ih) * zTop };
-    // sky: colour by absolute height so zooming keeps the colours honest
+    // sky: color by absolute height so zooming keeps the colors honest
     const sky = [[0, '#9fd0ff'], [6000, '#6aa8f0'], [12000, '#3f7fd6'], [25000, '#22489a'], [45000, '#10224f'], [65000, '#070f29'], [86000, '#02040c']];
     const skyAt = z => { for (let i = 1; i < sky.length; i++) if (z <= sky[i][0]) { const [z0, c0] = sky[i - 1], [z1, c1] = sky[i], t = (z - z0) / (z1 - z0); return mix(c0, c1, t); } return sky[sky.length - 1][1]; };
     const g = c.createLinearGradient(0, y(0), 0, y(zTop));
@@ -211,7 +211,7 @@ export function atmosphereTab({ keep = o => o } = {}) {
     const below = (1 - s.p / A.SEA.p) * 100;
     L.push({ type: 'i', t: `${below.toFixed(below > 99 ? 2 : 1)}% of the atmosphere is below you`, d: `Pressure is the weight of the air above. Half of all the air lies below about ${show('alt', 5574)}, and 99% below about ${show('alt', 31000)}.` });
     if (S.z > 19000) L.push({ type: 'b', t: 'Above the Armstrong limit', d: 'Pressure is below 6.3 kPa, where water boils at body temperature (37 °C). An unprotected person loses consciousness in seconds: a pressure suit is required.' });
-    else if (s.pressureAlt > 14000 * 0.3048) L.push({ type: 'w', t: 'Supplemental oxygen required', d: 'Above 14,000 ft cabin altitude pilots must use oxygen at all times (FAA 14 CFR 91.211); above 12,500 ft after 30 minutes. Airliners pressurise the cabin to about 6,000–8,000 ft.' });
+    else if (s.pressureAlt > 14000 * 0.3048) L.push({ type: 'w', t: 'Supplemental oxygen required', d: 'Above 14,000 ft cabin altitude pilots must use oxygen at all times (FAA 14 CFR 91.211); above 12,500 ft after 30 minutes. Airliners pressurize the cabin to about 6,000–8,000 ft.' });
     if (S.dT) {
       const dDa = s.densityAlt - s.pressureAlt;
       L.push({ type: S.dT > 0 ? 'w' : 'g', t: `Density altitude ${show('alt', s.densityAlt)} (${dDa > 0 ? '+' : ''}${show('alt', dDa)})`, d: S.dT > 0 ? 'Hot air is thinner: takeoff runs are longer, climb is weaker and engines make less thrust, as if the airfield were higher. Rule of thumb: about 120 ft of density altitude per °C above standard.' : 'Cold, dense air improves lift, thrust and climb: the aircraft performs as if it were lower.' });

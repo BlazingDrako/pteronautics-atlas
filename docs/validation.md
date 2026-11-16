@@ -4,7 +4,7 @@
 
 Every solver is checked against closed-form results, textbook tables, published data or reference codes.
 
-Open http://localhost:8765/tests/ to run the suite (add `?only=flight` for the atmosphere, airspeed, turbulence and performance checks, `?only=performance` for performance alone, `?only=stability` for stability alone, `?only=control` for the control, augmentation and autopilot checks, `?only=augment` or `?only=autopilot` for one of them, `?only=navigation` for navigation and INS/GNSS, `?only=ins` for INS/GNSS alone, `?only=collab` for collaborative flight, `?only=gasdyn` for just the compressible-flow checks, `?only=propulsion` for the engine and equilibrium checks, `?only=structures` for the structures checks, `?only=fem2d` for the 2D FEA checks, `?only=vibration` for the vibration checks, `?only=frame3d` for the 3D frame checks, `?only=formulas` for the Formula Library and `?only=cfd` for the Fluid Flow Sandbox, `?only=vehicles` for the Airfoil Lab's Vehicle aero tab, `?only=wings` for Wings & 3D Aero):
+Open http://localhost:8765/tests/ to run the suite (add `?only=flight` for the atmosphere, airspeed, turbulence and performance checks, `?only=performance` for performance alone, `?only=stability` for stability alone, `?only=control` for the control, augmentation and autopilot checks, `?only=augment` or `?only=autopilot` for one of them, `?only=navigation` for navigation and INS/GNSS, `?only=ins` for INS/GNSS alone, `?only=collab` for collaborative flight, `?only=gasdyn` for just the compressible-flow checks, `?only=propulsion` for the engine and equilibrium checks, `?only=structures` for the structures checks, `?only=fem2d` for the 2D FEA checks, `?only=vibration` for the vibration checks, `?only=frame3d` for the 3D frame checks, `?only=formulas` for the Formula Library and `?only=cfd` for the Fluid Flow Sandbox, `?only=vehicles` for the Airfoil Lab's Vehicle aero tab, `?only=wings` for Wings & 3D Aero, `?only=flow` for the Sandbox's potential and viscous tabs, `?only=theory` for the airfoil, boundary-layer and linearized-flow theory tabs):
 
 - structures: beams (simply supported, cantilever, propped, fixed-fixed, continuous, hinged), trusses, inclined supports, thermal loads and portal frames vs. closed-form results; natural frequencies and Euler buckling loads; mechanism detection; friction/tipping/ladder limits; section properties; eigen and LP solvers;
 - vibration: exact SDOF integrator vs closed forms, step/pulse load factors, half-sine shock peak 1.77, Den Hartog absorber, modal superposition vs static deflection;
@@ -43,10 +43,10 @@ Open http://localhost:8765/tests/ to run the suite (add `?only=flight` for the a
   second-order overshoot, peak time, phase margin and crossover closed forms, the K/(s+1)³ gain margin and Routh limit,
   Padé gain and phase, the 1/s delay margin, root-locus points and asymptotes, PID and lead-network frequency response,
   washout DC gain, a light-single pitch damper and an airliner yaw damper raising damping, and the fighter: pitch-rate
-  feedback only slowing its divergence, α feedback stabilising it, and the gain-reduction margin matching the Routh limit;
+  feedback only slowing its divergence, α feedback stabilizing it, and the gain-reduction margin matching the Routh limit;
 - augmentation: the time simulator against the linear closed loop (within 0.2%), the fighter's C* fly-by-wire law
   (stable, Level 1 Category A, margins ≥ 40° and 6 dB both ways, steady C* equal to the command) and the unaugmented
-  fighter departing, rate and position limits and transport delay honoured, the rate-limited sine's triangle amplitude
+  fighter departing, rate and position limits and transport delay honored, the rate-limited sine's triangle amplitude
   πR/(2ω) and 66.9° lag, the airliner yaw damper reaching Level 1 and its washout passing a steady yaw rate exactly, a
   pitch damper cutting turbulence response, and a pilot model that settles with a fast actuator but diverges when the
   tail is rate limited to 10°/s;
@@ -61,7 +61,7 @@ Open http://localhost:8765/tests/ to run the suite (add `?only=flight` for the a
   New York–London, Clairaut's vertex, the wind triangle and its inverse, dead-reckoning drift and the 1-in-60 rule, and
   VOR, DME and ILS geometry;
 - INS and GNSS: the 84.4-minute Schuler period; position error from a 1 mg accelerometer bias (peak 2∇R/g), a 0.01°/h
-  gyro drift (−Rε(t − sin ωst/ωs), the 0.6 nm/h rule), an initial tilt and an initial velocity error; levelling cancelling
+  gyro drift (−Rε(t − sin ωst/ωs), the 0.6 nm/h rule), an initial tilt and an initial velocity error; leveling canceling
   accelerometer biases and the gyrocompass heading error εE/(Ω cos L); the error model's natural frequencies ωs ± Ω sin L
   (Foucault) and Ω; the vertical channel's √(R/2g) = 9.5 min divergence and baro-aided steady state; the GPS period
   (half a sidereal day); least squares recovering position (< 1 mm) and a 1 ms clock error; closed-form DOP for a
@@ -78,12 +78,24 @@ Open http://localhost:8765/tests/ to run the suite (add `?only=flight` for the a
 - wings & 3D aero: lifting line against Glauert (elliptic CL = 2πAα/(A+2) and e = 1 exactly, rectangular AR 6 e ≈ 0.95,
   taper 0.35 near elliptic); vortex lattice e = 0.998 on the elliptic wing with lift centroid at 4/(3π) and near-uniform
   induced angle, Bertin & Cummings' swept-wing example (AR 5, Λ 45°, 4 panels a side: 3.434 vs 3.443 /rad), lift slopes
-  against Helmbold/DATCOM (within 5% for AR 4–10, sweep 0–45°), the aerodynamic centre, grid convergence, twist and camber
+  against Helmbold/DATCOM (within 5% for AR 4–10, sweep 0–45°), the aerodynamic center, grid convergence, twist and camber
   zero-lift angles, far-wake downwash 2CL/(πA) and half of it on the lifting line, ground effect against an elliptic
   lifting line with its image sheet (within 1% at h/b = 0.1 and 0.2), Göthert's rule against Helmbold at M 0.6,
   winglets lowering induced drag with inboard side force, the equal-moment span extension, the nonlinear strips
   reproducing the linear lattice, first stall at the root (rectangle), tip (taper 0.2, swept back) and inboard (washout,
   forward sweep), and a symmetric, sinking, inward-rolling wake;
+- sandbox theory tabs: cylinder Cp, stagnation points with circulation (and leaving the surface), Kutta–Joukowski lift
+  and zero drag by Blasius' theorem, a typed F(z) matching the elements, images (no flow through the wall, the lift of a
+  vortex near the ground, the hangar), Rankine bodies, Couette (and its backflow criterion), Hagen–Poiseuille, f = 64/Re,
+  start-up Couette against erfc, and Stokes' second problem;
+- theory tabs: thin-airfoil theory (NACA 2412 α_L=0 = −2.077°, NACA 23012 design cl 0.3, a piecewise camber line at 2°
+  giving cl = 1.203, x_cp = 0.4317c and a −18.2% margin, flap effectiveness, parabolic-arc α_L=0 and Cm, inverse design),
+  the 1/4–3/4 rule exact for a flat plate and converging to thin-airfoil lift, vortex panels (zero lift at α = 0 for a
+  symmetric section, the 1 + 0.77t/c lift slope, circulation lift = pressure lift), Joukowski (flat plate and
+  pressure = Kutta–Joukowski lift), Falkner–Skan f″(0) at β = 0, 0.5, 1, −0.1 and separation at −0.1988, Blasius δ*, θ,
+  δ₉₉ and cf, Pohlhausen and parabolic profiles, Thwaites on a flat plate, at a stagnation point and on Howarth's
+  decelerating flow (separation 0.123), the law of the wall, the transition correction, Cp*, critical Mach numbers,
+  the duct's first wave against the exact oblique shock and the linear 2θ/β, and Biot–Savart line, ring and horseshoe;
 - orbital mechanics: Kepler's equation to 10⁻¹² up to e = 0.99, elements → state → elements round trip, |r| and |v|
   against the conic and vis-viva, h = √(μp), the 400 km circular speed and period, GEO period = sidereal day, equal areas
   in equal times on a Molniya orbit, Hohmann LEO → GEO against Vallado example 6-1 (2.457 + 1.478 km/s, 5.256 h), the

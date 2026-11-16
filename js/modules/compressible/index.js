@@ -9,6 +9,7 @@ const TABS = [
   { id: 'nozzle', label: 'Nozzles & plumes', load: () => import('./nozzleTab.js').then(m => m.nozzleTab) },
   { id: 'tbm', label: 'θ–β–M chart', load: () => import('./tbmTab.js').then(m => m.tbmTab) },
   { id: 'tube', label: 'Shock tube', load: () => import('./tubeTab.js').then(m => m.tubeTab) },
+  { id: 'linear', label: 'Linear theory', load: () => import('./linearTab.js').then(m => m.linearTab) },
 ];
 
 export const compressibleModule = {
@@ -20,7 +21,7 @@ export const compressibleModule = {
     const main = h('section', { class: 'cf-main' });
     const head = h('div', { class: 'af-head cf-head' });
     const title = h('h2', { class: 'af-title' }, 'Shocks & Nozzles');
-    const tabs = h('div', { class: 'tabs', role: 'tablist' });
+    const tabs = h('div', { class: 'tabs tabs-wrap', role: 'tablist' });
     head.append(h('div', {}, title, h('div', { class: 'af-sub' }, 'Compressible flow: shocks, expansions, nozzles and jets')), tabs);
     const body = h('div', { class: 'cf-body' });
     const learn = h('div', { class: 'cf-learn' }, h('h3', {}, 'Learn the concepts'),

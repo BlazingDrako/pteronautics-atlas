@@ -65,7 +65,7 @@ export function navTab({ keep = o => o } = {}) {
     globe.canvas.addEventListener('pointerup', () => { drag = null; });
     body.replaceChildren(h('div', { class: 'flt-grid2' },
       card('On the globe', 'Orthographic view. Accent: the geodesic (the shortest path on the ellipsoid, a great circle on a sphere). Amber: the rhumb line, which crosses every meridian at the same angle.', globe.el),
-      card('On a Mercator chart', 'Mercator keeps angles true, so a rhumb line is a straight line: easy to fly with a compass, but longer. The great circle bows towards the pole.', merc.el)),
+      card('On a Mercator chart', 'Mercator keeps angles true, so a rhumb line is a straight line: easy to fly with a compass, but longer. The great circle bows toward the pole.', merc.el)),
       card('Course along the way', 'The true course along the geodesic changes continuously (it would be flown as a series of shorter legs); the rhumb line keeps one course.', crs.el));
   }
   function computeRoutes() {
@@ -88,9 +88,9 @@ export function navTab({ keep = o => o } = {}) {
     ]);
     const L = [];
     if (Math.abs(g.az1 - g.az2) > 20 * D) L.push({ type: 'i', t: `The course swings from ${brg(g.az1)} to ${brg(g.az2)}`, d: 'A great circle crosses each meridian at a different angle (except along the equator or a meridian). Flight-management systems fly it as a chain of short legs and update the course as they go; in the past navigators split it into rhumb-line legs between waypoints read off a gnomonic chart.' });
-    L.push({ type: extra > 0.02 ? 'w' : 'g', t: `Rhumb line ${f3(extra * 100)}% longer`, d: `The rhumb line spirals towards the pole at a constant course, so it is simple to steer by compass, but at these latitudes it costs ${dist(r.s - g.s)}. East–west routes far from the equator gain the most from great circles; north–south ones hardly at all.` });
+    L.push({ type: extra > 0.02 ? 'w' : 'g', t: `Rhumb line ${f3(extra * 100)}% longer`, d: `The rhumb line spirals toward the pole at a constant course, so it is simple to steer by compass, but at these latitudes it costs ${dist(r.s - g.s)}. East–west routes far from the equator gain the most from great circles; north–south ones hardly at all.` });
     if (vtx > 60 * D) L.push({ type: 'i', t: `Up to ${latS(vtx)}`, d: 'Great circles between mid-latitude cities bow far poleward: New York–Tokyo passes close to Alaska, Europe–US West Coast crosses Greenland. Polar routes and their navigation (grid navigation, magnetic compasses unreliable near the magnetic pole) follow from this.' });
-    L.push({ type: 'i', t: `Ellipsoid vs sphere: ${f3(Math.abs(sp.s / g.s - 1) * 100)}%`, d: 'The Earth is flattened by 1/298: 21 km shorter from pole to centre than at the equator. A sphere is good to a few tenths of a percent for flight planning; navigation systems and GNSS work on WGS-84.' });
+    L.push({ type: 'i', t: `Ellipsoid vs sphere: ${f3(Math.abs(sp.s / g.s - 1) * 100)}%`, d: 'The Earth is flattened by 1/298: 21 km shorter from pole to center than at the equator. A sphere is good to a few tenths of a percent for flight planning; navigation systems and GNSS work on WGS-84.' });
     insightsList(ins, L);
     const pE = N.geodeticToEcef(la1, lo1, 0), pB = N.geodeticToEcef(la2, lo2, 0);
     eq.replaceChildren(h('span', { class: 'eq', html: [
@@ -118,7 +118,7 @@ export function navTab({ keep = o => o } = {}) {
   }
   function drawMerc(c, W, H) {
     if (!R) return;
-    // centre the chart on the route's mean longitude so it does not split across the date line
+    // center the chart on the route's mean longitude so it does not split across the date line
     const lc = N.wrapPi(R.lo1 + N.wrapPi(R.lo2 - R.lo1) / 2), latMax = 80 * D, qMax = N.isometric(latMax);
     const all = [...R.g.pts, ...R.r.pts], dl = all.map(p => N.wrapPi(p.lon - lc)), qs = all.map(p => N.isometric(Math.max(-latMax, Math.min(latMax, p.lat))));
     let x0 = Math.min(...dl), x1 = Math.max(...dl), y0 = Math.min(...qs), y1 = Math.max(...qs);
@@ -136,7 +136,7 @@ export function navTab({ keep = o => o } = {}) {
     for (const a of AIRPORTS) { const x = X(a[3] * D), y = Y(N.isometric(a[2] * D)); c.fillStyle = cssVar('--text-3'); c.fillRect(x - 1.5, y - 1.5, 3, 3); c.fillText(a[0], x + 3, y - 3); }
     for (const [a, la, lo] of [[R.A, R.la1, R.lo1], [R.B, R.la2, R.lo2]]) { const x = X(lo), y = Y(N.isometric(la)); c.fillStyle = cssVar('--text'); c.beginPath(); c.arc(x, y, 4.5, 0, 2 * Math.PI); c.fill(); c.font = '600 12px ' + cssVar('--font'); c.fillText(a[0], x + 6, y + 12); }
     c.restore();
-    c.fillStyle = cssVar('--text-3'); c.font = '10.5px ' + cssVar('--font'); c.textAlign = 'left'; c.textBaseline = 'top'; c.fillText(`centred on ${lonS(lc)}`, ox + 4, oy + (y1 - y0) * k + 6);
+    c.fillStyle = cssVar('--text-3'); c.font = '10.5px ' + cssVar('--font'); c.textAlign = 'left'; c.textBaseline = 'top'; c.fillText(`centered on ${lonS(lc)}`, ox + 4, oy + (y1 - y0) * k + 6);
   }
   function drawCourse(c, W, H) {
     if (!R) return;
@@ -197,7 +197,7 @@ export function navTab({ keep = o => o } = {}) {
     const pts = [[0, 0], ah, gv], ext = Math.max(...pts.flat().map(Math.abs)) * 1.25, sc = Math.min(W, H) / 2 / ext;
     const ox = W / 2 - (Math.min(...pts.map(p => p[1])) + Math.max(...pts.map(p => p[1]))) / 2 * sc, oy = H / 2 + (Math.min(...pts.map(p => p[0])) + Math.max(...pts.map(p => p[0]))) / 2 * sc;
     const X = p => ox + p[1] * sc, Y = p => oy - p[0] * sc;
-    // labels sit beside each arrow, pushed away from the triangle's centre so they never overlap
+    // labels sit beside each arrow, pushed away from the triangle's center so they never overlap
     const gx = (X([0, 0]) + X(ah) + X(gv)) / 3, gy = (Y([0, 0]) + Y(ah) + Y(gv)) / 3;
     const arrow = (a, b, col, lab, w0 = 2.6) => {
       c.strokeStyle = col; c.fillStyle = col; c.lineWidth = w0; c.beginPath(); c.moveTo(X(a), Y(a)); c.lineTo(X(b), Y(b)); c.stroke();
@@ -259,9 +259,9 @@ export function navTab({ keep = o => o } = {}) {
     vmap.canvas.addEventListener('pointermove', e => { if (drag) move(e); });
     vmap.canvas.addEventListener('pointerup', () => { drag = false; buildRadio(); compute(); });
     body.replaceChildren(h('div', { class: 'flt-grid2' },
-      card('VOR and DME', 'Station at the centre, north up. Each radial is a magnetic bearing from the station; the selected course is drawn through it. The circle is the DME range the aircraft would read (its slant range).', vmap.el),
-      card('Course deviation indicator', 'The needle is the selected course line: fly towards it. Full scale is 10°, 2° per dot. The flag says whether that course takes you TO or FROM the station.', cdi.el)),
-      h('div', { class: 'flt-grid2e' }, card('ILS from the side', 'Glide slope (3°) with its ±0.7° full-scale sector, and the aircraft.', ilsSide.el), card('ILS from above', 'Localizer centreline with its sector (full scale about ±2.5°), approaching from the left: the right of the centreline is down the page.', ilsPlan.el)), card('ILS indicator', 'Vertical needle: localizer; horizontal needle: glide slope. Fly towards the needles.', ilsInd.el));
+      card('VOR and DME', 'Station at the center, north up. Each radial is a magnetic bearing from the station; the selected course is drawn through it. The circle is the DME range the aircraft would read (its slant range).', vmap.el),
+      card('Course deviation indicator', 'The needle is the selected course line: fly toward it. Full scale is 10°, 2° per dot. The flag says whether that course takes you TO or FROM the station.', cdi.el)),
+      h('div', { class: 'flt-grid2e' }, card('ILS from the side', 'Glide slope (3°) with its ±0.7° full-scale sector, and the aircraft.', ilsSide.el), card('ILS from above', 'Localizer centerline with its sector (full scale about ±2.5°), approaching from the left: the right of the centerline is down the page.', ilsPlan.el)), card('ILS indicator', 'Vertical needle: localizer; horizontal needle: glide slope. Fly toward the needles.', ilsInd.el));
   }
   const buildRadioInputsOnly = () => {};
   function computeRadio() {
@@ -272,9 +272,9 @@ export function navTab({ keep = o => o } = {}) {
     metrics.set([
       { k: 'Radial', v: brg(v.radial), s: `bearing to the station ${brg(v.radial + Math.PI)}` },
       { k: 'Flag', v: v.from ? 'FROM' : 'TO', s: `course ${brg(S.obs)} ${v.from ? 'leads away from' : 'leads to'} the station` },
-      { k: 'Needle', v: Math.abs(v.dots) < 0.05 ? 'centred' : `fly ${v.dots > 0 ? 'right' : 'left'}`, s: `${f3(Math.abs(v.fly) * DEG)}° off · ${f3(Math.abs(v.dots))} dots${Math.abs(v.dots) >= 5 ? ' (full scale)' : ''}`, cls: Math.abs(v.dots) >= 5 ? 'warn' : '' },
+      { k: 'Needle', v: Math.abs(v.dots) < 0.05 ? 'centered' : `fly ${v.dots > 0 ? 'right' : 'left'}`, s: `${f3(Math.abs(v.fly) * DEG)}° off · ${f3(Math.abs(v.dots))} dots${Math.abs(v.dots) >= 5 ? ' (full scale)' : ''}`, cls: Math.abs(v.dots) >= 5 ? 'warn' : '' },
       { k: 'DME', v: dist(dm.slant), s: `ground ${dist(dm.ground)} · reads ${dist(dm.error)} long`, cls: dm.error > 0.1 * dm.ground && dm.ground > 0 ? 'warn' : '' },
-      { k: 'Localizer', v: Math.abs(il.locDots) < 0.05 ? 'centred' : `${f3(Math.abs(il.loc) * DEG)}° ${il.loc > 0 ? 'right' : 'left'}`, s: `${f3(Math.abs(il.locDots))} dots · fly ${il.loc > 0 ? 'left' : 'right'}`, cls: Math.abs(il.locDots) >= 2.5 ? 'warn' : '' },
+      { k: 'Localizer', v: Math.abs(il.locDots) < 0.05 ? 'centered' : `${f3(Math.abs(il.loc) * DEG)}° ${il.loc > 0 ? 'right' : 'left'}`, s: `${f3(Math.abs(il.locDots))} dots · fly ${il.loc > 0 ? 'left' : 'right'}`, cls: Math.abs(il.locDots) >= 2.5 ? 'warn' : '' },
       { k: 'Glide slope', v: Math.abs(il.gsDots) < 0.05 ? 'on slope' : `${f3(Math.abs(il.gs) * DEG)}° ${il.gs > 0 ? 'high' : 'low'}`, s: `${num(il.above / hk, 0)} ${hu} ${il.above >= 0 ? 'above' : 'below'} · on slope ${num(il.onGp / hk, 0)} ${hu}`, cls: Math.abs(il.gsDots) >= 2.5 ? 'warn' : '' },
     ]);
     const L = [];

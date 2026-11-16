@@ -7,7 +7,7 @@ const STRESS = { href: '#/structures?tab=stress', label: 'Structures Workbench: 
 const FEA = { href: '#/structures?tab=fea', label: 'Structures Workbench: 2D FEA' };
 const VIB = { href: '#/structures?tab=vibration', label: 'Structures Workbench: vibration' };
 
-const E = (val = 71.7e9) => v('E', 'E', 'Young\'s modulus', 'modulus', val, 1e5, 1.5e12, { desc: 'Aluminium 69–72 GPa, steel 200 GPa, titanium 114 GPa, CFRP 70–150 GPa.' });
+const E = (val = 71.7e9) => v('E', 'E', 'Young\'s modulus', 'modulus', val, 1e5, 1.5e12, { desc: 'Aluminum 69–72 GPa, steel 200 GPa, titanium 114 GPa, CFRP 70–150 GPa.' });
 const I = (val = 8.33e-6) => v('I', 'I', 'Second moment of area', 'inertia', val, 1e-16, 10);
 
 export const solids = [
@@ -16,12 +16,12 @@ export const solids = [
     id: 'hooke', topic: 'struct', name: 'Hooke\'s law', eq: 'σ = E ε', tags: 'stress strain elastic modulus',
     vars: [v('s', 'σ', 'Stress', 'stress', 143.4e6, 1, 1e11), E(), v('eps', 'ε', 'Strain', 'strain', 0.002, 1e-9, 0.5)],
     f: x => [x.s, x.E * x.eps],
-    about: 'In the elastic range, stress is proportional to strain. The modulus E is the material\'s stiffness: steel stretches a third as much as aluminium under the same stress.',
+    about: 'In the elastic range, stress is proportional to strain. The modulus E is the material\'s stiffness: steel stretches a third as much as aluminum under the same stress.',
     origin: 'Empirical (Hooke, 1678); the linear part of a tensile-test curve.',
     assume: ['Linear elastic, below the proportional limit', 'Uniaxial stress'],
     typical: '0.2% strain is roughly the yield point of many alloys.',
     watch: 'Stiffness (E) and strength (yield stress) are different properties.',
-    example: 'Aluminium at 0.2% strain.', link: STRESS, related: ['axialStress', 'axialDef', 'shearMod'],
+    example: 'Aluminum at 0.2% strain.', link: STRESS, related: ['axialStress', 'axialDef', 'shearMod'],
   },
   {
     id: 'axialStress', topic: 'struct', name: 'Axial stress', eq: 'σ = F / A', tags: 'tension compression normal stress',
@@ -30,7 +30,7 @@ export const solids = [
     about: 'Force spread over area. The basic check for any rod, bolt, cable or truss member: keep σ below the allowable stress.',
     origin: 'Equilibrium of a cut section with uniform stress.',
     assume: ['Load through the centroid', 'Away from holes, notches and load points (Saint-Venant)'],
-    typical: 'Aluminium 7075 yield ≈ 500 MPa; 2024 ≈ 325; steel 250–1 500.',
+    typical: 'Aluminum 7075 yield ≈ 500 MPa; 2024 ≈ 325; steel 250–1 500.',
     watch: 'Compression members can buckle long before this stress reaches yield.',
     example: '50 kN on 500 mm².', link: STRUCT, related: ['hooke', 'axialDef', 'euler', 'kt'],
   },
@@ -41,9 +41,9 @@ export const solids = [
     about: 'How much a bar stretches. A bar acts like a spring of stiffness k = AE/L, the building block of truss and frame analysis.',
     origin: 'Hooke\'s law with σ = F/A and ε = δ/L.',
     assume: ['Linear elastic, uniform bar and load'],
-    typical: '1.4 mm for a 1 m aluminium bar at 100 MPa.',
+    typical: '1.4 mm for a 1 m aluminum bar at 100 MPa.',
     watch: 'Temperature change adds αΔT·L of free expansion.',
-    example: '1 m aluminium bar, 50 kN.', link: STRUCT, related: ['axialStress', 'hooke', 'thermalStress'],
+    example: '1 m aluminum bar, 50 kN.', link: STRUCT, related: ['axialStress', 'hooke', 'thermalStress'],
   },
   {
     id: 'bending', topic: 'struct', name: 'Bending stress (flexure formula)', eq: 'σ = M y / I', tags: 'beam moment flexure',
@@ -53,7 +53,7 @@ export const solids = [
     origin: 'Plane sections remain plane → strain ∝ y; integrate σ·y over the section to match M.',
     assume: ['Linear elastic, small deflections', 'Symmetric section bent about a principal axis', 'Slender beam (length ≫ depth)'],
     typical: 'Rectangle 100 × 100 mm (I = 8.33×10⁶ mm⁴) at 20 kN·m → 120 MPa.',
-    watch: 'Use the largest y (extreme fibre) for maximum stress; section modulus S = I/y.',
+    watch: 'Use the largest y (extreme fiber) for maximum stress; section modulus S = I/y.',
     example: '100 mm square section, 20 kN·m.', link: SECTION, related: ['Irect', 'cantilever', 'vonMises'],
   },
   {
@@ -71,7 +71,7 @@ export const solids = [
     id: 'torsion', topic: 'struct', name: 'Torsion shear stress', eq: 'τ = T r / J', tags: 'shaft torque',
     vars: [v('t', 'τ', 'Shear stress', 'stress', 97.8e6, 1e-3, 1e11), v('T', 'T', 'Torque', 'moment', 300, 1e-6, 1e10), v('r', 'r', 'Radius', 'length', 0.0125, 1e-7, 100, { unit: 'mm' }), v('J', 'J', 'Polar moment of area', 'inertia', 3.835e-8, 1e-16, 10)],
     f: x => [x.t, x.T * x.r / x.J],
-    about: 'Twisting a shaft makes shear stress that grows linearly from the centre to the surface. Hollow shafts are efficient because the lightly-loaded core is removed.',
+    about: 'Twisting a shaft makes shear stress that grows linearly from the center to the surface. Hollow shafts are efficient because the lightly-loaded core is removed.',
     origin: 'Plane circular sections rotate rigidly → shear strain ∝ r.',
     assume: ['Circular (solid or hollow) section, elastic'],
     typical: 'Solid 25 mm shaft at 300 N·m → 98 MPa.',
@@ -85,9 +85,9 @@ export const solids = [
     about: 'How far a shaft winds up under torque. Torsional stiffness GJ/L matters for driveshafts, wings (aileron reversal) and control rods.',
     origin: 'Integrate shear strain γ = rφ/L with τ = Gγ.',
     assume: ['Circular section, elastic, uniform'],
-    typical: 'Several degrees: the 25 mm, 0.5 m aluminium shaft twists about 8° at 300 N·m.',
+    typical: 'Several degrees: the 25 mm, 0.5 m aluminum shaft twists about 8° at 300 N·m.',
     watch: 'For a thin closed tube: J ≈ 4A²t/perimeter (Bredt).',
-    example: '25 mm, 0.5 m aluminium shaft.', link: SECTION, related: ['torsion', 'shearMod'],
+    example: '25 mm, 0.5 m aluminum shaft.', link: SECTION, related: ['torsion', 'shearMod'],
   },
   {
     id: 'shearMod', topic: 'struct', name: 'Shear modulus', eq: 'G = E / (2 (1 + ν))', tags: 'poisson ratio isotropic',
@@ -96,9 +96,9 @@ export const solids = [
     about: 'For isotropic materials only two elastic constants are independent. Knowing E and Poisson\'s ratio gives the shear stiffness.',
     origin: 'Equivalence of pure shear and tension/compression at 45° (Mohr\'s circle).',
     assume: ['Isotropic, linear elastic'],
-    typical: 'Aluminium 27 GPa, steel 79 GPa, titanium 44 GPa.',
+    typical: 'Aluminum 27 GPa, steel 79 GPa, titanium 44 GPa.',
     watch: 'Composites are anisotropic; this does not apply.',
-    example: 'Aluminium.', link: STRESS, related: ['twist', 'hooke'],
+    example: 'Aluminum.', link: STRESS, related: ['twist', 'hooke'],
   },
   {
     id: 'thermalStress', topic: 'struct', name: 'Thermal stress (fully restrained)', eq: 'σ = E α ΔT', tags: 'temperature expansion constrained',
@@ -107,7 +107,7 @@ export const solids = [
     about: 'A part that wants to expand but is held in place builds up stress instead. Large temperature swings on spacecraft, engines and supersonic skins make this a major design case.',
     origin: 'Mechanical strain must cancel the free thermal strain αΔT.',
     assume: ['Fully restrained, uniaxial', 'Constant properties'],
-    typical: 'Steel: about 2.4 MPa per °C restrained; aluminium 1.7.',
+    typical: 'Steel: about 2.4 MPa per °C restrained; aluminum 1.7.',
     watch: 'Partial restraint gives less; biaxial restraint gives more (÷(1−ν)).',
     example: 'Steel rail heated 69 °C.', link: STRUCT, related: ['axialDef', 'hooke'],
   },
@@ -118,9 +118,9 @@ export const solids = [
     about: 'A slender column in compression suddenly bows sideways at a critical load that depends on stiffness and length, not strength. Doubling the length cuts it by four.',
     origin: 'Equilibrium of the bent shape: EI·w″ + P·w = 0 has a non-zero solution only at P = π²EI/L².',
     assume: ['Perfectly straight, elastic, slender', 'Axial load through the centroid'],
-    typical: '30 mm square aluminium bar 1 m long, pinned ends: about 48 kN.',
+    typical: '30 mm square aluminum bar 1 m long, pinned ends: about 48 kN.',
     watch: 'Short columns yield first; check σ = P/A. Real columns buckle earlier because of imperfections.',
-    example: '30 mm square aluminium bar, 1 m, pinned.', link: { href: '#/structures?tab=vibration', label: 'Structures Workbench: buckling' }, related: ['eulerStress', 'Irect', 'axialStress'],
+    example: '30 mm square aluminum bar, 1 m, pinned.', link: { href: '#/structures?tab=vibration', label: 'Structures Workbench: buckling' }, related: ['eulerStress', 'Irect', 'axialStress'],
   },
   {
     id: 'eulerStress', topic: 'struct', name: 'Critical buckling stress', eq: 'σ<sub>cr</sub> = π² E / (K L / r)²', tags: 'slenderness ratio radius of gyration column',
@@ -129,9 +129,9 @@ export const solids = [
     about: 'Buckling written per unit area. The slenderness ratio KL/r (length ÷ radius of gyration √(I/A)) alone decides when a column of a given material buckles.',
     origin: 'Euler load divided by area, with I = A r².',
     assume: ['Elastic buckling: valid only while σcr < proportional limit'],
-    typical: 'Aluminium: elastic buckling for KL/r above about 60–70; steel above about 100.',
+    typical: 'Aluminum: elastic buckling for KL/r above about 60–70; steel above about 100.',
     watch: 'For stocky columns use Johnson\'s parabola or the material\'s tangent modulus.',
-    example: 'Aluminium column, KL/r = 100.', link: { href: '#/structures?tab=vibration', label: 'Structures Workbench: buckling' }, related: ['euler'],
+    example: 'Aluminum column, KL/r = 100.', link: { href: '#/structures?tab=vibration', label: 'Structures Workbench: buckling' }, related: ['euler'],
   },
   {
     id: 'cantilever', topic: 'struct', name: 'Cantilever tip deflection (end load)', eq: 'δ = P L³ / (3 E I)', tags: 'beam deflection',
@@ -142,7 +142,7 @@ export const solids = [
     assume: ['Linear elastic, small deflection', 'Slender (shear deflection neglected)'],
     typical: 'Airliner wingtips deflect about 10% of the semi-span in flight.',
     watch: 'A distributed load gives δ = wL⁴/(8EI).',
-    example: '1 m aluminium cantilever, 50 × 100 mm section.', link: STRUCT, related: ['ssUDL', 'ssPoint', 'bending'],
+    example: '1 m aluminum cantilever, 50 × 100 mm section.', link: STRUCT, related: ['ssUDL', 'ssPoint', 'bending'],
   },
   {
     id: 'ssUDL', topic: 'struct', name: 'Simply supported beam, uniform load', eq: 'δ<sub>max</sub> = 5 w L⁴ / (384 E I)', tags: 'midspan deflection distributed',
@@ -153,7 +153,7 @@ export const solids = [
     assume: ['Linear elastic, pinned–roller supports'],
     typical: 'Deflection limits: span/360 for floors, span/250 typical.',
     watch: 'Fixed ends reduce deflection 5×.',
-    example: '3 m aluminium beam, 2 kN/m.', link: STRUCT, related: ['ssPoint', 'cantilever'],
+    example: '3 m aluminum beam, 2 kN/m.', link: STRUCT, related: ['ssPoint', 'cantilever'],
   },
   {
     id: 'ssPoint', topic: 'struct', name: 'Simply supported beam, central load', eq: 'δ<sub>max</sub> = P L³ / (48 E I)', tags: 'midspan deflection three point bending',
@@ -164,7 +164,7 @@ export const solids = [
     assume: ['Linear elastic, pinned supports'],
     typical: '16× stiffer than a cantilever of the same length.',
     watch: 'For short, deep specimens shear deflection is not negligible.',
-    example: '2 m aluminium beam, 5 kN.', link: STRUCT, related: ['ssUDL', 'cantilever'],
+    example: '2 m aluminum beam, 5 kN.', link: STRUCT, related: ['ssUDL', 'cantilever'],
   },
   {
     id: 'hoop', topic: 'struct', name: 'Thin-walled pressure vessel (hoop stress)', eq: 'σ<sub>h</sub> = p r / t', tags: 'fuselage tank cylinder pressurization',
@@ -192,7 +192,7 @@ export const solids = [
     id: 'Itube', topic: 'struct', name: 'Second moment of area: circular tube', eq: 'I = π (D⁴ − d⁴) / 64', tags: 'section property pipe hollow',
     vars: [I(1.811e-7), v('D', 'D', 'Outer diameter', 'length', 0.05, 1e-6, 100, { unit: 'mm' }), v('d', 'd', 'Inner diameter', 'length', 0.04, 0, 100, { log: false, unit: 'mm' })],
     f: x => [x.I, Math.PI * (x.D ** 4 - x.d ** 4) / 64],
-    about: 'Tubes put their material far from the centre, giving high stiffness for low weight in every direction. Set d = 0 for a solid rod.',
+    about: 'Tubes put their material far from the center, giving high stiffness for low weight in every direction. Set d = 0 for a solid rod.',
     origin: 'Integrate y² over the annulus.',
     assume: ['Centroidal axis'],
     typical: 'A tube with d/D = 0.8 keeps 59% of the solid rod\'s I with 36% of its weight.',
@@ -318,9 +318,9 @@ export const solids = [
     about: 'A clamped beam vibrates in a fundamental bending mode whose frequency falls with length squared. Higher modes are at 6.27× and 17.5× this one.',
     origin: 'Euler–Bernoulli beam equation EI·w⁗ + m′ẅ = 0 with clamped–free ends: β₁L = 1.8751.',
     assume: ['Uniform, slender, elastic beam'],
-    typical: '1 m aluminium cantilever, 50 × 100 mm bending the stiff way: about 83 Hz.',
+    typical: '1 m aluminum cantilever, 50 × 100 mm bending the stiff way: about 83 Hz.',
     watch: 'A tip mass lowers it a lot; use effective mass 0.24 m′L at the tip for estimates.',
-    example: '1 m aluminium cantilever, 50 × 100 mm.', link: VIB, related: ['ssBeamMode', 'cantilever', 'fn'],
+    example: '1 m aluminum cantilever, 50 × 100 mm.', link: VIB, related: ['ssBeamMode', 'cantilever', 'fn'],
   },
   {
     id: 'ssBeamMode', topic: 'vib', name: 'Simply supported beam first mode', eq: 'f<sub>1</sub> = (π / 2) √(E I / (m′ L⁴))', tags: 'beam vibration bridge',
@@ -329,9 +329,9 @@ export const solids = [
     about: 'A pinned–pinned beam vibrates as a half sine wave. Higher modes follow n² (4×, 9×…). Footbridges are kept above about 3 Hz to avoid resonance with walking.',
     origin: 'Euler–Bernoulli beam with βₙL = nπ.',
     assume: ['Uniform, slender, elastic beam'],
-    typical: '3 m aluminium beam (100 mm square): about 26 Hz.',
+    typical: '3 m aluminum beam (100 mm square): about 26 Hz.',
     watch: 'Axial compression lowers the frequency, reaching zero at the buckling load.',
-    example: '3 m aluminium beam.', link: VIB, related: ['beamMode', 'fn'],
+    example: '3 m aluminum beam.', link: VIB, related: ['beamMode', 'fn'],
   },
   {
     id: 'pendulum', topic: 'vib', name: 'Simple pendulum period', eq: 'T = 2π √(L / g)', tags: 'oscillation gravity',

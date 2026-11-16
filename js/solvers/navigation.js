@@ -1,6 +1,6 @@
 // Navigation: WGS-84 geodesy (geodetic ↔ ECEF ↔ local NED, Vincenty's inverse and direct geodesic, rhumb lines on the
 // ellipsoid, spherical comparisons), the wind triangle and dead reckoning with its error growth, and the geometry of
-// VOR, DME and ILS. DOM-free. Angles in radians, distances in metres, speeds in m/s unless noted.
+// VOR, DME and ILS. DOM-free. Angles in radians, distances in meters, speeds in m/s unless noted.
 // Sources: NIMA TR8350.2 (WGS-84); T. Vincenty, "Direct and inverse solutions of geodesics on the ellipsoid with
 // application of nested equations", Survey Review 23 (176), 1975; Bowring (1976) for ECEF → geodetic; ICAO Annex 10
 // (VOR, DME, ILS); FAA Pilot's Handbook of Aeronautical Knowledge ch. 16 (wind triangle, dead reckoning).
@@ -19,7 +19,7 @@ export function geodeticToEcef(lat, lon, h = 0) {
   const { a, e2 } = WGS84, s = Math.sin(lat), N = a / Math.sqrt(1 - e2 * s * s);
   return [(N + h) * Math.cos(lat) * Math.cos(lon), (N + h) * Math.cos(lat) * Math.sin(lon), (N * (1 - e2) + h) * s];
 }
-// Bowring's method, refined twice (sub-millimetre everywhere outside the Earth's centre)
+// Bowring's method, refined twice (sub-millimeter everywhere outside the Earth's center)
 export function ecefToGeodetic([x, y, z]) {
   const { a, b, e2 } = WGS84, ep2 = (a * a - b * b) / (b * b), p = Math.hypot(x, y), lon = Math.atan2(y, x);
   let lat = Math.atan2(z, p * (1 - e2));
@@ -189,9 +189,9 @@ export function vor(north, east, obs, variation = 0) {
 }
 export function dme(north, east, h) { const g = Math.hypot(north, east); return { slant: Math.hypot(g, h), ground: g, error: Math.hypot(g, h) - g }; }
 // ILS: runway threshold at the origin, approach from the -x side along +x; aircraft at distance d before the threshold,
-// lateral offset y (m, + right of the centreline seen on approach) and height z. Localizer antenna beyond the far end.
+// lateral offset y (m, + right of the centerline seen on approach) and height z. Localizer antenna beyond the far end.
 export function ils({ d, y, z, gsAngle = 3 * Math.PI / 180, tch = 15, locDist = 3000 + 300, gpiDist = 300 }) {
-  const loc = Math.atan2(y, d + locDist);                                  // + : right of centreline
+  const loc = Math.atan2(y, d + locDist);                                  // + : right of centerline
   const gs = Math.atan2(z, d + gpiDist), onGp = Math.tan(gsAngle) * (d + gpiDist);
   return { loc, gs: gs - gsAngle, height: z, onGp, above: z - onGp, locDots: Math.max(-2.5, Math.min(2.5, loc / (1.25 * Math.PI / 180))), gsDots: Math.max(-2.5, Math.min(2.5, (gs - gsAngle) / (0.35 * Math.PI / 180))), tch };
 }

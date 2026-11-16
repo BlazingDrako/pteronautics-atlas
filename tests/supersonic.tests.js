@@ -20,7 +20,7 @@ export function supersonicTests(log) {
     log('flat plate M=3, α=5°: wave cd matches hand calculation', R.ok && rel(R.cdw, cdH) < 1e-6, `cd=${R.cdw?.toFixed(6)} hand=${cdH.toFixed(6)}`);
     // pressure acts normal to the plate, at mid-chord: cm¼ = −N/4 with N = √(cl² + cd²)
     const N = Math.hypot(R.cl, R.cdw);
-    log('flat plate: centre of pressure at mid-chord (cm¼ = −N/4)', R.ok && Math.abs(R.cm + N / 4) < 1e-6 * N, `cm=${R.cm?.toFixed(6)} −N/4=${(-N / 4).toFixed(6)}`);
+    log('flat plate: center of pressure at mid-chord (cm¼ = −N/4)', R.ok && Math.abs(R.cm + N / 4) < 1e-6 * N, `cm=${R.cm?.toFixed(6)} −N/4=${(-N / 4).toFixed(6)}`);
   }
 
   // 2. diamond vs the independent implementation in the Shocks & Expansions tab

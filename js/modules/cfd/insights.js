@@ -35,17 +35,17 @@ const SCENE = {
     return out;
   },
   channel: ({ Re, t }) => {
-    const out = [i('Poiseuille flow', 'Between two walls a steady pressure gradient balances wall friction, giving a parabolic velocity profile: fastest in the middle, zero at the walls. The mean speed is ⅔ of the centreline speed.')];
+    const out = [i('Poiseuille flow', 'Between two walls a steady pressure gradient balances wall friction, giving a parabolic velocity profile: fastest in the middle, zero at the walls. The mean speed is ⅔ of the centerline speed.')];
     if (t < 0.2 * Re) out.push(i('Still developing', 'Viscosity spreads the motion in from the walls; the profile settles after about 0.1·H²/ν, which is roughly 0.1·Re channel heights of travel. Watch the dye lines change from a flat "plug" shape to a parabola.'));
     out.push(i('Laminar at any Re here', 'Real channel flow turns turbulent above Re ≈ 2000 when disturbed. This 2-D, disturbance-free flow stays laminar much longer; draw an obstacle to disturb it.'));
     return out;
   },
   step: ({ Re }) => [i('Separation at a corner', `The flow leaves the step edge and a recirculating bubble forms behind it, reattaching to the lower wall several step heights downstream. The bubble grows roughly in proportion to Re in the laminar range.${Re > 400 ? ' Above about Re ≈ 400 a second bubble can appear on the upper wall.' : ''}`),
     i('Adverse pressure gradient', 'In the widening channel the flow slows and its pressure rises (switch to the Pressure view). Rising pressure pushes back on slow fluid near the walls, which is what makes the flow separate and recirculate.')],
-  cavity: ({ Re }) => [i('One big driven vortex', `The lid drags the fluid round into a single primary vortex. Small counter-rotating eddies form in the bottom corners${Re > 1000 ? ', and at this Re one appears in the top-left corner too' : ''}. As Re rises the vortex centre moves toward the middle of the box.`),
+  cavity: ({ Re }) => [i('One big driven vortex', `The lid drags the fluid round into a single primary vortex. Small counter-rotating eddies form in the bottom corners${Re > 1000 ? ', and at this Re one appears in the top-left corner too' : ''}. As Re rises the vortex center moves toward the middle of the box.`),
     i('A benchmark', 'Ghia, Ghia & Shin (1982) tabulated this flow precisely, and solver tests still compare against their numbers. This sandbox\'s test suite does too.')],
   jet: ({ Re }) => [i('Shear-layer instability', `Where fast jet fluid meets still fluid, the shear layer is unstable (Kelvin–Helmholtz): small waves grow and roll up into vortices${Re < 30 ? ' (at this low Re viscosity damps them, so the jet stays smooth)' : ''}. The vortices pull in surrounding fluid (entrainment), so the jet widens and slows.`),
-    i('Momentum is conserved', 'A free jet carries constant momentum flux. As it entrains still fluid it carries more mass, so it has to slow down: a plane jet\'s centreline speed falls as 1/√x.')],
+    i('Momentum is conserved', 'A free jet carries constant momentum flux. As it entrains still fluid it carries more mass, so it has to slow down: a plane jet\'s centerline speed falls as 1/√x.')],
   jets2: ({ Re }) => [i('Stagnation point', 'Where the jets meet, the fluid comes to rest and its pressure rises to the stagnation value ½ρU² above ambient (see the Pressure view). The flow escapes sideways.'),
     ...(Re > 100 ? [i('An unstable balance', 'Any small imbalance pushes the collision point toward one jet, which then pushes back. Above a modest Re the meeting point flaps from side to side.')] : [])],
   empty: ({ hasObjects }) => (hasObjects ? [] : [i('Add something', 'Pick a shape under Draw and click in the flow to place it, or paint with the brush. The flow reacts as soon as you draw.')]),
@@ -55,7 +55,7 @@ export function sceneInsights(id, ctx) {
   const out = [];
   if (ctx.unstable) out.push({ type: 'b', t: 'The simulation went unstable', d: 'Values blew up somewhere in the grid. Restart, lower the Reynolds number, use a finer grid or switch the turbulence model on.' });
   out.push(...(SCENE[id] ? SCENE[id](ctx) : []));
-  if (['cylinder', 'square', 'plate', 'triangle', 'tandem'].includes(id) && ctx.Re >= 47) out.push(i('Walls nearby', 'The top and bottom are slip walls 4.5 D from the centre (11% blockage). Squeezing the flow raises the shedding frequency and drag slightly compared with open air.'));
+  if (['cylinder', 'square', 'plate', 'triangle', 'tandem'].includes(id) && ctx.Re >= 47) out.push(i('Walls nearby', 'The top and bottom are slip walls 4.5 D from the center (11% blockage). Squeezing the flow raises the shedding frequency and drag slightly compared with open air.'));
   const bl = ctx.L / Math.sqrt(ctx.Re);
   if (bl < 1.2) out.push(w('Grid too coarse for this Re', `The boundary layer is only about ${bl.toFixed(1)} cells thick. The picture stays qualitative; use a finer grid for sharper detail.`));
   if (!ctx.turb && ctx.tau < 0.51) out.push(w('Close to the stability limit', `τ = ${ctx.tau.toFixed(4)}: the lattice viscosity ν = ${nuFromTau(ctx.tau).toExponential(1)} is very small. Without the turbulence model the simulation may blow up.`));

@@ -17,12 +17,12 @@ export function stabilityTab() {
 
   const metrics = metricsGrid();
   const bal = canvasBox('360px', drawBalance);
-  const balCard = card('The aircraft as a balance', 'Weight acts at the CG; the wing and body lift acts near the wing\'s aerodynamic centre; the tail adds a small force far behind to balance the pitching moments. Below, the mean aerodynamic chord (MAC) magnified: the CG must stay ahead of the neutral point for the aircraft to be stable.', bal.el);
+  const balCard = card('The aircraft as a balance', 'Weight acts at the CG; the wing and body lift acts near the wing\'s aerodynamic center; the tail adds a small force far behind to balance the pitching moments. Below, the mean aerodynamic chord (MAC) magnified: the CG must stay ahead of the neutral point for the aircraft to be stable.', bal.el);
   const cm = canvasBox('320px', drawCm);
   const cmCard = card('Pitching moment against angle of attack', 'Cm–α at the trim elevator for several CG positions. A stable aircraft has a negative slope: a nose-up disturbance makes a nose-down moment. At the neutral point the slope is zero.', cm.el);
   const tv = canvasBox('320px', drawTrimV);
   const tvCard = card('Trim elevator against speed', 'Elevator needed to fly level at each speed. A stable aircraft needs more up-elevator (more pull) to fly slower: the curve slopes the right way. With the CG behind the neutral point it reverses.', tv.el);
-  const derCard = card('Stability derivatives', 'Nondimensional derivatives estimated from the geometry (per radian; rates normalised by c̄/2V or b/2V).');
+  const derCard = card('Stability derivatives', 'Nondimensional derivatives estimated from the geometry (per radian; rates normalized by c̄/2V or b/2V).');
   const derHost = h('div', { class: 'flt-derivs' }); derCard.append(derHost);
   const insCard = card('What is happening here'); const ins = h('div'); insCard.append(ins);
   main.append(metrics.el, h('div', { class: 'flt-grid2' }, balCard, cmCard), h('div', { class: 'flt-grid2' }, tvCard, insCard), derCard);
@@ -31,7 +31,7 @@ export function stabilityTab() {
   const schedule = () => { clearTimeout(raf); raf = setTimeout(compute, 16); };
 
   function compute() {
-    const inp = stabInput(), r = St.analyse(inp), d = r.d, g = d.g;
+    const inp = stabInput(), r = St.analyze(inp), d = r.d, g = d.g;
     // tail load in trim: tail angle of attack = α(1 − dε/dα) − ε0 + i_t + τ·δe
     const eps0 = 2 * g.CL0 / (Math.PI * d.A), at = r.trim.alpha * (1 - d.deda) - eps0 + r.it + g.ht.tau * r.trim.de;
     const Lt = g.ht.eta * d.q * d.St * d.CLat * at;
@@ -142,7 +142,7 @@ export function stabilityTab() {
 
   function insights() {
     const { d, r, g, Lt } = R, L = [];
-    if (d.SM < 0) L.push({ type: 'b', t: `Statically unstable: CG ${(-d.SM * 100).toFixed(1)}% MAC behind the neutral point`, d: g.relaxed ? 'This is deliberate in the F-16: with relaxed static stability the tail carries an upward load in maneuvers instead of a download, so less trim drag and a more agile aircraft. A fly-by-wire computer stabilises it about 40 times a second; without it the nose would diverge within a second or so.' : 'A nose-up disturbance now makes a nose-up moment, so the disturbance grows. Unpowered, the pilot cannot keep up: the aircraft must be loaded with the CG further forward.' });
+    if (d.SM < 0) L.push({ type: 'b', t: `Statically unstable: CG ${(-d.SM * 100).toFixed(1)}% MAC behind the neutral point`, d: g.relaxed ? 'This is deliberate in the F-16: with relaxed static stability the tail carries an upward load in maneuvers instead of a download, so less trim drag and a more agile aircraft. A fly-by-wire computer stabilizes it about 40 times a second; without it the nose would diverge within a second or so.' : 'A nose-up disturbance now makes a nose-up moment, so the disturbance grows. Unpowered, the pilot cannot keep up: the aircraft must be loaded with the CG further forward.' });
     else if (d.SM < 0.05) L.push({ type: 'w', t: 'Very little static margin', d: 'The aircraft is stable but light and twitchy in pitch; small stick inputs give large responses, and the elevator per g is small.' });
     else L.push({ type: 'g', t: `Stable with ${(d.SM * 100).toFixed(1)}% static margin`, d: 'Disturbed in pitch, the aircraft returns to its trimmed angle of attack. Moving the CG forward adds margin but needs more up-elevator to trim and to flare at landing: the forward CG limit is set by elevator power.' });
     if (d.h < g.cg[0] || d.h > g.cg[1]) L.push({ type: 'w', t: 'Outside the certified CG range', d: `Certified ${Math.round(g.cg[0] * 100)}–${Math.round(g.cg[1] * 100)}% MAC. Forward: not enough elevator to flare. Aft: too little stability and stick force per g.` });

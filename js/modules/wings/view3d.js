@@ -1,5 +1,5 @@
 // 3-D wing view on a 2-D canvas: an orthographic camera you turn by dragging and zoom with the wheel. Draws the
-// lattice panels coloured by their pressure difference ΔCp (the Airfoil Lab's scale), lift arrows along the span,
+// lattice panels colored by their pressure difference ΔCp (the Airfoil Lab's scale), lift arrows along the span,
 // the trailing vortex sheet rolling up behind the wing, stall tufts, the ground plane and a tail marker.
 import { h, segmented } from '../../lib/ui.js';
 import { divergingJS } from '../airfoil/flowView.js';

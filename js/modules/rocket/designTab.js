@@ -61,7 +61,7 @@ export function designTab(shell) {
       S.cycle === 'gg' ? bound(S, 'gg', 'Gas generator flow', 0.005, 0.08, { step: 0.001, digits: 3, scale: 1, onInput: changed, tip: 'Fraction of total propellant flow burned in the gas generator (Merlin, F-1 ≈ 3%). Its exhaust is assumed to leave at one third of the main chamber Isp.' }) : null);
     const secP = section('Propellants');
     const ofst = TH.stoichOF(S.fuel, S.ox);
-    const best = h('button', { class: 'btn sm', type: 'button', title: 'Find the O/F that maximises vacuum Isp at this Pc and ε' }, 'Set O/F for max Isp');
+    const best = h('button', { class: 'btn sm', type: 'button', title: 'Find the O/F that maximizes vacuum Isp at this Pc and ε' }, 'Set O/F for max Isp');
     best.addEventListener('click', () => { best.textContent = 'Searching…'; setTimeout(() => { S.of = bestOF(); build(); changed(); }, 20); });
     put(secP.body,
       field('Fuel', select(R.FUELS.map(v => ({ value: v, label: TH.REACTANTS[v].label })), S.fuel, v => { S.fuel = v; const c = R.comboOf(S.fuel, S.ox); if (c) { S.of = c.of; S.Lstar = c.Lstar; } else S.of = TH.stoichOF(S.fuel, S.ox) * 0.8; build(); changed(); })),
@@ -75,7 +75,7 @@ export function designTab(shell) {
       bound(S, 'F', 'Thrust', 0.1, 10000, { log: true, digits: 1, unit: 'kN', onInput: changed, tip: 'Required thrust. Sets the throat area (and so every dimension) at the chosen condition.' }),
       field('Thrust specified', atSeg.el),
       bound(S, 'Pc', 'Chamber pressure Pc', 3, 350, { log: true, digits: 1, unit: 'bar', onInput: changed, tip: 'Higher Pc shrinks the engine for the same thrust and allows a bigger ε at sea level, but needs more pump power. Pressure-fed engines: 5–25 bar; pump-fed boosters: 70–300 bar.' }),
-      bound(S, 'Lstar', 'Characteristic length L*', 0.4, 2.5, { step: 0.01, digits: 2, unit: 'm', onInput: changed, tip: 'L* = chamber volume / throat area: a measure of residence time for droplets to vaporise and burn. Typical: LOX/LH₂ 0.76–1.0 m, LOX/RP-1 1.0–1.3 m, storables 0.75–0.9 m.' }),
+      bound(S, 'Lstar', 'Characteristic length L*', 0.4, 2.5, { step: 0.01, digits: 2, unit: 'm', onInput: changed, tip: 'L* = chamber volume / throat area: a measure of residence time for droplets to vaporize and burn. Typical: LOX/LH₂ 0.76–1.0 m, LOX/RP-1 1.0–1.3 m, storables 0.75–0.9 m.' }),
       toggle('Contraction ratio from throat size', S.autoCont, v => { S.autoCont = v; build(); changed(); }, { tip: 'Ac/At from the Huzel & Huang correlation 8·Dt^−0.6 + 1.25 (Dt in cm): small engines need relatively fatter chambers.' }).el,
       S.autoCont ? null : bound(S, 'contraction', 'Contraction ratio Ac/At', 1.5, 12, { step: 0.05, digits: 2, onInput: changed }));
     const secN = section('Nozzle');
@@ -83,7 +83,7 @@ export function designTab(shell) {
     nz.el.classList.add('seg-wrap');
     put(secN.body,
       bound(S, 'eps', 'Expansion ratio Ae/At', 1.5, 300, { log: true, digits: 1, onInput: changed, tip: 'Exit area / throat area. Bigger ε gives more vacuum Isp but over-expands (and may separate) at sea level. Boosters 15–40, vacuum stages 60–300.' }),
-      field('Contour', nz.el, 'An 80% bell (Rao thrust-optimised parabola) is 20% shorter than a 15° cone of the same ε with almost no divergence loss.'),
+      field('Contour', nz.el, 'An 80% bell (Rao thrust-optimized parabola) is 20% shorter than a 15° cone of the same ε with almost no divergence loss.'),
       S.nozzle === 'cone' ? bound(S, 'half', 'Cone half-angle', 8, 25, { step: 0.5, digits: 1, unit: '°', onInput: changed, tip: 'Divergence factor λ = (1 + cos α)/2: 15° loses 1.7% of the momentum thrust.' }) : null,
       bound(S, 'etaC', 'c* efficiency', 0.88, 1, { step: 0.001, digits: 3, onInput: changed, tip: 'Combustion efficiency: real c* / ideal c*. Good injectors reach 0.97–0.99.' }),
       bound(S, 'etaN', 'Nozzle efficiency', 0.9, 1, { step: 0.001, digits: 3, onInput: changed, tip: 'Boundary-layer drag and finite-rate chemistry losses on the momentum thrust, on top of divergence. Typically 0.97–0.99.' }),

@@ -244,7 +244,7 @@ function independentRows(As, rank) {
   return rows;
 }
 function leastSquares(A, b, n) {
-  // normal equations with tiny Tikhonov regularisation (minimum-norm-ish solution)
+  // normal equations with tiny Tikhonov regularization (minimum-norm-ish solution)
   const N = new Float64Array(n * n), r = new Float64Array(n);
   let tr = 0;
   for (let i = 0; i < A.length; i++) for (let j = 0; j < n; j++) { r[j] += A[i][j] * b[i]; for (let k = 0; k < n; k++) N[j * n + k] += A[i][j] * A[i][k]; }
@@ -359,7 +359,7 @@ function unilateralChecks(model, S, x) {
 }
 
 // ---------------------------------------------------------------- limit analysis (LP)
-// Maximise λ such that fixed loads + λ·(scaled loads) can be equilibrated with contacts in compression,
+// Maximize λ such that fixed loads + λ·(scaled loads) can be equilibrated with contacts in compression,
 // friction within the cone and cables in tension.
 export function limitAnalysis(model, T, scale = 'all') {
   const isVar = ld => (scale === 'all' ? true : scale === 'self' ? ld.kind === 'self' : ld.id === scale);

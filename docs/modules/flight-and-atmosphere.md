@@ -38,7 +38,7 @@ turbofans, the fighter's normal-shock inlet recovery), and the Gagg–Ferrar pow
   speed, Ps contours, constant-radius and constant-load-factor lines; a to-scale picture of the sustained and
   instantaneous turn circles and the banked lift vector; the V–n diagram with maneuver envelope and FAR 23/25 gust lines
   (Pratt alleviation factor).
-- **Envelope**: the altitude–Mach map of specific excess power (colour and contours, marching squares), the Ps = 0
+- **Envelope**: the altitude–Mach map of specific excess power (color and contours, marching squares), the Ps = 0
   level-flight envelope, stall, VNE/VD and Mach limits, energy-height lines, Rutowski's minimum-time energy climb to a
   point you click, Ps slices against Mach and the climb path against time.
 

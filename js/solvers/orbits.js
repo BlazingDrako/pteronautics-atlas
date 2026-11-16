@@ -1,5 +1,5 @@
 // Orbital mechanics (no DOM): two-body orbits and the six classical elements, Kepler's equation, Hohmann, bi-elliptic
-// and plane-change manoeuvres, J2 secular drift, ground tracks and coverage, and Δv budgets with the rocket equation.
+// and plane-change maneuvers, J2 secular drift, ground tracks and coverage, and Δv budgets with the rocket equation.
 // SI units throughout (m, s, rad) unless a name says otherwise.
 
 export const G0 = 9.80665;
@@ -113,7 +113,7 @@ export function timeHistory(el, mu, n = 200) {
   return out;
 }
 
-// ---------------- manoeuvres ----------------
+// ---------------- maneuvers ----------------
 // Hohmann between circular coplanar orbits r1 → r2
 export function hohmann(r1, r2, mu) {
   const at = (r1 + r2) / 2, v1 = Math.sqrt(mu / r1), v2 = Math.sqrt(mu / r2);
@@ -134,7 +134,7 @@ export const planeChange = (v, di) => 2 * v * Math.sin(Math.abs(di) / 2);
 export const turnBurn = (v1, v2, d) => Math.sqrt(Math.max(0, v1 * v1 + v2 * v2 - 2 * v1 * v2 * Math.cos(d)));
 
 // Hohmann with an inclination change di shared between the two burns: frac = share done at the first burn.
-// mode: 'end' (all at the final, slower burn), 'start', 'split' (the share that minimises total Δv), or a number 0..1
+// mode: 'end' (all at the final, slower burn), 'start', 'split' (the share that minimizes total Δv), or a number 0..1
 export function hohmannPlane(r1, r2, di, mu, mode = 'split') {
   const H = hohmann(r1, r2, mu);
   const tot = f => turnBurn(H.v1, H.vt1, f * di) + turnBurn(H.vt2, H.v2, (1 - f) * di);

@@ -14,14 +14,14 @@ export function planformTab({ keep }) {
   const metrics = metricsGrid();
   const view = new WingView();
   view.setLayers(V);
-  const vCard = card('The wing in 3-D', 'Each lattice panel is coloured by its loading ΔCp (the pressure below minus the pressure above). Arrows: lift per unit span, c·cl, along each strip. Purple: the trailing vortex sheet, rolling up into the tip vortices. Drag to turn, scroll to zoom.');
+  const vCard = card('The wing in 3-D', 'Each lattice panel is colored by its loading ΔCp (the pressure below minus the pressure above). Arrows: lift per unit span, c·cl, along each strip. Purple: the trailing vortex sheet, rolling up into the tip vortices. Drag to turn, scroll to zoom.');
   const layerRow = h('div', { class: 'row', style: { gap: '4px 14px', flexWrap: 'wrap', marginBottom: '8px' } });
-  for (const [k, l, tip] of [['pressure', 'Loading ΔCp', 'Panel colour: how hard each piece of the wing is lifting. The leading edge works hardest.'], ['arrows', 'Lift along the span', 'c·cl at each strip, the spanwise load that sets induced drag and bending.'], ['wake', 'Trailing wake', 'The vortex sheet shed wherever the lift changes along the span, rolling up as it goes.'], ['ground', 'Grid', 'A reference grid below the wing.']])
+  for (const [k, l, tip] of [['pressure', 'Loading ΔCp', 'Panel color: how hard each piece of the wing is lifting. The leading edge works hardest.'], ['arrows', 'Lift along the span', 'c·cl at each strip, the spanwise load that sets induced drag and bending.'], ['wake', 'Trailing wake', 'The vortex sheet shed wherever the lift changes along the span, rolling up as it goes.'], ['ground', 'Grid', 'A reference grid below the wing.']])
     layerRow.append(toggle(l, V[k], v => { V[k] = v; view.setLayers({ [k]: v }); }, { tip }).el);
   layerRow.append(toggle('Animate the wake', V.animate, v => { V.animate = v; view.setAnimate(v); }).el);
   vCard.append(layerRow, view.el);
 
-  const pCard = card('Planform (drag the tip)', 'Top view, flow from the top. Drag the round handle at the tip quarter chord to change span (aspect ratio, at constant area) and sweep; drag the square handle on the tip trailing edge to change the taper. Dashed: the quarter-chord line. The bar marks the mean aerodynamic chord; the triangle, the aerodynamic centre.');
+  const pCard = card('Planform (drag the tip)', 'Top view, flow from the top. Drag the round handle at the tip quarter chord to change span (aspect ratio, at constant area) and sweep; drag the square handle on the tip trailing edge to change the taper. Dashed: the quarter-chord line. The bar marks the mean aerodynamic chord; the triangle, the aerodynamic center.');
   const plan = planEditor(() => { schedule(); }, () => { build(); });
   pCard.append(plan.el);
 
@@ -38,7 +38,7 @@ export function planformTab({ keep }) {
   const build = () => {
     wingCtl = wingSection(changed); flightCtl = flightSection(changed);
     controls.replaceChildren(wingCtl.el, flightCtl.el, sendSection([
-      { label: 'Airfoil Lab', sub: 'Analyse the root section at its Reynolds number and local lift', go: () => {
+      { label: 'Airfoil Lab', sub: 'Analyze the root section at its Reynolds number and local lift', go: () => {
         const s = store.sol, A = store.air, root = s.strips.reduce((a, x) => Math.abs(x.y) < Math.abs(a.y) ? x : a);
         const Re = Math.round(Math.min(5e7, Math.max(2e4, A.ReRoot)) / 1000) * 1000;
         return sendTo({ mod: 'airfoil', key: 'analyze', note: `NACA ${store.W.root} at the root: Re ${reStr(Re)}, cl ${root.cl.toFixed(2)}`, values: { geom: { kind: 'naca', code: store.W.root }, oper: { mode: 'cl', cl: +root.cl.toFixed(3), Re, Ma: +Math.min(0.7, A.M).toFixed(3) } } });
@@ -55,8 +55,8 @@ export function planformTab({ keep }) {
       { k: 'Induced drag CDi', v: fmt(s.CDi, 5), s: `${(s.CDi / Math.max(1e-9, s.CL ** 2) * Math.PI * W.AR).toFixed(3)}·CL²/(πA)`, tip: 'Drag due to lift, from the energy left in the wake (Trefftz plane). It grows with CL² and falls with span.' },
       { k: 'Span efficiency e', v: fmt(s.e, 4), s: s.e > 0.995 ? 'elliptic-like loading' : `${((1 / s.e - 1) * 100).toFixed(1)}% more CDi than elliptic`, tip: 'e = CL²/(π·AR·CDi). 1 for elliptic loading on a flat wing; above 1 only with non-planar wings (winglets, dihedral).' },
       { k: 'Lift', v: force(Lf), s: `${Math.round(Lf / 9.80665).toLocaleString('en-US')} kg at 1 g`, tip: 'CL·q·S at this airspeed and altitude.' },
-      { k: 'Root bending moment', v: moment(s.Mb * A.atm.rho * store.C.V ** 2), s: `lift centroid at ${(s.ycp * 100).toFixed(1)}% semi-span`, tip: 'Of one half-wing, about the centre line. Elliptic loading puts the centroid at 4/(3π) = 42.4%.' },
-      { k: 'Aerodynamic centre', v: (s.xac * 100).toFixed(1) + '% MAC', s: `${len(P.xMac + s.xac * P.mac)} aft of the root LE`, tip: 'The point about which the pitching moment does not change with α. Sweep and taper move it relative to the MAC.' },
+      { k: 'Root bending moment', v: moment(s.Mb * A.atm.rho * store.C.V ** 2), s: `lift centroid at ${(s.ycp * 100).toFixed(1)}% semi-span`, tip: 'Of one half-wing, about the center line. Elliptic loading puts the centroid at 4/(3π) = 42.4%.' },
+      { k: 'Aerodynamic center', v: (s.xac * 100).toFixed(1) + '% MAC', s: `${len(P.xMac + s.xac * P.mac)} aft of the root LE`, tip: 'The point about which the pitching moment does not change with α. Sweep and taper move it relative to the MAC.' },
       { k: 'Zero-lift angle', v: s.alphaL0.toFixed(2) + '°', s: `Cm₀ ${fmt(s.Cm0, 4)} (twist only)`, tip: 'Angle of the root chord at which the whole wing lifts nothing. Camber lowers it; washout raises it.' },
     ]);
     // spanwise plots: the right half of the main wing
@@ -82,8 +82,8 @@ export function planformTab({ keep }) {
     if (p) L.push({ type: 'i', t: p.label, d: p.note });
     const peak = st.reduce((a, x) => x.cl > a.cl ? x : a, st[0]);
     if (peak) L.push({ type: peak.eta > 0.6 ? 'w' : 'g', t: `Highest local cl at ${(peak.eta * 100).toFixed(0)}% of the semi-span`, d: peak.eta > 0.6 ? 'With the same section everywhere, the stall starts out there, near the ailerons: the wing can drop suddenly. Washout (negative tip twist) or less taper and sweep move it inboard. See the Stall tab.' : 'The stall should start inboard, where it is gentle and gives warning with buffet over the tail, while the ailerons keep working.' });
-    if (s.e < 0.97 && !(W.winglet && W.winglet.on)) L.push({ type: 'i', t: `Induced drag ${((1 / s.e - 1) * 100).toFixed(1)}% above elliptic`, d: W.taper > 0.7 && W.shape !== 'elliptic' ? 'A rectangle carries too much lift near the tips. A taper ratio around 0.35–0.45 brings an untwisted straight wing close to elliptic.' : W.taper < 0.25 ? 'This much taper loads the tips too heavily. Washout or a higher taper ratio spreads the load back toward elliptic.' : 'Twist, taper and sweep all reshape the spanwise load. Matching the dashed elliptic curve minimises induced drag for this span.' });
-    if (Math.abs(W.sweep) > 15) L.push({ type: 'i', t: `Sweep ${W.sweep > 0 ? 'back' : 'forward'} ${Math.abs(W.sweep).toFixed(0)}°`, d: W.sweep > 0 ? 'Swept-back wings carry more lift outboard than the same straight wing (each section sits in the upwash of the ones ahead of it). The lift slope drops roughly with cos Λ, and the aerodynamic centre moves aft.' : 'Forward sweep moves the load inboard: the root works hardest and stalls first. Aeroelastic divergence (the tips twisting up under load) is its main problem.' });
+    if (s.e < 0.97 && !(W.winglet && W.winglet.on)) L.push({ type: 'i', t: `Induced drag ${((1 / s.e - 1) * 100).toFixed(1)}% above elliptic`, d: W.taper > 0.7 && W.shape !== 'elliptic' ? 'A rectangle carries too much lift near the tips. A taper ratio around 0.35–0.45 brings an untwisted straight wing close to elliptic.' : W.taper < 0.25 ? 'This much taper loads the tips too heavily. Washout or a higher taper ratio spreads the load back toward elliptic.' : 'Twist, taper and sweep all reshape the spanwise load. Matching the dashed elliptic curve minimizes induced drag for this span.' });
+    if (Math.abs(W.sweep) > 15) L.push({ type: 'i', t: `Sweep ${W.sweep > 0 ? 'back' : 'forward'} ${Math.abs(W.sweep).toFixed(0)}°`, d: W.sweep > 0 ? 'Swept-back wings carry more lift outboard than the same straight wing (each section sits in the upwash of the ones ahead of it). The lift slope drops roughly with cos Λ, and the aerodynamic center moves aft.' : 'Forward sweep moves the load inboard: the root works hardest and stalls first. Aeroelastic divergence (the tips twisting up under load) is its main problem.' });
     if (store.air.M > 0.3) L.push({ type: 'i', t: `Mach ${store.air.M.toFixed(2)}: compressibility included`, d: `Göthert's rule: the wing is solved stretched along the flow by 1/√(1 − M²) = ${(1 / s.beta).toFixed(3)}. Lift slope rises by less than the 2-D Prandtl–Glauert factor because the stretched wing has a lower aspect ratio.${store.air.M > 0.7 ? ' Above about M 0.7 real wings meet shock waves and drag rise, which this linear model cannot see.' : ''}` });
     if (store.C.alpha > 12) L.push({ type: 'w', t: 'High angle of attack', d: 'This linear model keeps lifting past the stall. The Stall tab follows each section\'s polar instead.' });
     insightsList(insEl, L);
@@ -136,7 +136,7 @@ function planEditor(onDrag, onDone) {
     // quarter-chord line
     g.setLineDash([5, 4]); g.strokeStyle = css('--text-3'); g.lineWidth = 1;
     g.beginPath(); g.moveTo(X(-P.s), Y(P.xc4(1))); g.lineTo(X(0), Y(P.xc4(0))); g.lineTo(X(P.s), Y(P.xc4(1))); g.stroke(); g.setLineDash([]);
-    // MAC and aerodynamic centre
+    // MAC and aerodynamic center
     g.strokeStyle = css('--good'); g.lineWidth = 2.2;
     for (const sg of [-1, 1]) { g.beginPath(); g.moveTo(X(sg * P.yMac), Y(P.xMac)); g.lineTo(X(sg * P.yMac), Y(P.xMac + P.mac)); g.stroke(); }
     if (s) {

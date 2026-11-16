@@ -12,7 +12,7 @@
 import { polar, fuelFlow } from './performance.js';
 
 // ---------- (1) wake and formation ----------
-// Induced velocity (v lateral, w up) at (y, z) from a trailing vortex starting X metres upstream of the point, at
+// Induced velocity (v lateral, w up) at (y, z) from a trailing vortex starting X meters upstream of the point, at
 // (yv, zv), of a lifting wing's tip on side s (+1 right, −1 left), circulation Γ, core radius rc.
 export function vortexAt(y, z, yv, zv, s, G, rc, X = Infinity) {
   const dy = y - yv, dz = z - zv, r2 = dy * dy + dz * dz, f = X === Infinity ? 1 : 0.5 * (1 + X / Math.sqrt(X * X + r2));
@@ -45,7 +45,7 @@ export function formation({ pos, b, W, rho, V, rcFrac = 0.05, nuFrac = 2e-4, n =
     return { wbar, dD, ratio: -dD / Di0, roll, Di0, G, rc };
   });
 }
-// Positions for a pattern: lateral spacing dy (m, centre to centre), longitudinal dx (m), vertical dz (m)
+// Positions for a pattern: lateral spacing dy (m, center to center), longitudinal dx (m), vertical dz (m)
 export function pattern(kind, N, dy, dx, dz = 0) {
   const out = [];
   for (let i = 0; i < N; i++) {

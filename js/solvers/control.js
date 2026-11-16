@@ -263,7 +263,7 @@ export function rootLocus(L, k0 = 1e-4, k1 = 1e4, n = 120, { rel = 0.02, maxSolv
 export const clPoles = (L, k = 1) => roots(polyAdd(L.den, polyScale(L.num, k)));
 
 // ---------- time response ----------
-// Controllable canonical realisation of a proper G, then RK4. Returns t, y (and the input) at up to ~800 points.
+// Controllable canonical realization of a proper G, then RK4. Returns t, y (and the input) at up to ~800 points.
 export function tfToSs(g) {
   const a0 = g.den[0], den = g.den.map(c => c / a0), n = den.length - 1;
   let num = g.num.map(c => c / a0);
@@ -328,11 +328,11 @@ export const LOOPS = [
   { id: 'alpha', label: 'Angle of attack α', short: 'α', axis: 'lon', input: 'elevator', sign: -1, unit: 'deg', role: 'α feedback' },
   { id: 'nz', label: 'Normal load factor nz', short: 'nz', axis: 'lon', input: 'elevator', sign: -1, unit: 'g', role: 'g command' },
   { id: 'p', label: 'Roll rate p', short: 'p', axis: 'lat', input: 'aileron', sign: 1, unit: 'deg/s', role: 'roll damper' },
-  { id: 'phi', label: 'Bank angle φ', short: 'φ', axis: 'lat', input: 'aileron', sign: 1, unit: 'deg', role: 'wing leveller' },
+  { id: 'phi', label: 'Bank angle φ', short: 'φ', axis: 'lat', input: 'aileron', sign: 1, unit: 'deg', role: 'wing leveler' },
   { id: 'r', label: 'Yaw rate r', short: 'r', axis: 'lat', input: 'rudder', sign: -1, unit: 'deg/s', role: 'yaw damper' },
   { id: 'beta', label: 'Sideslip β', short: 'β', axis: 'lat', input: 'rudder', sign: 1, unit: 'deg', role: 'turn coordinator' },
 ];
-// Plant transfer function (output per degree of input) from a stability analysis (stability.js analyse()).
+// Plant transfer function (output per degree of input) from a stability analysis (stability.js analyze()).
 export function aircraftPlant(an, id) {
   const L = LOOPS.find(l => l.id === id) || LOOPS[0];
   const G0 = 9.80665, DEG = Math.PI / 180;

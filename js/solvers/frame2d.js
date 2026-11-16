@@ -1,7 +1,7 @@
 // 2-D frame / truss / cable analysis by the direct stiffness method (all SI units).
 //
 // Elements: Euler–Bernoulli beam-columns (axial + bending), truss bars and tension-only cables.
-// Member-end hinges are modelled with their own rotation DOF, so a hinged end keeps exact
+// Member-end hinges are modeled with their own rotation DOF, so a hinged end keeps exact
 // stiffness and mass terms. Supports may be inclined (rotated node frame), elastic (springs) or
 // have prescribed settlements. Member loads: point forces, point moments, linearly varying
 // distributed loads (global, projected or local), self weight, and uniform / gradient temperature.
@@ -458,7 +458,7 @@ function diagrams(m, LL, f, ul, slack) {
 // ∫ q(s)·s ds for q varying linearly from q0 at a to q1 at b
 const firstMoment = (a, b, q0, q1) => (b - a) * (q0 * (2 * a + b) + q1 * (a + 2 * b)) / 6;
 
-// Combined axial + bending stress at the extreme fibres, shear stress at the neutral axis.
+// Combined axial + bending stress at the extreme fibers, shear stress at the neutral axis.
 function memberStress(m, d) {
   const S = m.sec, A = S.A, I = S.Ix;
   let best = { vm: 0 }, sigMax = -Infinity, sigMin = Infinity, tauMax = 0;
@@ -517,11 +517,11 @@ export function modal(model, { nModes = 8, nsub } = {}) {
   for (let k = 0; k < res.values.length && modes.length < nModes; k++) {
     const w2 = res.values[k];
     if (w2 < -1e-6 * Math.abs(res.values[res.values.length - 1])) continue;
-    const phi = res.vectors[k]; // M-normalised
+    const phi = res.vectors[k]; // M-normalized
     const Lx = phi.reduce((s, a, q) => s + a * Mrx[q], 0), Ly = phi.reduce((s, a, q) => s + a * Mry[q], 0);
     const shape = new Float64Array(mesh.ndof); free.forEach((d, q) => { shape[d] = phi[q]; });
     rotateVec(shape, bc.rot, true);
-    const phiM = Float64Array.from(shape); // mass-normalised (φᵀMφ = 1), global components
+    const phiM = Float64Array.from(shape); // mass-normalized (φᵀMφ = 1), global components
     const w = Math.sqrt(Math.max(0, w2));
     modes.push({ omega: w, f: w / (2 * Math.PI), T: w > 0 ? 2 * Math.PI / w : Infinity, phi: phiM, Lx, Ly, shape: normalizeShape(shape, mesh), effX: Lx * Lx / (totX || 1), effY: Ly * Ly / (totY || 1), mass: { totX, totY } });
   }

@@ -136,7 +136,7 @@ export function ceaTab({ keep = o => o } = {}) {
     if (phi > 1.6 && (TH.REACTANTS[S.fuel].el.C || 0) > 0) L.push({ type: 'w', t: 'Very fuel-rich hydrocarbon', d: 'Real combustion would form soot (solid carbon); this gas-only model does not include condensed species.' });
     if (S.prob === 'rocket') {
       L.push({ type: 'i', t: S.frozen ? 'Frozen expansion' : 'Equilibrium expansion', d: S.frozen ? 'Composition fixed at the chamber values: a conservative lower bound on performance.' : 'Composition re-equilibrates at every pressure (infinitely fast chemistry): an upper bound.' });
-      if (R.exit.T < 600 && (TH.REACTANTS[S.fuel].el.H || 0) > 0) L.push({ type: 'w', t: 'Water may condense', d: `Exit temperature ${R.exit.T.toFixed(0)} K; condensed phases are not modelled.` });
+      if (R.exit.T < 600 && (TH.REACTANTS[S.fuel].el.H || 0) > 0) L.push({ type: 'w', t: 'Water may condense', d: `Exit temperature ${R.exit.T.toFixed(0)} K; condensed phases are not modeled.` });
       if (R.Isp < R.exit.u * 0.9 && S.pa > 0) L.push({ type: 'w', t: 'Overexpanded at this ambient', d: `Exit pressure ${(R.exit.P / 1e5).toFixed(3)} bar is below ambient ${S.pa} bar; flow separation is likely below about 0.3–0.4 × pa.` });
     }
     if (!R.converged) L.push({ type: 'b', t: 'Not converged', d: 'The Newton iteration did not reach tolerance. Try a different mixture ratio or pressure.' });

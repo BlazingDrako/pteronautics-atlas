@@ -380,7 +380,7 @@ export class Viewer3D {
   }
   note(g, txt) { g.fillStyle = this.col.t3; g.font = `10.5px ${this.col.font}`; g.textAlign = 'right'; g.textBaseline = 'top'; g.fillText(txt, this.W - 12, 12); }
 
-  // axial force or torque: coloured members with width by magnitude
+  // axial force or torque: colored members with width by magnitude
   drawAxial(g, R, view) {
     const key = view === 'N' ? 'N' : 'T', mdl = this.app.model();
     let mx = 0; for (const mr of R.members) mx = Math.max(mx, Math.abs(mr.ext[key]));
@@ -437,7 +437,7 @@ export class Viewer3D {
         const m = mdl.members[k], [a, b] = this.memberEnds(m), A = memberAxes(a, b, m.roll || 0), ex = A.R[0], dir = A.R[ax];
         const vals = mr[key]; let any = false; for (const v of vals) if (Math.abs(v) > 1e-9 * mx) { any = true; break; }
         if (!any) return;
-        // moments are drawn on the tension side (the side the member bends towards): −y for +Mz, +z for +My
+        // moments are drawn on the tension side (the side the member bends toward): −y for +Mz, +z for +My
         const sgn = key === 'Mz' ? -1 : key === 'My' ? 1 : 1;
         const base = mr.s.map(s => [0, 1, 2].map(c => a[c] + ex[c] * s));
         const tips = mr.s.map((s, i) => base[i].map((v, c) => v + dir[c] * sgn * vals[i] * sc));

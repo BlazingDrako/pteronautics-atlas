@@ -36,7 +36,7 @@ export function sectionTab({ go, keep = o => o }) {
   const sigPlot = new Plot(sigHost, { legend: true }), tauPlot = new Plot(tauHost, { legend: true });
   const propsBox = h('div', {}), pointBox = h('div', {}), insights = h('div', {});
   main.append(metrics.el,
-    h('div', { class: 'st-pair' }, card('Section', 'Stress colour: normal stress σ = N/A − M·y/I (red tension, blue compression). Dashed: plastic neutral axis. ✕: shear centre.', draw.el), card('Properties', null, propsBox)),
+    h('div', { class: 'st-pair' }, card('Section', 'Stress color: normal stress σ = N/A − M·y/I (red tension, blue compression). Dashed: plastic neutral axis. ✕: shear center.', draw.el), card('Properties', null, propsBox)),
     h('div', { class: 'cf-grid2b' }, card('Normal stress through the depth', null, sigHost), card('Shear stress through the depth', 'τ = VQ(y)/(I·b(y)) from vertical shear. Torsion adds its own shear, largest at the outer surface (shown in the metrics).', tauHost)),
     h('div', { class: 'st-pair' }, card('Stress at the picked point', null, pointBox), card('Notes', null, insights)));
 
@@ -70,7 +70,7 @@ export function sectionTab({ go, keep = o => o }) {
       ['EI', `${fmtNum(mat.E * P.Ix / units.factor('force') / units.factor('len') ** 2, 4)} ${units.label('force')}·${units.label('len')}²`], ['EA', units.fmt('force', mat.E * P.A, 4)], ['GJ', `${fmtNum(mat.E / (2 * (1 + mat.nu)) * P.J / units.factor('force') / units.factor('len') ** 2, 4)} ${units.label('force')}·${units.label('len')}²`],
       ['Elastic moment Mᵧ = σᵧS', units.fmt('moment', mat.fy * P.Sx, 4)], ['Plastic moment Mₚ = σᵧZ', units.fmt('moment', mat.fy * P.Zx, 4)],
     ];
-    if (P.shearCentre) rows.push(['Shear centre (x, y)', `${units.num('dim', P.shearCentre.x, 4)}, ${units.num('dim', P.shearCentre.y, 4)} ${L}`]);
+    if (P.shearCenter) rows.push(['Shear center (x, y)', `${units.num('dim', P.shearCenter.x, 4)}, ${units.num('dim', P.shearCenter.y, 4)} ${L}`]);
     propsBox.replaceChildren(h('div', { class: 'cf-res st-props' }, ...rows.map(([k, v]) => h('div', { class: 'r' }, h('span', {}, k), h('span', {}, v)))));
     // distributions
     const ys = [], sig = [], tau = [];
@@ -89,7 +89,7 @@ export function sectionTab({ go, keep = o => o }) {
     tauPlot.setData({ series: [{ x: tau, y: yd, color: cssv('--lam'), label: 'τ(y) = VQ/Ib' }] });
     renderPoint(mat, kT);
     const notes = [];
-    if (P.shearCentre) notes.push({ type: 'w', t: 'Shear centre off the centroid', d: `Loads must pass through the shear centre (${P.shearCentre.note}) or the section twists as it bends. Channels and angles used as spar caps or stringers need this.` });
+    if (P.shearCenter) notes.push({ type: 'w', t: 'Shear center off the centroid', d: `Loads must pass through the shear center (${P.shearCenter.note}) or the section twists as it bends. Channels and angles used as spar caps or stringers need this.` });
     if (Math.abs(P.Ixy) > 1e-6 * P.Ix) notes.push({ type: 'w', t: 'Unsymmetric section', d: `The principal axes are rotated ${(P.thetaP * 180 / Math.PI).toFixed(1)}°: a vertical load also makes it deflect sideways (unsymmetric bending). This 2-D tool uses Iₓ only.` });
     const open = ['ibeam', 'channel', 'tee', 'angle', 'zsec', 'hat'].includes(st.shape);
     notes.push({ type: 'i', t: open ? 'Open thin-walled section: weak in torsion' : 'Closed or solid section: stiff in torsion', d: open ? `J = Σ b·t³/3 is tiny compared with a closed tube of the same area. That is why wings use closed boxes (skins + spars) to carry torque.` : `Closed sections carry torque by a shear flow q = T/(2A_m) around the wall (Bredt–Batho).` });
@@ -121,7 +121,7 @@ export function sectionTab({ go, keep = o => o }) {
     const X = x => ox + x * s, Y = y => oy - y * s;
     xform = { X, Y, s, ox, oy };
     const smax = Math.max(Math.abs(st.N / P.A - st.M * P.ctop / P.Ix), Math.abs(st.N / P.A + st.M * P.cbot / P.Ix), 1e-30);
-    // fill with stress colour row by row, clipped to the section parts
+    // fill with stress color row by row, clipped to the section parts
     g.save();
     g.beginPath();
     for (const p of P.parts) if (p.s > 0) { if (p.k === 'r') g.rect(X(p.x), Y(p.y + p.h), p.w * s, p.h * s); else { g.moveTo(X(p.x) + p.r * s, Y(p.y)); g.arc(X(p.x), Y(p.y), p.r * s, 0, 2 * Math.PI); } }
@@ -147,14 +147,14 @@ export function sectionTab({ go, keep = o => o }) {
     g.setLineDash([]);
     g.fillStyle = acc; g.beginPath(); g.arc(X(P.xc), Y(P.yc), 4, 0, 2 * Math.PI); g.fill();
     g.font = `11px ${cssv('--font')}`; g.fillStyle = acc; g.textAlign = 'left'; g.textBaseline = 'bottom'; g.fillText('neutral axis (x)', X(P.xmin + P.w) + 6, Y(P.yc) - 2);
-    if (P.shearCentre) { const sx = X(P.shearCentre.x), sy = Y(P.shearCentre.y); g.strokeStyle = cssv('--bad'); g.lineWidth = 2; g.beginPath(); g.moveTo(sx - 5, sy - 5); g.lineTo(sx + 5, sy + 5); g.moveTo(sx + 5, sy - 5); g.lineTo(sx - 5, sy + 5); g.stroke(); g.fillStyle = cssv('--bad'); g.textAlign = 'right'; g.fillText('S.C.', sx - 7, sy - 4); }
+    if (P.shearCenter) { const sx = X(P.shearCenter.x), sy = Y(P.shearCenter.y); g.strokeStyle = cssv('--bad'); g.lineWidth = 2; g.beginPath(); g.moveTo(sx - 5, sy - 5); g.lineTo(sx + 5, sy + 5); g.moveTo(sx + 5, sy - 5); g.lineTo(sx - 5, sy + 5); g.stroke(); g.fillStyle = cssv('--bad'); g.textAlign = 'right'; g.fillText('S.C.', sx - 7, sy - 4); }
     // picked point line
     if (st.pickY !== null) { g.strokeStyle = cssv('--text'); g.lineWidth = 1; g.beginPath(); g.moveTo(X(P.xmin) - 10, Y(st.pickY)); g.lineTo(X(P.xmin + P.w) + 10, Y(st.pickY)); g.stroke(); g.fillStyle = cssv('--text'); g.beginPath(); g.arc(X(P.xmin) - 10, Y(st.pickY), 3, 0, 2 * Math.PI); g.fill(); }
     // dimensions
     g.fillStyle = t3; g.font = `10.5px ${cssv('--mono')}`; g.textAlign = 'center'; g.textBaseline = 'top';
     g.fillText(`${units.num('dim', P.w, 4)} ${units.label('dim')}`, X(P.xmin + P.w / 2), Y(P.ymin) + 8);
     g.save(); g.translate(X(P.xmin) - 30, Y(P.ymin + P.h / 2)); g.rotate(-Math.PI / 2); g.textBaseline = 'middle'; g.fillText(`${units.num('dim', P.h, 4)} ${units.label('dim')}`, 0, 0); g.restore();
-    // colour bar
+    // color bar
     const bx = W - 44, by0 = 30, by1 = H - 30;
     for (let i = 0; i < 100; i++) { g.fillStyle = diverging(1 - 2 * i / 99); g.fillRect(bx, by0 + (by1 - by0) * i / 100, 12, (by1 - by0) / 100 + 1); }
     g.fillStyle = t3; g.textAlign = 'left'; g.textBaseline = 'middle'; g.font = `10px ${cssv('--mono')}`;

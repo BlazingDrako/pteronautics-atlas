@@ -9,7 +9,7 @@
 // streamline. With no boundary layer on it, this is the same as a moving ground (a rolling road).
 //
 // Units: free-stream speed 1 at angle `alpha` (radians). Pressure coefficient Cp = 1 − |V|². Forces are per unit
-// span and per unit dynamic pressure (so multiply by ½ρV² for newtons per metre of span).
+// span and per unit dynamic pressure (so multiply by ½ρV² for newtons per meter of span).
 //
 // bodies: [{ pts: [[x, y], …] closed polygon (no repeated last point), lifting: bool }]
 //   lifting bodies must start at their sharp trailing edge (first panel leaves the TE along one surface,
@@ -103,7 +103,7 @@ export function solvePanels(bodies, { ground = false, alpha = 0 } = {}) {
     for (let j = 0; j < M; j++) v += At[i * M + j] * x[j];
     Vt[i] = v; Cp[i] = 1 - v * v;
   }
-  // forces on each body (per unit dynamic pressure and span): F = −∮ Cp n dl; x of the vertical force's centre
+  // forces on each body (per unit dynamic pressure and span): F = −∮ Cp n dl; x of the vertical force's center
   const forces = bodies.map((_, b) => {
     const [s, e] = ranges[b]; let fx = 0, fy = 0, m = 0;
     for (let i = s; i < e; i++) { const p = panels[i], c = -Cp[i] * p.len; fx += c * p.nx; fy += c * p.ny; m += c * p.ny * p.mx; }
@@ -134,7 +134,7 @@ export function solvePanels(bodies, { ground = false, alpha = 0 } = {}) {
     }
     return false;
   }
-  // velocity on a GX × GY grid of cell centres over [x0, x1] × [y0, y1] (fast version of velocity());
+  // velocity on a GX × GY grid of cell centers over [x0, x1] × [y0, y1] (fast version of velocity());
   // mask = 1 inside bodies or below the ground
   function grid(x0, x1, y0, y1, GX, GY) {
     const n = GX * GY, U = new Float32Array(n), V = new Float32Array(n), mask = new Uint8Array(n);

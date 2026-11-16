@@ -31,7 +31,7 @@ export function stabilityTests(log) {
 
   // ---- trim and neutral point ----
   const c172 = { id: 'c172', mass: 1043, z: geometric(5000 * FT), V: 120 * KT, cg: 0.27 };
-  const a = St.analyse(c172), d = a.d;
+  const a = St.analyze(c172), d = a.d;
   near('trim: lift equals weight', d.CL0 + d.CLa * a.trim.alpha + d.CLde * a.trim.de, d.CLtrim, 1e-12);
   near('trim: pitching moment zero', d.Cm0 + d.Cma * a.trim.alpha + d.Cmde * a.trim.de, 0, 1e-12);
   near('Cmα = 0 with the CG at the neutral point', St.derivatives({ ...c172, cg: d.hn, it: a.it }).Cma, 0, 1e-9);
@@ -52,17 +52,17 @@ export function stabilityTests(log) {
   log('light single: short period 4–8 rad/s, phugoid 25–45 s', sp.wn > 4 && sp.wn < 8 && ph.period > 25 && ph.period < 45, `ωsp ${sp.wn.toFixed(2)} rad/s, Tph ${ph.period.toFixed(1)} s`);
 
   // ---- trends ----
-  const aft = St.analyse({ ...c172, cg: d.hn + 0.06, it: a.it });
+  const aft = St.analyze({ ...c172, cg: d.hn + 0.06, it: a.it });
   log('CG behind the neutral point: a divergent real root', aft.L.roots.some(z => z[1] === 0 && z[0] > 0), JSON.stringify(aft.L.roots.map(z => z.map(v => +v.toFixed(3)))));
-  const dih = St.analyse({ ...c172, dihedral: 6, it: a.it });
+  const dih = St.analyze({ ...c172, dihedral: 6, it: a.it });
   log('more dihedral: spiral more stable, roll–yaw coupling stronger', dih.Lt.spiral.re < a.Lt.spiral.re && dih.d.Clb < d.Clb, `spiral ${a.Lt.spiral.re.toFixed(4)} → ${dih.Lt.spiral.re.toFixed(4)}`);
-  const bigFin = St.analyse({ ...c172, vt: 1.5, it: a.it });
+  const bigFin = St.analyze({ ...c172, vt: 1.5, it: a.it });
   log('bigger fin: higher weathercock stability and Dutch-roll frequency', bigFin.d.Cnb > d.Cnb && bigFin.Lt.dr.wn > a.Lt.dr.wn, `Cnβ ${d.Cnb.toFixed(3)} → ${bigFin.d.Cnb.toFixed(3)}`);
-  const a320 = St.analyse({ id: 'a320', mass: 65000, z: geometric(35000 * FT), V: 0.78 * 296.5, cg: 0.3 });
+  const a320 = St.analyze({ id: 'a320', mass: 65000, z: geometric(35000 * FT), V: 0.78 * 296.5, cg: 0.3 });
   log('airliner at cruise: lightly damped Dutch roll (why yaw dampers exist)', a320.Lt.dr.zeta < 0.1, `ζ ${a320.Lt.dr.zeta.toFixed(3)}`);
 
   // ---- relaxed static stability ----
-  const f16 = St.analyse({ id: 'f16', mass: 9295, z: geometric(15000 * FT), V: 0.6 * 322.2, cg: 0.35 });
+  const f16 = St.analyze({ id: 'f16', mass: 9295, z: geometric(15000 * FT), V: 0.6 * 322.2, cg: 0.35 });
   near('fighter: neutral point ≈ 0.31 MAC (≈ 4% unstable at 0.35)', f16.d.hn, 0.31, 0.01);
   const up = f16.L.roots.find(z => z[1] === 0 && z[0] > 0);
   log('fighter unaugmented: pitch divergence doubles in 0.4–1.5 s', up && Math.LN2 / up[0] > 0.4 && Math.LN2 / up[0] < 1.5, up ? `${(Math.LN2 / up[0]).toFixed(2)} s` : 'no divergent root');

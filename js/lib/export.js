@@ -3,7 +3,7 @@
 //
 // Plots get their own export button (js/lib/plot.js). Views get one automatically: watchViews() looks for canvases
 // added to the page and puts a small button on each canvas's container. A view is captured by drawing its canvases
-// (2-D and WebGL alike) onto one image in their on-screen positions, plus its colour legend.
+// (2-D and WebGL alike) onto one image in their on-screen positions, plus its color legend.
 import { h, icon, cssVar, downloadText } from './ui.js';
 
 const slug = s => String(s || 'export').replace(/[\\/:*?"<>|]+/g, '').replace(/\s+/g, ' ').trim().slice(0, 80);
@@ -201,7 +201,7 @@ function cloneResults(src) {
 
 export async function printReport({ title, controls, results }) {
   // pictures are drawn in the light theme for paper. The report window opens first as a solid cover in the
-  // current colours, so the switch to light and back happens out of sight.
+  // current colors, so the switch to light and back happens out of sight.
   const shell = reportShell(title);
   await new Promise(r => setTimeout(r, 40)); // let the cover paint
   const root = document.documentElement, prev = { theme: root.dataset.theme, resolved: root.dataset.resolvedTheme, skin: root.dataset.skin };
@@ -253,7 +253,7 @@ export async function printReport({ title, controls, results }) {
 }
 
 // the report opens over the app in a frame (no pop-up window to be blocked), with Print and Close.
-// Until the report is ready it is an opaque cover with fixed colours, so nothing behind it can be seen changing.
+// Until the report is ready it is an opaque cover with fixed colors, so nothing behind it can be seen changing.
 function reportShell(title) {
   document.querySelector('.rp-overlay')?.remove();
   const cs = getComputedStyle(document.body);

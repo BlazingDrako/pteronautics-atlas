@@ -137,7 +137,7 @@ export const ROUGHNESS = [
   { id: 'grass', label: 'Open grassland', z0: 0.03 },
   { id: 'crops', label: 'Farmland with hedges', z0: 0.1 },
   { id: 'suburb', label: 'Suburbs, scattered trees', z0: 0.5 },
-  { id: 'city', label: 'City centre', z0: 1.0 },
+  { id: 'city', label: 'City center', z0: 1.0 },
 ];
 export function windProfile(h, Wref, z0, href = 6.096) {
   if (h <= z0) return 0;

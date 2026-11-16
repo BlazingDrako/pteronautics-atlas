@@ -39,7 +39,7 @@ export function designSection(onChange) {
   const build = () => {
     const g = GEOMETRY[perf.id];
     const cgS = slider({ label: 'CG position (% MAC)', min: Math.round((g.cg[0] - 0.1) * 100), max: Math.round((g.cg[1] + 0.2) * 100), step: 0.5, value: perf.cg * 100, format: v => (+v).toFixed(1),
-      info: `Centre of gravity as a fraction of the mean aerodynamic chord. Certified range ${Math.round(g.cg[0] * 100)}–${Math.round(g.cg[1] * 100)}%; the slider goes beyond it so you can see what happens.`, onInput: v => { perf.cg = v / 100; changed('cg'); onChange('cg'); } });
+      info: `Center of gravity as a fraction of the mean aerodynamic chord. Certified range ${Math.round(g.cg[0] * 100)}–${Math.round(g.cg[1] * 100)}%; the slider goes beyond it so you can see what happens.`, onInput: v => { perf.cg = v / 100; changed('cg'); onChange('cg'); } });
     const htS = slider({ label: 'Horizontal tail size', min: 0.4, max: 1.8, step: 0.05, value: perf.ht, format: v => `× ${(+v).toFixed(2)}`, info: `Area relative to the real ${g.ht.S} m².`, onInput: v => { perf.ht = v; changed('ht'); onChange('ht'); } });
     const vtS = slider({ label: 'Fin size', min: 0.4, max: 1.8, step: 0.05, value: perf.vt, format: v => `× ${(+v).toFixed(2)}`, info: `Area relative to the real ${g.vt.S} m².`, onInput: v => { perf.vt = v; changed('vt'); onChange('vt'); } });
     const dS = slider({ label: 'Extra dihedral', min: -6, max: 8, step: 0.5, value: perf.dih, format: v => `${v > 0 ? '+' : ''}${(+v).toFixed(1)}°`, info: `Added to the real ${g.dihedral}°. Dihedral makes a wing that drops in a sideslip lift itself back up.`, onInput: v => { perf.dih = v; changed('dih'); onChange('dih'); } });

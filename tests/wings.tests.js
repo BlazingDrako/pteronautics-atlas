@@ -48,9 +48,9 @@ export function wingsTests(log) {
   rel('swept wing AR 5, Λ 45°, λ 1, 4 uniform panels per side: Bertin & Cummings worked example (3.443 /rad)', bert.CLa, 3.443, 0.005);
   rel('same wing on a fine lattice vs Helmbold/DATCOM', Wg.analyze(wing({ S: 5, AR: 5, taper: 1, sweep: 45 }), { alpha: 4 }).CLa, liftSlope(5, 45, 0), 0.06);
   const rect = Wg.analyze(wing({ S: 6, AR: 6, taper: 1 }), { alpha: 4 });
-  near('unswept wing: aerodynamic centre near the quarter-chord of the MAC', rect.xac, 0.25, 0.03);
+  near('unswept wing: aerodynamic center near the quarter-chord of the MAC', rect.xac, 0.25, 0.03);
   const swx = Wg.analyze(wing({ S: 6, AR: 6, taper: 0.5, sweep: 30 }), { alpha: 4 });
-  log('swept-back tapered wing: aerodynamic centre moves aft of the MAC quarter chord (as in DATCOM charts)', swx.xac > rect.xac && swx.xac < 0.4, `x_ac = ${swx.xac.toFixed(3)} MAC`);
+  log('swept-back tapered wing: aerodynamic center moves aft of the MAC quarter chord (as in DATCOM charts)', swx.xac > rect.xac && swx.xac < 0.4, `x_ac = ${swx.xac.toFixed(3)} MAC`);
   rel('lattice converges: CL with nS 16 vs 32', Wg.analyze(wing({ S: 8, AR: 8, taper: 0.4 }), { alpha: 4, nS: 16 }).CL, Wg.analyze(wing({ S: 8, AR: 8, taper: 0.4 }), { alpha: 4, nS: 32 }).CL, 0.01);
   const rl = Wg.analyze(wing({ S: 6, AR: 6, taper: 1 }), { alpha: 5, nC: 1, nS: 30 });
   log('rectangular AR 6: lattice CL a little below lifting line (which over-predicts at moderate AR)', rl.CL < llr.CL && rl.CL > 0.9 * llr.CL, `lattice ${rl.CL.toFixed(4)}, lifting line ${llr.CL.toFixed(4)}`);
@@ -126,6 +126,6 @@ export function wingsTests(log) {
   const last = ru[ru.length - 1];
   log('wake roll-up keeps the sheet symmetric', Math.abs(last.y[0] + last.y[last.y.length - 1]) < 1e-6 * ve.P.b, '');
   const tipY = Math.abs(last.y[last.y.length - 1]) / ve.P.s;
-  log('tip vortex moves inboard as the sheet rolls up (towards π/4 of the semi-span)', tipY < 1 && tipY > 0.6, `tip at ${tipY.toFixed(3)} s`);
-  log('the wake descends', last.z[Math.floor(last.z.length / 2)] < 0, `centre z ${last.z[Math.floor(last.z.length / 2)].toFixed(4)} m`);
+  log('tip vortex moves inboard as the sheet rolls up (toward π/4 of the semi-span)', tipY < 1 && tipY > 0.6, `tip at ${tipY.toFixed(3)} s`);
+  log('the wake descends', last.z[Math.floor(last.z.length / 2)] < 0, `center z ${last.z[Math.floor(last.z.length / 2)].toFixed(4)} m`);
 }

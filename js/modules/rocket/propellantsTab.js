@@ -14,7 +14,7 @@ export function propellantsTab(shell) {
   const P = { Pc: 70, eps: 40, frozen: false, on: Object.fromEntries(R.COMBOS.map(c => [c.id, true])) };
   const controls = h('div'), main = h('div', { class: 'cf-main-inner' });
   const status = h('div', { class: 'hint' });
-  const tCard = card('Propellant combinations at their best mixture ratio', 'Each row uses the O/F that maximises vacuum Isp at the chamber pressure and ε on the left. Sea-level Isp is for a nozzle expanded to exactly 1 atm. Density impulse = bulk density × Isp: what matters when tank volume (drag, structure) limits the vehicle.');
+  const tCard = card('Propellant combinations at their best mixture ratio', 'Each row uses the O/F that maximizes vacuum Isp at the chamber pressure and ε on the left. Sea-level Isp is for a nozzle expanded to exactly 1 atm. Density impulse = bulk density × Isp: what matters when tank volume (drag, structure) limits the vehicle.');
   const tEl = h('div', { class: 'table-wrap' }); tCard.append(tEl);
   const cCard = card('Sweep over mixture ratio', 'Solid: the chosen quantity across each combination\'s practical O/F range. Dots: the maximum-Isp point.');
   let q = 'Ivac';
@@ -37,7 +37,7 @@ export function propellantsTab(shell) {
       toggle('Frozen composition', P.frozen, v => { P.frozen = v; run(); }, { tip: 'No recombination in the nozzle (lower bound).' }).el);
     const secC = section('Combinations');
     for (const c of R.COMBOS) put(secC.body, toggle(c.label, P.on[c.id], v => { P.on[c.id] = v; paintAll(); }, { swatch: `var(${COLORS[R.COMBOS.indexOf(c) % COLORS.length]})` }).el);
-    put(secC.body, h('div', { class: 'hint' }, 'Solid propellants (ammonium perchlorate / aluminium) need chlorine and aluminium species that this chemistry set does not include.'));
+    put(secC.body, h('div', { class: 'hint' }, 'Solid propellants (ammonium perchlorate / aluminum) need chlorine and aluminum species that this chemistry set does not include.'));
     controls.replaceChildren(sec.el, secC.el);
   };
 
@@ -129,7 +129,7 @@ export function propellantsTab(shell) {
     const hi = by('Ivac'), dens = by('rhoI'), hot = by('Tc');
     insightsList(insEl, [
       { type: 'g', t: `Highest Isp: ${hi.label}, ${res[hi.id].best.Ivac.toFixed(0)} s`, d: `Its exhaust is light (${res[hi.id].best.W.toFixed(1)} g/mol, mostly H₂O and H₂). Isp scales with √(T/M), so the molar mass matters as much as the flame temperature.` },
-      { type: 'i', t: `Most impulse per litre: ${dens.label}`, d: `Density impulse ${res[dens.id].best.rhoI.toFixed(0)} kg·s/L. First stages fight drag and gravity with heavy, dense loads, which is why boosters often burn kerosene or methane and leave hydrogen to the upper stages.` },
+      { type: 'i', t: `Most impulse per liter: ${dens.label}`, d: `Density impulse ${res[dens.id].best.rhoI.toFixed(0)} kg·s/L. First stages fight drag and gravity with heavy, dense loads, which is why boosters often burn kerosene or methane and leave hydrogen to the upper stages.` },
       { type: 'i', t: `Hottest chamber: ${hot.label}, ${res[hot.id].best.Tc.toFixed(0)} K`, d: 'Far above what any metal survives: the wall is kept cool by the propellant flowing through cooling channels (see the Cooling tab).' },
       { type: 'i', t: 'Best O/F is fuel-rich of stoichiometric', d: 'For every combination the Isp peak sits at less oxidizer than complete combustion needs, where the falling molar mass outweighs the falling temperature.' },
     ]);

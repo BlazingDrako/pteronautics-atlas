@@ -77,7 +77,7 @@ export function airspeedTab({ keep = o => o } = {}) {
     c.fillStyle = t2; c.font = '10.5px ' + cssVar('--font'); c.textAlign = 'right'; c.textBaseline = 'bottom'; c.fillText('M = 1', mx + colW - 3, my(1) - 2);
     c.fillStyle = cssVar('--text'); c.font = '600 12px ' + cssVar('--font'); c.textAlign = 'center'; c.textBaseline = 'bottom'; c.fillText(r.M.toFixed(3), mx + colW / 2, my(r.M) - 4);
     c.fillStyle = t2; c.textBaseline = 'top'; c.fillText('Mach', mx + colW / 2, pt + ih + 6);
-    // arrows between columns, labelled with the effect
+    // arrows between columns, labeled with the effect
     const arrow = (x0, x1, Y, text) => {
       c.strokeStyle = t3; c.fillStyle = t3; c.lineWidth = 1.2; c.beginPath(); c.moveTo(x0 + 6, Y); c.lineTo(x1 - 6, Y); c.stroke();
       c.beginPath(); c.moveTo(x1 - 6, Y); c.lineTo(x1 - 12, Y - 4); c.lineTo(x1 - 12, Y + 4); c.fill();

@@ -26,7 +26,7 @@ function body(type, extra = {}) {
   };
 }
 // A nozzle along x: walls above and below a slot of width h, a closed back end, and forced cells blowing at speed u
-// (sign gives the direction). (x, y) is the nozzle exit centre.
+// (sign gives the direction). (x, y) is the nozzle exit center.
 function nozzle(x, y, h, len, dir) {
   const t = Math.max(2, Math.round(h / 4)), back = x - dir * len;
   const xa = Math.min(x, back), xb = Math.max(x, back);
@@ -64,7 +64,7 @@ export const SCENES = [
       return { ...external, objects: [ob('circle', cx, cy, D, { ref: true }), ob('circle', cx + 4 * D, cy, D)], L: D, init: kick(cx, cy, D), probe: [cx + 6 * D, Math.floor(cy)] };
     } },
 
-  { id: 'channel', group: 'Internal flows', label: 'Channel (Poiseuille) flow', aspect: 4, Re: 100, sym: 'H', length: 'channel height H (with the centreline speed)',
+  { id: 'channel', group: 'Internal flows', label: 'Channel (Poiseuille) flow', aspect: 4, Re: 100, sym: 'H', length: 'channel height H (with the centerline speed)',
     blurb: 'Fluid at rest between two walls is pushed along by a steady pressure gradient. The dye lines bend into the parabolic Poiseuille profile as viscosity spreads the motion in from the walls. The ends are joined (periodic), so whatever leaves on the right comes back on the left. Draw an obstacle in it.',
     build: (nx, ny) => ({
       objects: [], L: ny, bc: { x: 'periodic', y: 'wall' }, inflow: 0, force: nu => [8 * nu * U_LAT / (ny * ny), 0],

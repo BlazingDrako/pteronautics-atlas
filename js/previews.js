@@ -122,7 +122,7 @@ function flight() {
 }
 
 function gnc() {
-  // navigation map: range rings round a radio beacon, a dashed route through waypoints, the aircraft travelling along it
+  // navigation map: range rings round a radio beacon, a dashed route through waypoints, the aircraft traveling along it
   const wps = [[28, 92], [96, 34], [168, 84], [236, 36], [298, 74]];
   const route = wps.map(([x, y], i) => (i ? 'L' : 'M') + x + ' ' + y).join(' ');
   let s = '';

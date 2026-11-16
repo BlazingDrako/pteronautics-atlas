@@ -1,5 +1,5 @@
 // Obstacle shapes and the sandbox geometry (which cells are solid, forced or fluid). No DOM.
-// Coordinates are in grid cells with y up; cell (i, j) has its centre at (i + ½, j + ½).
+// Coordinates are in grid cells with y up; cell (i, j) has its center at (i + ½, j + ½).
 //
 // An obstacle is { type, x, y, size, angle, naca?, w?, h?, locked?, ref? }:
 //   circle    diameter = size
@@ -78,7 +78,7 @@ export function contains(o, x, y) {
   return x >= a && x <= c && y >= b && y <= d && pip(x, y, outline(o));
 }
 
-// Indices of the grid cells whose centres lie inside the obstacle
+// Indices of the grid cells whose centers lie inside the obstacle
 export function rasterize(o, nx, ny) {
   const [a, b, c, d] = bbox(o), out = [];
   const P = o.type === 'circle' ? null : outline(o), r2 = (o.size / 2) ** 2;
@@ -121,7 +121,7 @@ export class Geometry {
     for (const k of o.cells) { this.objVel[2 * k] = v[0]; this.objVel[2 * k + 1] = v[1]; }
     this.markObj(o);
   }
-  // paint (val = 1) or erase (0) a disc of radius r
+  // paint (val = 1) or erase (0) a disk of radius r
   paintDisc(x, y, r, val) {
     const { nx, ny } = this;
     for (let j = Math.max(0, Math.floor(y - r)); j <= Math.min(ny - 1, Math.ceil(y + r)); j++)

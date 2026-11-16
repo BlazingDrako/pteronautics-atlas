@@ -10,8 +10,8 @@ const DEG = Math.PI / 180;
 
 // Geometry per aircraft (SI). Representative values from published three-views and specifications.
 //   c MAC, sweep quarter-chord, taper λ, dihedral Γ, wing position, fuselage length/width, wing c/4 position along
-//   the fuselage; horizontal tail (area, aspect ratio, arm from the wing-body aerodynamic centre, efficiency η,
-//   elevator effectiveness τ); vertical tail (area, AR, arm, height of its centre above the CG); aileron span (y/semi-span)
+//   the fuselage; horizontal tail (area, aspect ratio, arm from the wing-body aerodynamic center, efficiency η,
+//   elevator effectiveness τ); vertical tail (area, AR, arm, height of its center above the CG); aileron span (y/semi-span)
 //   and effectiveness; rudder effectiveness; zero-α lift and wing pitching moment; CG limits (fraction of MAC);
 //   moments of inertia at mass mI.
 export const GEOMETRY = {
@@ -52,7 +52,7 @@ export function derivatives(o) {
   const St = g.ht.S * (o.ht ?? 1), Sv = g.vt.S * (o.vt ?? 1), Gam = (g.dihedral + (o.dihedral ?? 0)) * DEG;
   const CLaw = liftSlope(A, g.sweep, M), CLat = liftSlope(g.ht.AR, g.ht.sweep, M), CLav = liftSlope(1.55 * g.vt.AR, g.vt.sweep, M);
   const deda = 2 * CLaw / (Math.PI * A), eta = g.ht.eta;
-  // wing-body aerodynamic centre: quarter chord shifted forward by the fuselage (destabilising)
+  // wing-body aerodynamic center: quarter chord shifted forward by the fuselage (destabilizing)
   const Cmaf = interp(KF, g.xw) / DEG * g.wf ** 2 * g.L / (S * c);
   const hacwb = 0.25 - Cmaf / CLaw;
   const tailLift = eta * St / S * CLat * (1 - deda);
@@ -197,7 +197,7 @@ export function polyRoots(c) {
   // tidy: tiny imaginary parts are real roots
   return z.map(([re, im]) => [re, Math.abs(im) < 1e-9 * (1 + Math.abs(re)) ? 0 : im]);
 }
-// eigenvector for eigenvalue λ (complex), normalised so its largest component is 1
+// eigenvector for eigenvalue λ (complex), normalized so its largest component is 1
 export function eigvec(A, lr, li) {
   const n = A.length, M = A.map((r, i) => r.map((v, j) => [v - (i === j ? lr : 0), i === j ? -li : 0]));
   // set component k = 1 for the k giving the best-conditioned reduced system; solve remaining n−1 equations
@@ -289,7 +289,7 @@ export function levels(d, L, Lt) {
 }
 
 // Everything at one condition: derivatives with the design tail incidence, trim, per-g, matrices and modes
-export function analyse(o) {
+export function analyze(o) {
   const it = o.it ?? designIncidence({ ...o, cg: GEOMETRY[o.id].cg[2], V: o.Vdesign ?? o.V, z: o.zDesign ?? o.z });
   const d = derivatives({ ...o, it });
   const tr = trim(d), pg = perG(d), lon = longMatrix(d), lat = latMatrix(d);

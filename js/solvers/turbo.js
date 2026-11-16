@@ -99,7 +99,7 @@ export function compressorMap(piD, { kind = 'axial' } = {}) {
   const surge = []; for (let n = 0.5; n <= 1.08; n += 0.02) surge.push([ms(n), ps(n)]);
   const opLine = []; for (let m = 0.5; m <= 1.05; m += 0.01) opLine.push([m, 1 + (piD - 1) * m ** (2.2 / steep * steep)]);
   const eff = (m, p) => {
-    // efficiency island centred slightly above the operating line near design speed
+    // efficiency island centered slightly above the operating line near design speed
     let best = 0;
     const n = Math.max(0.4, Math.min(1.1, Math.sqrt((p - 1) / ((piD - 1) * 1.0)) * 0.95 + 0.05));
     const mid = ms(n) + 0.6 * (mc(n) - ms(n)), span = mc(n) - ms(n);

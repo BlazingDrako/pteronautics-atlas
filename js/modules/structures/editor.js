@@ -1,5 +1,5 @@
 // Canvas editor and result renderer for the 2-D structure.
-// World units are metres (y up); the view is a pan/zoom transform. Tools: select/move, member,
+// World units are meters (y up); the view is a pan/zoom transform. Tools: select/move, member,
 // node, support, load, delete. Views: model, free-body diagram, N, V, M, deflection, stress,
 // vibration modes, buckling modes (and an animated mechanism when the structure is unstable).
 import { h, cssVar, icon } from '../../lib/ui.js';
@@ -565,7 +565,7 @@ export class StructureEditor {
     }
     this.legendText(`${q === 'N' ? 'Axial force N (tension +)' : q === 'V' ? 'Shear force V' : 'Bending moment M (sagging +' + (ui.mTension ? ', drawn on the tension side)' : ')')} · ${units.label(qty)}`);
   }
-  // axial force: members coloured by tension (blue) / compression (orange), width ∝ |N|
+  // axial force: members colored by tension (blue) / compression (orange), width ∝ |N|
   drawAxial(g, R, mx) {
     const ui = this.app.ui, ten = this.col.accent, com = this.col.load;
     g.lineCap = 'butt';
@@ -581,7 +581,7 @@ export class StructureEditor {
       const txt = Math.abs(mid) < 1e-9 * mx && !vary ? '0' : vary ? `${units.num('force', mr.N[0], 3)}…${units.num('force', mr.N[mr.N.length - 1], 3)}` : units.num('force', mid, 3);
       this.tag(g, this.X((a.x + b.x) / 2), this.Y((a.y + b.y) / 2), txt, Math.abs(mid) < 1e-9 * mx ? this.col.t3 : mid > 0 ? ten : com);
     }
-    this.legendText(`Axial force N · ${units.label('force')} — blue: tension, orange: compression, grey: zero-force member`);
+    this.legendText(`Axial force N · ${units.label('force')} — blue: tension, orange: compression, gray: zero-force member`);
   }
   legendText(t) { this.legendMsg = t; }
   showLegend(stress) {
@@ -770,7 +770,7 @@ function momentArc(g, X, Y, r, m, color) {
 }
 function roundRect(g, x, y, w, h, r) { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
 function pointInPoly(x, y, poly) { let inside = false; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) { const [xi, yi] = poly[i], [xj, yj] = poly[j]; if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) inside = !inside; } return inside; }
-// utilisation colour: green → yellow → orange → red (≥ 1.2)
+// utilization color: green → yellow → orange → red (≥ 1.2)
 export function heat(u) {
   const stops = [[0, [46, 160, 90]], [0.5, [190, 200, 60]], [0.8, [240, 170, 40]], [1.0, [230, 80, 40]], [1.2, [180, 20, 60]]];
   u = Math.max(0, Math.min(1.2, u || 0));

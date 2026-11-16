@@ -18,7 +18,7 @@ export const MATERIALS = [
   { id: 'concrete', name: 'Concrete (C30, compression)', E: 30e9, nu: 0.2, rho: 2400, fy: 30e6, fu: 30e6, alpha: 10e-6 },
 ];
 
-// Shape definitions: dims in metres. `fields` lists [key, label] for the editor.
+// Shape definitions: dims in meters. `fields` lists [key, label] for the editor.
 export const SHAPES = {
   rect: { label: 'Solid rectangle', fields: [['b', 'Width b'], ['h', 'Depth h']], def: { b: 0.05, h: 0.1 } },
   circle: { label: 'Solid round', fields: [['d', 'Diameter d']], def: { d: 0.05 } },
@@ -33,7 +33,7 @@ export const SHAPES = {
   custom: { label: 'Custom (enter properties)', fields: [['A', 'Area A'], ['I', 'Inertia I'], ['ctop', 'c top'], ['cbot', 'c bottom'], ['J', 'Torsion J']], def: { A: 2e-3, I: 5e-6, ctop: 0.05, cbot: 0.05, J: 1e-6 } },
 };
 
-// parts: {k:'r', x, y, w, h, s} (x,y = lower-left) or {k:'c', x, y, r, s} (centre). Origin at bottom-left of bounding box.
+// parts: {k:'r', x, y, w, h, s} (x,y = lower-left) or {k:'c', x, y, r, s} (center). Origin at bottom-left of bounding box.
 export function sectionParts(shape, d) {
   const R = (x, y, w, h, s = 1) => ({ k: 'r', x, y, w, h, s });
   switch (shape) {
@@ -117,7 +117,7 @@ export function sectionProps(sec) {
   return {
     A, Ix, Iy, Ixy, I1: Iavg + Rm, I2: Iavg - Rm, thetaP: 0.5 * Math.atan2(-2 * Ixy, Ix - Iy), J, xc, yc, ctop, cbot, h: ymax - ymin, w: xmax - xmin,
     Sx: Ix / Math.max(ctop, cbot), Stop: Ix / ctop, Sbot: Ix / cbot, Zx, ypna, Qmax, bNA, r: Math.sqrt(Ix / A), ry: Math.sqrt(Iy / A),
-    shapeFactor: Zx / (Ix / Math.max(ctop, cbot)), shearCentre: shearCentre(shape, d),
+    shapeFactor: Zx / (Ix / Math.max(ctop, cbot)), shearCenter: shearCenter(shape, d),
     parts, Qabove, widthAt: y => widthAt(parts, y), ymin, ymax, xmin, xmax,
   };
 }
@@ -141,15 +141,15 @@ export function torsionJ(shape, d) {
   }
 }
 
-// Shear centre (x from the left edge) for shapes where it is off the centroid; null if it coincides.
-function shearCentre(shape, d) {
+// Shear center (x from the left edge) for shapes where it is off the centroid; null if it coincides.
+function shearCenter(shape, d) {
   if (shape === 'channel') {
     const hm = d.h - d.tf, bm = d.b - d.tw / 2;
-    const e = 3 * bm * bm * d.tf / (6 * bm * d.tf + hm * d.tw); // from web centreline
-    return { x: d.tw / 2 - e, y: d.h / 2, note: 'e = 3b²tf/(6b·tf + h·tw) from the web centreline' };
+    const e = 3 * bm * bm * d.tf / (6 * bm * d.tf + hm * d.tw); // from web centerline
+    return { x: d.tw / 2 - e, y: d.h / 2, note: 'e = 3b²tf/(6b·tf + h·tw) from the web centerline' };
   }
-  if (shape === 'angle') return { x: d.t / 2, y: d.t / 2, note: 'at the intersection of the leg centrelines' };
-  if (shape === 'tee') return { x: d.b / 2, y: d.h - d.tf / 2, note: 'at the intersection of flange and stem centrelines' };
+  if (shape === 'angle') return { x: d.t / 2, y: d.t / 2, note: 'at the intersection of the leg centerlines' };
+  if (shape === 'tee') return { x: d.b / 2, y: d.h - d.tf / 2, note: 'at the intersection of flange and stem centerlines' };
   return null;
 }
 

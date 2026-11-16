@@ -7,7 +7,7 @@
 //   - a nonlinear strip loop (the α-correction method) that makes each strip follow its section's cl(α) curve, so the
 //     wing can stall: either a simple model section or tabulated polars from the Airfoil Lab;
 //   - a 2-D roll-up of the trailing vortex sheet (point vortices with Krasny smoothing) for the wake picture.
-// Lengths in metres, angles in degrees at the interface (radians inside). Forces are computed for V = 1, ρ = 1, so
+// Lengths in meters, angles in degrees at the interface (radians inside). Forces are computed for V = 1, ρ = 1, so
 // they scale with ρV².
 import { luFactor, luSolve } from '../lib/linalg.js';
 
@@ -58,7 +58,7 @@ function rawSection({ a = 2 * PI * 0.9, alpha0 = 0, clmax = 1.5, cd0 = 0.008 } =
 }
 
 // A section from tabulated polar points [{ alpha, cl, cd }] (Airfoil Lab sweeps). Past the last converged point the
-// section is assumed stalled: lift falls off towards ~60% of the peak and drag grows.
+// section is assumed stalled: lift falls off toward ~60% of the peak and drag grows.
 export function tableSection(points, { alpha0 } = {}) {
   const P = points.filter(p => isFinite(p.cl) && isFinite(p.alpha)).sort((a, b) => a.alpha - b.alpha);
   if (P.length < 3) return null;
@@ -120,7 +120,7 @@ export const PRESETS = [
   { id: 'cca', label: 'Combat drone (CCA-class)', group: 'Aircraft', ac: 'cca', w: { shape: 'trapezoid', S: 10, AR: 6.72, taper: 0.4, sweep: 15, twist: -2, dihedral: 2, root: '2412', tip: '2410' },
     note: 'Moderate sweep and aspect ratio for range at high subsonic speed. Illustrative of the class.' },
   { id: 'f16', label: 'Fighter (F-16-class)', group: 'Aircraft', ac: 'f16', w: { shape: 'trapezoid', S: 27.87, AR: 3.2, taper: 0.23, sweep: 32, twist: 0, dihedral: 0, root: '0004', tip: '0004' },
-    note: 'Thin, low-aspect-ratio swept wing. The strakes and the vortex lift they make at high angle are not modelled.' },
+    note: 'Thin, low-aspect-ratio swept wing. The strakes and the vortex lift they make at high angle are not modeled.' },
 ];
 export function applyPreset(W, id) {
   const p = PRESETS.find(x => x.id === id); if (!p) return W;
@@ -147,7 +147,7 @@ export function planform(W) {
 }
 
 // ---------------- lattice ----------------
-// Stations run along the whole span from the left (winglet) tip to the right one; a strip lies between neighbours.
+// Stations run along the whole span from the left (winglet) tip to the right one; a strip lies between neighbors.
 function stations(W, P, nS, spacing = 'sine') {
   const g = t => spacing === 'uniform' ? t : Math.sin(PI / 2 * t);
   const st = [], wl = W.winglet && W.winglet.on && W.winglet.h > 0;
@@ -315,7 +315,7 @@ function post(L, G, alphaDeg) {
     G, Gs, kap, strips: out, dcp, L };
 }
 
-// Linear analysis at one angle, with the slope, aerodynamic centre and zero-lift angle from a second solve.
+// Linear analysis at one angle, with the slope, aerodynamic center and zero-lift angle from a second solve.
 export function analyze(W, cond = {}) {
   const L = lattice(W, { nS: cond.nS ?? 24, nC: cond.nC ?? 6, M: cond.M ?? 0, ground: cond.ground ?? null, spacing: cond.spacing });
   const a = cond.alpha ?? 4, da = 1;
@@ -325,7 +325,7 @@ export function analyze(W, cond = {}) {
   for (let i = 0; i < L.N; i++) { G1[i] = X[i * 2]; G2[i] = X[i * 2 + 1]; }
   const s1 = post(L, G1, a), s2 = post(L, G2, a + da);
   const CLa = (s2.CL - s1.CL) / (da * DEG), Cma = (s2.Cm - s1.Cm) / (da * DEG);
-  // aerodynamic centre: x where Cm does not change with α, as a fraction of the MAC aft of its leading edge
+  // aerodynamic center: x where Cm does not change with α, as a fraction of the MAC aft of its leading edge
   const xac = (L.P.xRef - Cma / CLa * L.P.mac - L.P.xMac) / L.P.mac;
   s1.CLa = CLa; s1.xac = xac; s1.alphaL0 = a - s1.CL / CLa / DEG; s1.Cm0 = s1.Cm - Cma * (a * DEG - s1.alphaL0 * DEG);
   s1.G2 = G2; s1.P = L.P; s1.beta = L.beta;
@@ -390,7 +390,7 @@ export function nonlinear(W, { alpha, M = 0, ground = null, nS = 20, sect, warm 
       res = Math.max(res, Math.abs(d));
       dA[s] += relax * d / a2d / DEG;
     }
-    // past the peak each strip has more than one answer, and neighbours can settle on opposite branches (a sawtooth
+    // past the peak each strip has more than one answer, and neighbors can settle on opposite branches (a sawtooth
     // of stalled and attached strips). Light spanwise smoothing of the correction on stalled strips picks the
     // contiguous stall cell real wings show; attached strips are left exactly as they are.
     const sm = Float64Array.from(dA);
@@ -498,4 +498,24 @@ export function equalMomentExtension(W, ref, { alpha, M = 0, nS = 24, nC = 4 } =
   for (let i = 0; i < 18; i++) { const m = (lo + hi) / 2; r = at(m); if (r.Mb > ref.Mb) hi = m; else lo = m; }
   r = at((lo + hi) / 2); r.ext = (lo + hi) / 2;
   return r;
+}
+
+// ---------------- vortex filaments (Biot–Savart), for the Vortex filaments tab ----------------
+// Velocity induced at P by a straight segment A→B of circulation G (right-hand rule along A→B).
+export function inducedBySegment(P, A, B, G, core = 1e-12) { const o = [0, 0, 0]; segment(P, A, B, G, o, core); return o; }
+// An infinite straight line through A in direction d (unit), as a long segment.
+export function inducedByLine(P, A, d, G, L = 1e6) { return inducedBySegment(P, [A[0] - d[0] * L, A[1] - d[1] * L, A[2] - d[2] * L], [A[0] + d[0] * L, A[1] + d[1] * L, A[2] + d[2] * L], G); }
+// A horseshoe: bound segment from (x0, −b/2, z0) to (x0, +b/2, z0), legs trailing to +∞ along x.
+export function inducedByHorseshoe(P, x0, y0, z0, b, G, core = 1e-12) {
+  const o = [0, 0, 0], A = [x0, y0 - b / 2, z0], B = [x0, y0 + b / 2, z0];
+  horseshoe(P, A, B, G, o, core); return o;
+}
+// A circular ring of radius R in the plane x = x0, center (x0, 0, 0), circulation G (positive: induces +x through it)
+export function inducedByRing(P, x0, R, G, n = 240) {
+  const o = [0, 0, 0];
+  for (let k = 0; k < n; k++) {
+    const t0 = 2 * PI * k / n, t1 = 2 * PI * (k + 1) / n;
+    segment(P, [x0, R * Math.cos(t0), R * Math.sin(t0)], [x0, R * Math.cos(t1), R * Math.sin(t1)], G, o, 1e-12);
+  }
+  return o;
 }

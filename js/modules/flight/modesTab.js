@@ -59,7 +59,7 @@ export function modesTab({ keep = o => o } = {}) {
   const lvl = n => (n === 4 ? 'worse than Level 3' : `Level ${n}`);
 
   function compute() {
-    const inp = stabInput(), r = St.analyse(inp);
+    const inp = stabInput(), r = St.analyze(inp);
     R = { inp, r }; seen = perf.version;
     const { L, Lt, hq: q } = r;
     const sp = modeText(L.sp), ph = modeText(L.ph), dr = modeText(Lt.dr), ro = modeText(Lt.roll), spi = modeText(Lt.spiral);
@@ -82,7 +82,7 @@ export function modesTab({ keep = o => o } = {}) {
     else if (S.sweep === 'speed') { const atm = atmosphere(inp.z, inp.dT), Vs = Math.sqrt(2 * r.d.W / (atm.rho * r.d.S * r.d.ac.CLmax)), b = 0.9 * atm.a; vals = Array.from({ length: 36 }, (_, i) => 1.25 * Vs + (b - 1.25 * Vs) * i / 35).map(v => ({ ...inp, V: Math.min(v, b) })); }
     else { const zt = r.d.ac.plot.zMax; vals = Array.from({ length: 36 }, (_, i) => zt * i / 35).map(z => { const at = atmosphere(z, inp.dT); return { ...inp, z, V: Math.min(inp.V, 0.9 * at.a) }; }); }
     for (const o of vals) {
-      const a = St.analyse({ ...o, it: r.it });
+      const a = St.analyze({ ...o, it: r.it });
       const add = (m, key) => { if (!m) return; for (const l of m.lam || []) pts.push({ re: l[0], im: Math.abs(l[1]), key }); };
       add(a.L.sp, 'sp'); add(a.L.ph, 'ph'); add(a.Lt.dr, 'dr'); add(a.Lt.roll, 'roll'); add(a.Lt.spiral, 'spiral');
     }
@@ -250,7 +250,7 @@ export function modesTab({ keep = o => o } = {}) {
     else list.push({ type: 'i', t: `Short period: ${L.sp.period.toFixed(2)} s, ζ ${L.sp.zeta.toFixed(2)}`, d: 'A quick angle-of-attack oscillation at nearly constant speed, set by pitch stiffness (Cmα) and damping (Cmq). It is what the pilot feels on every stick input.' });
     if (!L.ph.real) list.push({ type: L.ph.zeta < 0 ? 'w' : 'i', t: `Phugoid: ${L.ph.period.toFixed(0)} s period, ζ ${L.ph.zeta.toFixed(3)}`, d: `A slow exchange of height and speed at nearly constant angle of attack, like a roller coaster. Lanchester's estimate π√2·V/g = ${(Math.PI * Math.SQRT2 * d.V / G0).toFixed(0)} s. Its damping comes from drag, so clean, efficient aircraft have weak phugoid damping; pilots (and autopilots) control it without noticing.` });
     if (Lt.dr) list.push({ type: Lt.dr.zeta < 0.08 ? 'w' : 'i', t: `Dutch roll: ${Lt.dr.period.toFixed(1)} s, ζ ${Lt.dr.zeta.toFixed(3)}`, d: Lt.dr.zeta < 0.08 ? 'Lightly damped wallowing yaw and roll. Swept-wing jets at high altitude are prone to this, which is why they carry a yaw damper. Try a bigger fin, or less dihedral.' : 'A coupled yaw–roll wag: the fin swings the nose back, the dihedral effect rolls the wings, and they chase each other.' });
-    if (Lt.spiral) list.push({ type: Lt.spiral.re > 0 ? 'w' : 'g', t: Lt.spiral.re > 0 ? `Spiral divergence: doubles in ${Lt.spiral.t2.toFixed(0)} s` : 'Spiral stable', d: Lt.spiral.re > 0 ? 'Slowly, a bank keeps steepening into a descending spiral unless corrected. Mild divergence is normal and easily held by the pilot; more dihedral stabilises it (at the cost of Dutch roll).' : 'A banked aircraft slowly rolls itself level: strong dihedral effect relative to the fin.' });
+    if (Lt.spiral) list.push({ type: Lt.spiral.re > 0 ? 'w' : 'g', t: Lt.spiral.re > 0 ? `Spiral divergence: doubles in ${Lt.spiral.t2.toFixed(0)} s` : 'Spiral stable', d: Lt.spiral.re > 0 ? 'Slowly, a bank keeps steepening into a descending spiral unless corrected. Mild divergence is normal and easily held by the pilot; more dihedral stabilizes it (at the cost of Dutch roll).' : 'A banked aircraft slowly rolls itself level: strong dihedral effect relative to the fin.' });
     if (Lt.roll) list.push({ type: 'i', t: `Roll mode: τ = ${Lt.roll.tau.toFixed(2)} s`, d: 'After an aileron input the roll rate settles exponentially; roll damping (Clp) against roll inertia sets how quickly. Long, heavy wings roll sluggishly.' });
     insightsList(ins, list);
   }

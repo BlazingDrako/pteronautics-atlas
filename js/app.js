@@ -29,8 +29,8 @@ const modules = [
     blurb: 'Shocks, expansion fans and nozzles you can see: watch a shock move through a nozzle as back pressure drops, and Mach diamonds form in the plume.',
     features: ['Step-by-step calculator: isentropic, shocks, Prandtl–Meyer, Fanno, Rayleigh', 'Nine flow scenarios with a schlieren view, plus a shock tube', 'Conical, bell and MOC nozzles and the θ–β–M chart'] },
   { ...cfdModule, icon: 'wind', group: 'Aerodynamics', status: 'live',
-    blurb: 'Real-time 2-D viscous flow on your GPU: vortex streets, stalling wings, jets and cavities. Draw obstacles and drag them through the fluid.',
-    features: ['Lattice-Boltzmann solver with a turbulence model', '12 scenes: bluff bodies, an airfoil, channel, step, cavity and jets', 'Dye, vorticity, speed and pressure views'] },
+    blurb: 'Real-time 2-D viscous flow on your GPU: vortex streets, stalling wings, jets and cavities. Draw obstacles and drag them through the fluid, then compare with potential flow and the exact viscous solutions.',
+    features: ['Lattice-Boltzmann solver with a turbulence model, 12 scenes', 'Potential flow from sources, vortices and doublets or a typed F(z), with images and Kutta–Joukowski lift', 'Exact viscous flows: Couette, pipe and Stokes\' problems'] },
   { ...rocketModule, icon: 'flame', group: 'Propulsion', status: 'live',
     blurb: 'Design a liquid rocket engine from a thrust requirement: equilibrium chamber chemistry, a to-scale chamber and bell, and the plume changing from sea level to vacuum.',
     features: ['Sizing, Isp and thrust compared with Merlin, RS-25, Raptor and more', 'Over/under-expansion, flow separation and Mach diamonds vs altitude', 'Propellant comparison and Bartz wall heat flux for cooling'] },
@@ -74,7 +74,7 @@ const nav = document.getElementById('nav');
 let current = null;
 
 // The logo: a soaring pterodactyl seen from above, outlined over a faint wash of the accent,
-// with a diamond vane at the tip of its tail. Drawn inline (not as an <img>) so its colours come
+// with a diamond vane at the tip of its tail. Drawn inline (not as an <img>) so its colors come
 // from the theme variables and it follows light/dark and the secret themes. Same drawing as assets/favicon.svg.
 const BRAND_SVG = `<svg viewBox="0 4 100 100" aria-hidden="true">
 <path class="bm-fill" d="M50 10 L54 24 L53 36 C62 35 70 33 78 31 C86 36 92 44 96 54 C80 52 68 56 60 66 L56 76 L50 70 L44 76 L40 66 C32 56 20 52 4 54 C8 44 14 36 22 31 C30 33 38 35 47 36 L46 24 Z"/>

@@ -31,7 +31,7 @@ const MTOOLS = [
 const CS = 0.15;       // Smagorinsky constant
 const VMAX = 0.12;     // fastest an obstacle may move (lattice units), keeps the lattice Mach number low
 
-// any CSS colour → [r, g, b] in 0–1
+// any CSS color → [r, g, b] in 0–1
 const ctx2 = document.createElement('canvas').getContext('2d');
 function rgb(css, fallback = '#888888') {
   ctx2.fillStyle = fallback; ctx2.fillStyle = css || fallback;
@@ -43,12 +43,25 @@ function rgb(css, fallback = '#888888') {
 const hexOf = a => `rgb(${a.map(v => Math.round(v * 255)).join(',')})`;
 const fmtRe = v => (v >= 100 ? v.toFixed(0) : v.toFixed(1));
 
+import { potentialConcepts, viscousConcepts } from './learn.js';
+import { POT_PRESETS } from '../../solvers/flow.js';
+
+// the theory tabs, loaded the first time they are opened; 'live' is the lattice-Boltzmann sandbox itself
+const THEORY = {
+  potential: { label: 'Potential flow', load: () => import('./potentialTab.js').then(m => m.potentialTab), concepts: potentialConcepts },
+  viscous: { label: 'Viscous flows', load: () => import('./viscousTab.js').then(m => m.viscousTab), concepts: viscousConcepts },
+};
+
 export const cfdModule = {
   id: 'cfd',
   title: 'Fluid Flow Sandbox',
-  concepts,
-  // scenes are searchable and open by link (#/cfd?s=id)
-  links: SCENES.map(sc => ({ title: sc.label, sub: sc.group, href: '#/cfd?s=' + sc.id, body: sc.blurb })),
+  concepts: [...concepts, ...potentialConcepts, ...viscousConcepts],
+  tabs: [{ id: 'live', label: 'Live flow' }, { id: 'potential', label: 'Potential flow' }, { id: 'viscous', label: 'Viscous flows' }],
+  // scenes and potential-flow presets are searchable and open by link (#/cfd?s=id, #/cfd?tab=potential&p=id)
+  links: [
+    ...SCENES.map(sc => ({ title: sc.label, sub: sc.group, href: '#/cfd?s=' + sc.id, body: sc.blurb })),
+    ...POT_PRESETS.map(p => ({ title: p.label, sub: 'Potential flow', href: '#/cfd?tab=potential&p=' + p.id, alias: p.id, body: p.note })),
+  ],
   mount(root) {
     if (/[?&]tab=vehicles/.test(location.hash)) { // the vehicle tab moved to the Airfoil Lab
       location.replace('#/airfoil?' + location.hash.split('?')[1]); return;
@@ -157,8 +170,9 @@ export const cfdModule = {
 
     // ---------------- main
     const main = h('section', { class: 'cf-main' });
+    const tabBar = h('div', { class: 'tabs tabs-wrap', role: 'tablist' });
     const head = h('div', { class: 'af-head' }, h('div', {}, h('h2', { class: 'af-title' }, 'Fluid Flow Sandbox'),
-      h('div', { class: 'af-sub' }, 'Real-time 2-D viscous flow on your GPU (lattice Boltzmann). Draw, drag and stir.')));
+      h('div', { class: 'af-sub' }, 'Real-time 2-D viscous flow on your GPU (lattice Boltzmann), with potential flow and the exact viscous solutions to compare.')), tabBar);
     const metrics = h('div', { class: 'metrics cf-metrics' });
     const canvas = h('canvas', { class: 'fs-gl' });
     const ov = h('canvas', { class: 'fs-ov' });
@@ -172,6 +186,47 @@ export const cfdModule = {
     const measure = createMeasure({ solver: () => solver, geo: () => geo, U: U_LAT, refL: () => refL(), sym: () => S.scene.sym, scene: () => S.scene });
     main.append(head, metrics, stage, measure.hint, measure.el, insCard, learn);
     root.append(h('div', { class: 'af cf fs' }, controls, main));
+
+    // ---------------- tabs: the live sandbox, or one of the theory tabs (the solver stops stepping while hidden)
+    const liveControls = () => [...controls.childNodes], liveMain = [metrics, stage, measure.hint, measure.el, insCard, learn];
+    let savedLive = null, curTab = 'live', tabToken = 0, offTab = false;
+    const theory = {}, tabBtns = {};
+    const setTab = async id => {
+      if (!THEORY[id]) id = 'live';
+      for (const [k, b] of Object.entries(tabBtns)) { b.classList.toggle('on', k === id); b.setAttribute('aria-selected', k === id); }
+      const my = ++tabToken;
+      if (curTab === 'live' && id !== 'live') savedLive = liveControls();
+      if (theory[curTab] && curTab !== id) theory[curTab].hide();
+      curTab = id;
+      if (id === 'live') {
+        offTab = false;
+        if (savedLive) controls.replaceChildren(...savedLive);
+        main.replaceChildren(head, ...liveMain);
+        writeHash();
+        return;
+      }
+      offTab = true;
+      if (!theory[id]) {
+        controls.replaceChildren(); main.replaceChildren(head, h('div', { class: 'hint', style: { padding: '20px' } }, 'Loading…'));
+        const fn = await THEORY[id].load();
+        if (my !== tabToken) return;
+        const t = fn({ keep: o => o, query: q });
+        const learnT = h('div', { class: 'cf-learn' }, h('h3', {}, 'Learn the concepts'),
+          h('div', { class: 'cf-concepts' }, ...THEORY[id].concepts.map(c => h('details', { class: 'concept' }, h('summary', {}, c.title), h('div', { class: 'body', html: c.html })))));
+        t.main.append(learnT);
+        theory[id] = t;
+      }
+      if (my !== tabToken) return;
+      controls.replaceChildren(theory[id].controls); main.replaceChildren(head, theory[id].main);
+      theory[id].show();
+      const url = '#/cfd?tab=' + id;
+      if (location.hash !== url) history.replaceState(null, '', url);
+    };
+    for (const t of cfdModule.tabs) {
+      const b = h('button', { type: 'button', role: 'tab' }, t.label);
+      b.addEventListener('click', () => setTab(t.id));
+      tabBar.append(b); tabBtns[t.id] = b;
+    }
     const octx = ov.getContext('2d');
     // first-visit hint, dismissed on the first click in the flow or after a while
     let hintSeen = false; try { hintSeen = localStorage.getItem('pteronautics-cfd-hint') === '1'; } catch { }
@@ -467,7 +522,7 @@ export const cfdModule = {
       reHint.textContent = `Based on the ${S.scene.length}: ${sym} = ${L.toFixed(0)} cells.`;
       const items = [
         { k: 'Reynolds number', v: fmtRe(S.Re), s: `Re = U·${sym}/ν` },
-        { k: 'Time', v: `${tstar.toFixed(1)} ${sym}/U`, s: `${solver.iter.toLocaleString()} steps`, tip: `Convective time: how many lengths ${sym} the reference flow has travelled since the start.` },
+        { k: 'Time', v: `${tstar.toFixed(1)} ${sym}/U`, s: `${solver.iter.toLocaleString()} steps`, tip: `Convective time: how many lengths ${sym} the reference flow has traveled since the start.` },
         { k: 'Grid', v: `${solver.nx} × ${solver.ny}`, s: `${L.toFixed(0)} cells across ${sym}` },
         { k: 'Relaxation τ', v: tau.toFixed(4), s: `ν = ${nuFromTau(tau).toExponential(2)} (grid units)`, tip: 'Collision relaxation time. Viscosity ν = (τ − ½)/3; the method gets unstable as τ approaches ½.' },
         ...measTiles(),
@@ -492,6 +547,7 @@ export const cfdModule = {
       if (!alive) return;
       requestAnimationFrame(loop);
       if (!solver || !solver.S || lost) return;
+      if (offTab) return; // a theory tab is open: leave the flow where it is
       size();
       const steps = S.running ? S.speed : 0;
       if (drag) { // move the dragged obstacle; its walls move at the speed it is dragged
@@ -532,10 +588,11 @@ export const cfdModule = {
     readColors(); paintRun(); setTool('move');
     buildScene(); paintView();
     requestAnimationFrame(loop);
+    setTab(q.get('tab') || 'live');
     stage.__solver = () => solver; // test hooks
     stage.__geo = () => geo;
     stage.__measure = measure;
-    this._cleanup = () => { alive = false; io.disconnect(); removeEventListener('themechange', onTheme); removeEventListener('keydown', onKey); mq.removeEventListener('change', onTheme); solver && solver.dispose(); };
+    this._cleanup = () => { tabToken++; for (const t of Object.values(theory)) t.destroy && t.destroy(); alive = false; io.disconnect(); removeEventListener('themechange', onTheme); removeEventListener('keydown', onKey); mq.removeEventListener('change', onTheme); solver && solver.dispose(); };
   },
   unmount() { this._cleanup && this._cleanup(); },
 };

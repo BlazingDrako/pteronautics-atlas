@@ -78,8 +78,8 @@ export function aircraftTab() {
         { k: 'Wing CLα (lattice)', v: s.CLa.toFixed(3) + ' /rad', s: `${(s.CLa * D).toFixed(4)} /° at M ${M.toFixed(2)}` },
         { k: 'Helmbold / DATCOM', v: helm.toFixed(3) + ' /rad', s: pct(s.CLa / helm - 1) + ' lattice vs estimate' },
         { k: 'Span efficiency', v: fmt(s.e, 3), s: `Oswald e used: ${fmt(ac.e, 2)}`, tip: 'The lattice gives the wing\'s induced drag alone. The Oswald factor of the whole aircraft is lower: it also counts the fuselage and the profile drag that grows with lift.' },
-        { k: 'dε/dα at the tail', v: fmt(deda, 3), s: `estimate 2CLα/(πA) = ${fmt(simple, 3)}`, tip: `At the tail arm ${g.ht.l} m behind the wing's aerodynamic centre, just above the wing plane.` },
-        { k: 'Aerodynamic centre', v: (s.xac * 100).toFixed(1) + '% MAC', s: `MAC ${P.mac.toFixed(2)} m (uses ${g.c} m)` },
+        { k: 'dε/dα at the tail', v: fmt(deda, 3), s: `estimate 2CLα/(πA) = ${fmt(simple, 3)}`, tip: `At the tail arm ${g.ht.l} m behind the wing's aerodynamic center, just above the wing plane.` },
+        { k: 'Aerodynamic center', v: (s.xac * 100).toFixed(1) + '% MAC', s: `MAC ${P.mac.toFixed(2)} m (uses ${g.c} m)` },
       ]);
       tEl.replaceChildren(table(['', 'vortex lattice', 'Flight & Atmosphere', 'estimate'], [
         row('Wing lift slope CLα (/rad)', s.CLa.toFixed(3), ac.CLa.toFixed(2) + ' (aircraft)', helm.toFixed(3) + ' Helmbold'),

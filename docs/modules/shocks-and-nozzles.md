@@ -20,3 +20,8 @@
   2.4672 vs 2.4675, shock angle 36.93° vs 36.94°.
 - **θ–β–M chart / shock polar**: click or drag to pick M₁ and θ; weak and strong solutions; reflected-shock polar.
 - **Shock tube**: exact Riemann solution with different driver and test gases, animated gas parcels, x–t diagram.
+- **Linear theory** (`js/solvers/linearized.js`): subsonic compressibility corrections (Prandtl–Glauert, Kármán–Tsien,
+  Laitone) against the critical pressure coefficient Cp*, giving the critical Mach number for a cylinder, a sphere, an
+  airfoil or any Cp,min; and a supersonic ramp (or expansion corner) in a duct, the reflected wave system by exact
+  oblique shocks / Prandtl–Meyer fans against linear theory, with the wall pressures and the point where regular
+  reflection fails.

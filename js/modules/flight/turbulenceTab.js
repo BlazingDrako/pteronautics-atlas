@@ -37,7 +37,7 @@ export function turbulenceTab({ keep = o => o } = {}) {
   paintPlay();
   const scene = canvasBox('250px', drawScene, 'flt-scene');
   const sceneCard = h('div', { class: 'plot-card' }, h('div', { class: 'plot-head' }, h('h4', {}, 'Flying through frozen turbulence'), playBtn), scene.el);
-  const histCard = card('Gust velocities', 'u: along the flight path (headwind +), v: sideways, w: vertical (up +). Time histories of one random realisation.');
+  const histCard = card('Gust velocities', 'u: along the flight path (headwind +), v: sideways, w: vertical (up +). Time histories of one random realization.');
   const histHost = h('div', { class: 'plot' }); histCard.append(histHost);
   const pH = new Plot(histHost, { legend: true, xname: 't', yname: 'gust' });
   const loadCard = card('Gust load factor Δn', 'Extra load factor from the vertical gust, Δn = ρ V C_Lα w / (2 W/S) (quasi-steady, no gust alleviation). This is what passengers feel as bumps.');

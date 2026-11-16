@@ -7,9 +7,9 @@ export const shared = { cycle: null };
 export const put = (el, ...kids) => el.append(...kids.filter(Boolean));   // last cycle design, read by the trade-study tab
 
 // Slider bound to obj[key]
-export function bound(obj, key, label, min, max, { step, digits = 2, tip, log, hint, unit = '', scale = 1, onInput } = {}) {
+export function bound(obj, key, label, min, max, { step, digits = 2, tip, log, hint, unit = '', scale = 1, onInput, format } = {}) {
   const s = slider({
-    label: unit ? `${label} (${unit})` : label, min, max, step, log, digits, info: tip, hint,
+    label: unit ? `${label} (${unit})` : label, min, max, step, log, digits, info: tip, hint, format,
     value: obj[key] / scale,
     onInput: v => { obj[key] = v * scale; onInput && onInput(v); },
   });

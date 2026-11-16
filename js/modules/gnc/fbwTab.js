@@ -54,7 +54,7 @@ export function fbwTab({ keep = o => o } = {}) {
       const modeSeg = segmented(MODES, S.mode, v => { S.mode = v; S.amp = AMP[v]; buildLaw(); buildInput(); schedule(); });
       modeSeg.el.classList.add('seg-wrap');
       items.push(field('Command system', modeSeg.el, 'Dampers only: the stick moves the elevator directly and the feedback adds damping and stiffness. Pitch-rate and C* command: the stick asks for a pitch rate or a blend of g and pitch rate, and an integrator holds it.'),
-        sl('α feedback Kα (° per °)', 0, 2, 0.01, 'ka', null, 'Adds pitch stiffness: the elevator pushes the nose down as α rises. This is what stabilises an aircraft whose CG is behind the neutral point.'),
+        sl('α feedback Kα (° per °)', 0, 2, 0.01, 'ka', null, 'Adds pitch stiffness: the elevator pushes the nose down as α rises. This is what stabilizes an aircraft whose CG is behind the neutral point.'),
         sl('Pitch-rate feedback Kq (° per °/s)', 0, 1.5, 0.01, 'kq', null, 'Adds pitch damping: the classic pitch damper.'),
         sl('Load-factor feedback Knz (° per g)', 0, 5, 0.05, 'knz', null, 'Normal acceleration feedback: like α feedback but measured by an accelerometer, which also responds to gusts.'));
       if (S.mode === 'direct') items.push(sl('Stick gearing (° elevator per ° stick)', 0.2, 3, 0.05, 'kstick'));
@@ -71,7 +71,7 @@ export function fbwTab({ keep = o => o } = {}) {
       items.push(sl('Sideslip feedback Kβ (° per °)', 0, 3, 0.01, 'kb', null, 'Rudder against sideslip: extra directional stiffness (raises the Dutch-roll frequency), not damping.'));
     }
     const cat = segmented([{ value: 'A', label: 'Cat A' }, { value: 'B', label: 'Cat B' }, { value: 'C', label: 'Cat C' }], S.cat, v => { S.cat = v; schedule(); });
-    items.push(field('Flight phase for the levels', cat.el, 'MIL-F-8785C: A precise manoeuvring (combat, formation), B cruise and climb, C takeoff and landing.'));
+    items.push(field('Flight phase for the levels', cat.el, 'MIL-F-8785C: A precise maneuvering (combat, formation), B cruise and climb, C takeoff and landing.'));
     lawSec.body.replaceChildren(...items);
   }
   function buildInput() {
@@ -140,7 +140,7 @@ export function fbwTab({ keep = o => o } = {}) {
     : { kr: S.kr, tw: S.wash ? S.tw : 0, kb: S.kb, kstick: 1 });
   const cmdScale = () => (S.axis === 'lon' && S.mode === 'cstar' ? 1 : D);   // command units → SI
   function compute() {
-    const inp = stabInput(), an = St.analyse(inp), lw = law(), axis = S.axis;
+    const inp = stabInput(), an = St.analyze(inp), lw = law(), axis = S.axis;
     const hw = { wa: S.wa, rate: S.rate * D, pos: S.pos * D, delay: S.delay / 1000, fs: S.fs };
     const { P, L } = Au.loopTf(an, lw, axis, { wa: S.wa, delay: S.delay / 1000 });
     const clp = Au.closedLoopRoots(L), mg = Ct.margins(L);

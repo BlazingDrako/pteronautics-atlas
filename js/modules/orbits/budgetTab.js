@@ -78,7 +78,7 @@ export function budgetTab({ keep }) {
       launch(lat);
       const Hp = O.hohmannPlane(rP, 42164e3, lat, E.mu, 'split');
       add('Perigee burn into GTO', Hp.dv1, `prograde ${ms(Hp.v1)} → ${ms(Hp.vt1)}, with ${(Hp.frac * lat / D).toFixed(2)}° of the plane change`);
-      add('Apogee burn: circularise and turn to 0°', Hp.dv2, `${ms(Hp.vt2)} → ${ms(Hp.v2)} while turning the plane ${((1 - Hp.frac) * lat / D).toFixed(2)}°, after ${dur(Hp.tof)}`);
+      add('Apogee burn: circularize and turn to 0°', Hp.dv2, `${ms(Hp.vt2)} → ${ms(Hp.v2)} while turning the plane ${((1 - Hp.frac) * lat / D).toFixed(2)}°, after ${dur(Hp.tof)}`);
     } else if (m === 'llo' || m === 'moon') {
       launch(lat);
       const M = O.BODIES.moon, H = O.hohmann(rP, M.a, E.mu), vM = Math.sqrt(E.mu / M.a), vinf = Math.abs(vM - H.vt2);
@@ -97,7 +97,7 @@ export function budgetTab({ keep }) {
     } else {
       launch(lat);
       const T = O.BODIES[m], X = O.interplanetary(E, T);
-      add(`Departure toward ${T.label}`, O.hyperbolicBurn(X.vinfDep, rP, E.mu), `Sun-centred Hohmann needs v∞ = ${ms(X.vinfDep)}; from the parking orbit √(v∞² + 2μ/r) − √(μ/r); ${dur(X.tof)} cruise`);
+      add(`Departure toward ${T.label}`, O.hyperbolicBurn(X.vinfDep, rP, E.mu), `Sun-centered Hohmann needs v∞ = ${ms(X.vinfDep)}; from the parking orbit √(v∞² + 2μ/r) − √(μ/r); ${dur(X.tof)} cruise`);
       if (m === 'jupiter') {
         // Juno-like: capture into a long ellipse (periapsis 4 200 km above the clouds, apoapsis 8.1 million km, 53 days)
         const rp = T.R + 4200e3, a = (rp + 8.1e9) / 2, capt = Math.sqrt(X.vinfArr ** 2 + 2 * T.mu / rp) - O.visViva(T.mu, rp, a);

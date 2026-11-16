@@ -27,7 +27,7 @@ export function effectiveWidth(v) {
   weffCache.set(v.id, w); return w;
 }
 const DOWN = '#22c55e', UP = '#f59e0b';  // as the Airfoil Lab's lift and drag arrows; they stand apart from the blue/red pressure map
-const CP_MIN = -2;                        // pressure colour scale: Cp from −2 (suction) to +1 (stagnation)
+const CP_MIN = -2;                        // pressure color scale: Cp from −2 (suction) to +1 (stagnation)
 
 const ctx2 = document.createElement('canvas').getContext('2d');
 function rgb(css, fb = '#888888') { ctx2.fillStyle = fb; ctx2.fillStyle = css || fb; const s = ctx2.fillStyle; return s[0] === '#' ? [1, 3, 5].map(i => parseInt(s.slice(i, i + 2), 16)) : (s.match(/[\d.]+/g) || [136, 136, 136]).slice(0, 3).map(Number); }
@@ -40,7 +40,7 @@ export function evaluate(v, p, built, S, owner) {
     S.forces.forEach((f, k) => { if (owner[k] === i) { fy += f.fy; fx += f.fx; m += f.fy * (isFinite(f.xcp) ? f.xcp : 0); } });
     return { name: part.name, short: part.short || part.name, role: part.role, fy, fx, xcp: Math.abs(fy) > 1e-12 ? m / fy : NaN };
   });
-  // bodies: split into the upper surface (panels facing up) and the underside (facing down), each with its centre
+  // bodies: split into the upper surface (panels facing up) and the underside (facing down), each with its center
   parts.forEach((x, i) => {
     if (x.role !== 'body') return;
     const sub = { up: { fy: 0, m: 0 }, down: { fy: 0, m: 0 } };
@@ -113,7 +113,7 @@ export function vehicleTab({ setHeader, keep = o => o }) {
   const secP = section('Setup');
   const secS = section('Show');
   const tips = { pressure: 'Pressure coefficient: blue where the air is fast and pressure low (suction), red where it is slowed and pressure high.', streamlines: 'Lines the air follows.', particles: 'Moving tracers carried by the flow.', arrows: 'Forces on each part, in real units. Each arrow ends where that part\'s force acts.', wake: 'Where the flow separates behind the vehicle. Drawn, not computed: the panel method has no viscosity.', labels: 'Names and values next to the arrows.' };
-  for (const [k, lab] of [['pressure', 'Pressure colours'], ['streamlines', 'Streamlines'], ['particles', 'Moving particles'], ['arrows', 'Force arrows'], ['wake', 'Wake (illustration)'], ['labels', 'Labels']])
+  for (const [k, lab] of [['pressure', 'Pressure colors'], ['streamlines', 'Streamlines'], ['particles', 'Moving particles'], ['arrows', 'Force arrows'], ['wake', 'Wake (illustration)'], ['labels', 'Labels']])
     secS.body.append(toggle(lab, show[k], val => { show[k] = val; legendRow.style.visibility = show.pressure || show.arrows ? '' : 'hidden'; }, { tip: tips[k] }).el);
   controls.append(secV.el, secP.el, secS.el);
   function buildParams() {
@@ -187,7 +187,7 @@ export function vehicleTab({ setHeader, keep = o => o }) {
   function setField(f) {
     F = f;
     const { GX, GY, U, V, mask } = f, img = new ImageData(GX, GY), bg = rgb(cssVar('--stage'));
-    // Cp in fluid cells; cells inside a body take the value of a fluid neighbour, so the smooth outline drawn on top
+    // Cp in fluid cells; cells inside a body take the value of a fluid neighbor, so the smooth outline drawn on top
     // hides the grid's staircase instead of showing a ragged edge
     const cp = new Float32Array(GX * GY), known = new Uint8Array(GX * GY);
     for (let k = 0; k < GX * GY; k++) if (!mask[k]) { cp[k] = 1 - (U[k] * U[k] + V[k] * V[k]); known[k] = 1; }
@@ -242,13 +242,13 @@ export function vehicleTab({ setHeader, keep = o => o }) {
 
   // ---------------- drawing
   let wheelAngle = 0, last = performance.now();
-  // Same look as the Airfoil Lab: solid grey bodies with a thin outline, plain arrows, text labels on the field
+  // Same look as the Airfoil Lab: solid gray bodies with a thin outline, plain arrows, text labels on the field
   function palette() {
     const dk = isDark();
     return {
       dk, text: cssVar('--text'), text2: cssVar('--text-2'), text3: cssVar('--text-3'), stage: cssVar('--stage'), font: cssVar('--font'),
       body: dk ? '#2b313c' : '#cfd5de', edge: cssVar('--text'), dark: cssVar('--text'),
-      tyre: dk ? '#14171d' : '#3b414c', rim: dk ? '#59616f' : '#eef0f3', road: cssVar('--bg-sunk'),
+      tire: dk ? '#14171d' : '#3b414c', rim: dk ? '#59616f' : '#eef0f3', road: cssVar('--bg-sunk'),
       neutral: cssVar('--text'), wake: cssVar('--wake'),
     };
   }
@@ -315,7 +315,7 @@ export function vehicleTab({ setHeader, keep = o => o }) {
       for (const d of ghosts) { path(d.pts, gg); gg.closePath(); gg.fill(); }
       g.globalAlpha = v.kind === 'car' ? 0.45 : C.dk ? 0.7 : 0.6; g.drawImage(ghostLayer, 0, 0); g.globalAlpha = 1; // lighter on cars, so the flow round the wings shows through
     }
-    const line = d => { // mounts and edges: a thick line in the body colour with the same thin outline as the bodies
+    const line = d => { // mounts and edges: a thick line in the body color with the same thin outline as the bodies
       const wpx = Math.max(2 * dpr, (d.w || 0.02) * sx); g.lineCap = 'round'; g.lineJoin = 'round';
       path(d.pts); g.strokeStyle = C.edge; g.lineWidth = wpx + 2 * lw; g.stroke(); g.strokeStyle = C.body; g.lineWidth = wpx; g.stroke();
     };
@@ -329,13 +329,13 @@ export function vehicleTab({ setHeader, keep = o => o }) {
   }
   function drawWheel(d, X, Y, sx, C, dpr, lw) {
     const cx = X(d.x), cy = Y(d.y), rr = d.r * sx, rim = d.rim * sx;
-    g.fillStyle = C.tyre; g.beginPath(); g.arc(cx, cy, rr, 0, 2 * Math.PI); g.fill();
+    g.fillStyle = C.tire; g.beginPath(); g.arc(cx, cy, rr, 0, 2 * Math.PI); g.fill();
     g.strokeStyle = C.edge; g.lineWidth = lw; g.stroke();
     g.fillStyle = C.rim; g.beginPath(); g.arc(cx, cy, rim, 0, 2 * Math.PI); g.fill();
-    g.strokeStyle = C.tyre; g.lineWidth = Math.max(dpr, 0.02 * sx); g.lineCap = 'round';
+    g.strokeStyle = C.tire; g.lineWidth = Math.max(dpr, 0.02 * sx); g.lineCap = 'round';
     const n = d.cover ? 3 : 5;
     for (let k = 0; k < n; k++) { const a = wheelAngle + k * 2 * Math.PI / n; g.beginPath(); g.moveTo(cx + Math.cos(a) * rim * 0.28, cy + Math.sin(a) * rim * 0.28); g.lineTo(cx + Math.cos(a) * rim * 0.9, cy + Math.sin(a) * rim * 0.9); g.stroke(); }
-    g.fillStyle = C.tyre; g.beginPath(); g.arc(cx, cy, rim * 0.2, 0, 2 * Math.PI); g.fill();
+    g.fillStyle = C.tire; g.beginPath(); g.arc(cx, cy, rim * 0.2, 0, 2 * Math.PI); g.fill();
   }
   // plain arrow, as in the Airfoil Lab: shaft and a filled head
   function arrow(x, y, dx, dy, col, C, dpr) {
@@ -347,8 +347,8 @@ export function vehicleTab({ setHeader, keep = o => o }) {
     g.lineTo(x + dx - ux * hh + uy * hh * 0.5, y + dy - uy * hh - ux * hh * 0.5); g.closePath(); g.fill();
   }
   function dot(x, y, col, C, dpr) { g.fillStyle = col; g.beginPath(); g.arc(x, y, 2.4 * dpr, 0, 2 * Math.PI); g.fill(); }
-  // labels as in the Airfoil Lab (text with a thin stage-coloured edge), placed so they do not overlap or leave the canvas
-  function labeller(W, H, dpr, C, avoid = []) {
+  // labels as in the Airfoil Lab (text with a thin stage-colored edge), placed so they do not overlap or leave the canvas
+  function labeler(W, H, dpr, C, avoid = []) {
     const placed = [...avoid]; // small parts (wings, fins, wheels) count as taken, so labels never cover them
     const hit = r => placed.some(q => r.x < q.x + q.w + 4 * dpr && q.x < r.x + r.w + 4 * dpr && r.y < q.y + q.h + 2 * dpr && q.y < r.y + r.h + 2 * dpr);
     const f1 = `600 ${12 * dpr}px ${C.font}`, f2 = `${11.5 * dpr}px ${C.font}`;
@@ -381,11 +381,11 @@ export function vehicleTab({ setHeader, keep = o => o }) {
     const avoid = [];
     built.parts.forEach(pp => { if (pp.role !== 'body') for (const P of outlinesOf(pp)) { const xs = P.map(q => X(q[0])), ys = P.map(q => Y(q[1])), x = Math.min(...xs), y = Math.min(...ys); avoid.push({ x: x - 2 * dpr, y: y - 2 * dpr, w: Math.max(...xs) - x + 4 * dpr, h: Math.max(...ys) - y + 4 * dpr }); } });
     for (const d of built.details) if (d.kind === 'wheel') avoid.push({ x: X(d.x - d.r), y: Y(d.y + d.r), w: 2 * d.r * sx, h: 2 * d.r * sx });
-    const scale = 0.3 * H / ref, label = labeller(W, H, dpr, C, avoid), queue = [];
+    const scale = 0.3 * H / ref, label = labeler(W, H, dpr, C, avoid), queue = [];
     const total = items.reduce((s, x) => s + x.N, 0);
     for (const x of items) {
       let ys = x.split && x.side === 'down' ? bottomAt(x.part, x.xcp) : topAt(x.part, x.xcp);
-      if (!isFinite(ys)) { // force centre beyond the outline (it can be, for a spread-out part): use its nearest point
+      if (!isFinite(ys)) { // force center beyond the outline (it can be, for a spread-out part): use its nearest point
         const pts = outlinesOf(x.part).flat(); const near = pts.reduce((a, q) => (Math.abs(q[0] - x.xcp) < Math.abs(a[0] - x.xcp) ? q : a)); ys = topAt(x.part, near[0]); x.xcp = near[0];
       }
       const px = X(x.xcp), py = Y(ys), up = x.N > 0, col = up ? UP : DOWN;
@@ -402,7 +402,7 @@ export function vehicleTab({ setHeader, keep = o => o }) {
       else { const l = Math.min(len, py - 10 * dpr); arrow(px, py - 6 * dpr - l, 0, l, col, C, dpr); queue.push([x.short, `${value} down${share}`, px, py - 6 * dpr - l, col]); }
       dot(px, py, col, C, dpr);
     }
-    // weight at the centre of gravity
+    // weight at the center of gravity
     const cg = built.cg, cgx = X(cg[0]), cgy = Y(cg[1]), wl = Math.min(Math.max(R.weight * scale, 20 * dpr), Math.max(20 * dpr, H - cgy - 8 * dpr));
     arrow(cgx, cgy, 0, wl, C.neutral, C, dpr); dot(cgx, cgy, C.neutral, C, dpr);
     queue.push(['Weight', R.kind === 'car' ? U.load(R.weight) : U.force(R.weight), cgx, cgy + wl * 0.6, C.neutral, 'left']);
@@ -415,7 +415,7 @@ export function vehicleTab({ setHeader, keep = o => o }) {
       let x0 = X(rearX) + 8 * dpr; const dl = fit(x0, 0.09 * W, 1); x0 = Math.min(x0, W - 6 * dpr - dl);
       arrow(x0, yD, dl, 0, C.neutral, C, dpr);
       queue.push(['Drag (typical)', U.force(R.drag), x0 + dl * 0.5, yD + 22 * dpr, C.neutral]);
-    } else { // through the centre of gravity, like a free-body diagram
+    } else { // through the center of gravity, like a free-body diagram
       const dl = Math.min(0.09 * W, fit(cgx, 0.09 * W, 1), fit(cgx, 0.09 * W, -1)), gap = 0.06 * W;
       const xd = Math.min(cgx + gap, W - 6 * dpr - dl), xt = Math.max(cgx - gap, dl + 6 * dpr);
       arrow(xd, cgy, dl, 0, C.neutral, C, dpr); queue.push(['Drag', fmtD(R.drag), xd + dl, cgy, C.neutral]);
@@ -462,7 +462,7 @@ export function vehicleTab({ setHeader, keep = o => o }) {
     }));
     const icons = { i: 'i', w: '!', b: '×', g: '✓' };
     insEl.replaceChildren(...vehicleInsights(v, p, R).map(x => h('div', { class: 'insight' }, h('div', { class: 'ic ' + x.type }, icons[x.type]), h('div', {}, h('div', { class: 't' }, x.t), h('div', { class: 'd', html: x.d })))));
-    badge.textContent = v.kind === 'car' ? `${v.label} · ${U.speed(p.speed)} · centre-line slice` : `${v.label} · ${U.speed(p.speed)} · ${U.alt(p.alt)} · slice through ${v.missile ? 'canards and tail fins' : 'wing and tail'}`;
+    badge.textContent = v.kind === 'car' ? `${v.label} · ${U.speed(p.speed)} · center-line slice` : `${v.label} · ${U.speed(p.speed)} · ${U.alt(p.alt)} · slice through ${v.missile ? 'canards and tail fins' : 'wing and tail'}`;
     const bg = rgb(cssVar('--stage')), stops = [];
     for (let k = 0; k <= 12; k++) { const cp = CP_MIN + (1 - CP_MIN) * k / 12, c = divergingJS(cp < 0 ? -Math.min(1, cp / CP_MIN) : Math.min(1, cp), bg); stops.push(`rgb(${c}) ${(100 * k / 12).toFixed(1)}%`); }
     const key = (col, t) => h('span', { class: 'vh-key' }, h('i', { style: { background: col } }), t);

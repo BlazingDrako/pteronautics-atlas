@@ -230,7 +230,7 @@ export function structureTab() {
       const r = res.static?.ok && res.static.members.find(x => x.id === m.id);
       if (r) b.append(h('div', { class: 'cf-res st-mini' }, ...[
         ['N range', `${units.num('force', r.ext.N.min, 4)} … ${units.fmt('force', r.ext.N.max, 4)}`], ['|V| max', units.fmt('force', r.ext.V.abs, 4)], ['|M| max', units.fmt('moment', r.ext.M.abs, 4)],
-        ['σ (von Mises) max', units.fmt('stress', r.stress.vmMax, 4)], ['Utilisation σ/σy', (r.stress.util * 100).toFixed(1) + '%'], ['Sag (rel. chord)', units.fmt('disp', r.sag.abs, 3)]].map(([k, v]) => h('div', { class: 'r' }, h('span', {}, k), h('span', {}, v)))),
+        ['σ (von Mises) max', units.fmt('stress', r.stress.vmMax, 4)], ['Utilization σ/σy', (r.stress.util * 100).toFixed(1) + '%'], ['Sag (rel. chord)', units.fmt('disp', r.sag.abs, 3)]].map(([k, v]) => h('div', { class: 'r' }, h('span', {}, k), h('span', {}, v)))),
         btn('Plot along this member', () => { ui.plotMember = m.id; renderResults(); plotCard.scrollIntoView({ behavior: 'smooth', block: 'center' }); }));
     } else if (sel.kind === 'support') {
       const sp = mdl.supports.find(s => s.node === sel.id); if (!sp) return;
@@ -277,7 +277,7 @@ export function structureTab() {
       const p = sectionProps(s);
       b.append(h('div', { class: 'cf-res st-mini' }, ...[['A', units.fmt('area', p.A, 4)], ['I', units.fmt('inertia', p.Ix, 4)], ['S = I/c', units.fmt('smod', p.Sx, 4)], ['Depth', units.fmt('dim', p.h, 4)]].map(([k, v]) => h('div', { class: 'r' }, h('span', {}, k), h('span', {}, v)))));
     } catch { }
-    b.append(h('div', { class: 'hint' }, 'The Sections tab shows full properties, stress distributions and the shear centre.'));
+    b.append(h('div', { class: 'hint' }, 'The Sections tab shows full properties, stress distributions and the shear center.'));
     // custom materials
     b.append(h('div', { class: 'st-lab', style: { marginTop: '12px' } }, 'Custom materials'));
     for (const m of mdl.materials) {
@@ -393,7 +393,7 @@ export function structureTab() {
       ms.push({ k: 'Max |V|', v: units.fmt('force', mV.v, 4), s: mV.v ? mem(mV.k) : '' });
       ms.push({ k: 'Max |N|', v: units.fmt('force', mN.v, 4), s: mN.v ? mem(mN.k) : '' });
       ms.push({ k: 'Max deflection', v: units.fmt('disp', R.maxDisp.v, 3), s: R.maxDisp.member ? `member ${mdl.members.findIndex(m => m.id === R.maxDisp.member) + 1}` : '' });
-      ms.push({ k: 'Peak stress', v: units.fmt('stress', mU.s || 0, 4), s: `${(mU.v * 100).toFixed(0)}% of yield`, cls: mU.v > 1 ? 'bad' : '', tip: 'Largest von Mises stress: axial + bending at the extreme fibres, or axial + shear at the neutral axis.' });
+      ms.push({ k: 'Peak stress', v: units.fmt('stress', mU.s || 0, 4), s: `${(mU.v * 100).toFixed(0)}% of yield`, cls: mU.v > 1 ? 'bad' : '', tip: 'Largest von Mises stress: axial + bending at the extreme fibers, or axial + shear at the neutral axis.' });
       const bk = res.buckling;
       ms.push({ k: 'Buckling factor λcr', v: bk?.ok ? fmtNum(bk.modes[0]?.lambda, 4) : bk?.error === 'no-compression' ? '—' : bk ? '—' : '…', s: bk?.ok ? (bk.modes[0]?.lambda < 1 ? 'buckles under these loads' : 'loads × λ cause buckling') : bk?.error === 'no-compression' ? 'nothing in compression' : '', tip: 'Linear (eigenvalue) buckling of the whole structure, members subdivided. Loads multiplied by λ make the structure buckle.' });
       const md = res.modal;
@@ -536,7 +536,7 @@ export function structureTab() {
     if (!R?.ok) { plot.setData({ series: [] }); return; }
     if (!ui.plotMember || !mdl.members.find(m => m.id === ui.plotMember)) ui.plotMember = mdl.members[0]?.id;
     plotSel.append(select(mdl.members.map((m, k) => ({ value: m.id, label: `Member ${k + 1}` })), ui.plotMember, v => { ui.plotMember = v; renderPlot(); }, { class: 'select st-sel-sm' }),
-      select([{ value: 'M', label: 'Bending moment' }, { value: 'V', label: 'Shear force' }, { value: 'N', label: 'Axial force' }, { value: 'v', label: 'Transverse deflection' }, { value: 'th', label: 'Slope' }, { value: 'sig', label: 'Fibre stresses' }], ui.plotQty, v => { ui.plotQty = v; renderPlot(); }, { class: 'select st-sel-sm' }));
+      select([{ value: 'M', label: 'Bending moment' }, { value: 'V', label: 'Shear force' }, { value: 'N', label: 'Axial force' }, { value: 'v', label: 'Transverse deflection' }, { value: 'th', label: 'Slope' }, { value: 'sig', label: 'Fiber stresses' }], ui.plotQty, v => { ui.plotQty = v; renderPlot(); }, { class: 'select st-sel-sm' }));
     const mr = R.members.find(m => m.id === ui.plotMember); if (!mr) return;
     const xs = mr.x.map(x => units.fromSI('len', x)), q = ui.plotQty, col = cssv('--accent');
     let series = [], yl = '';
@@ -547,8 +547,8 @@ export function structureTab() {
     if (q === 'th') { series = [{ x: xs, y: Array.from(mr.th, v => units.fromSI('rot', v)), color: col, label: 'θ' }]; yl = `θ (${units.label('rot')})`; }
     if (q === 'sig') {
       const P = res.prepared?.members[mr.mi], S = P.sec;
-      series = [{ x: xs, y: mr.x.map((_, i) => units.fromSI('stress', mr.N[i] / S.A - mr.M[i] * S.ctop / S.Ix)), color: cssv('--accent'), label: 'top fibre' },
-        { x: xs, y: mr.x.map((_, i) => units.fromSI('stress', mr.N[i] / S.A + mr.M[i] * S.cbot / S.Ix)), color: cssv('--lower'), label: 'bottom fibre' }];
+      series = [{ x: xs, y: mr.x.map((_, i) => units.fromSI('stress', mr.N[i] / S.A - mr.M[i] * S.ctop / S.Ix)), color: cssv('--accent'), label: 'top fiber' },
+        { x: xs, y: mr.x.map((_, i) => units.fromSI('stress', mr.N[i] / S.A + mr.M[i] * S.cbot / S.Ix)), color: cssv('--lower'), label: 'bottom fiber' }];
       yl = `σ (${units.label('stress')})`;
       const fy = units.fromSI('stress', P.fy);
       plot.setOpts({ xlabel: `x (${units.label('len')})`, ylabel: yl, xname: 'x', yname: 'σ' });

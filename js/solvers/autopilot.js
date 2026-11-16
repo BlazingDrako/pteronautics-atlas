@@ -31,7 +31,7 @@ function builder(names) {
 }
 // ap: { pitch: 'alt'|'vs'|'pitch'|'speed'|'off', thr: 'speed'|'off', lat: 'hdg'|'bank'|'off', g: gains, wa, taue }
 export function linearLon(an, eng, ap0, brk) {
-  const ap = ap0.pitch === 'flch' ? { ...ap0, pitch: 'alt' } : ap0;   // level change is temporary: analyse the capture/hold
+  const ap = ap0.pitch === 'flch' ? { ...ap0, pitch: 'alt' } : ap0;   // level change is temporary: analyze the capture/hold
   const g = ap.g, A = an.lon.A, Be = an.lon.B.map(b => -b), U = an.d.V, m = an.d.m;
   const useThr = ap.thr === 'speed' && !eng.none, pitchOn = ap.pitch !== 'off';
   const names = ['u', 'w', 'q', 'th', 'h', 'de'];
@@ -95,7 +95,7 @@ export function loopAt(an, eng, ap, axis, brk) {
   return L;
 }
 // Every loop's margins and crossover, and the closed-loop roots
-export function analyse(an, eng, ap) {
+export function analyze(an, eng, ap) {
   const out = { lon: {}, lat: {} };
   const lonLoops = [['elev', 'Pitch inner loop (elevator)'], ...(ap.pitch !== 'off' && ap.pitch !== 'pitch' ? [['theta', ap.pitch === 'speed' ? 'Speed on pitch' : ap.pitch === 'vs' ? 'Vertical speed' : 'Altitude / vertical speed']] : []), ...(ap.thr === 'speed' && !eng.none ? [['thr', 'Autothrottle']] : [])];
   const latLoops = [['ail', 'Bank inner loop (aileron)'], ...(ap.lat === 'hdg' ? [['bank', 'Heading']] : []), ['rud', 'Yaw damper (rudder)']];

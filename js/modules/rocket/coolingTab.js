@@ -32,7 +32,7 @@ export function coolingTab() {
       field('Liner material', select(Object.entries(R.LINERS).map(([value, l]) => ({ value, label: l.label })), C.liner, v => { C.liner = v; paint(); }), 'Copper alloys conduct heat 15–20× better than steel or nickel alloys, so the liner stays cool enough even at the throat.'),
       bound(C, 't', 'Liner thickness', 0.3, 5, { step: 0.05, digits: 2, unit: 'mm', onInput: paint, tip: 'Hot-wall thickness between the gas and the coolant channels.' }),
       bound(C, 'Twg', 'Gas-side wall temperature', 400, 1600, { step: 10, digits: 0, unit: 'K', onInput: paint, tip: 'The temperature the hot wall is held at. A hotter wall takes less heat (smaller Taw − Twg) but material strength falls.' }),
-      bound(C, 'emiss', 'Wall emissivity (radiative extension)', 0.2, 0.95, { step: 0.01, digits: 2, onInput: paint, tip: 'For the uncooled-wall curve: a dark oxidised niobium or carbon–carbon extension radiates with ε ≈ 0.8.' }),
+      bound(C, 'emiss', 'Wall emissivity (radiative extension)', 0.2, 0.95, { step: 0.01, digits: 2, onInput: paint, tip: 'For the uncooled-wall curve: a dark oxidized niobium or carbon–carbon extension radiates with ε ≈ 0.8.' }),
       toggle('Radiatively cooled nozzle extension', ext(), v => { C.ext = v; paint(); }, { tip: 'Stop the cooling jacket where an uncooled niobium wall would stay below 1600 K by radiating, as on Merlin Vacuum and RL10. Its heat is radiated away instead of going into the coolant. On by default for ε > 60.' }).el);
     controls.replaceChildren(sec.el, h('div', { class: 'hint', style: { padding: '0 4px' } }, 'The engine itself (propellants, Pc, thrust, ε) is set on the Engine design tab.'));
   };

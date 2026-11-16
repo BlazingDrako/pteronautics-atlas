@@ -27,7 +27,7 @@ export function envelopeTab({ keep = o => o } = {}) {
   }
   resetTarget(); buildTarget();
   const lSec = section('Layers', { collapsible: true });
-  lSec.body.append(toggle('Ps colour map', S.heat, v => { S.heat = v; map.paint(); }).el, toggle('Energy-height lines', S.he, v => { S.he = v; map.paint(); }).el, toggle('Minimum-time climb path', S.path, v => { S.path = v; map.paint(); }).el);
+  lSec.body.append(toggle('Ps color map', S.heat, v => { S.heat = v; map.paint(); }).el, toggle('Energy-height lines', S.he, v => { S.he = v; map.paint(); }).el, toggle('Minimum-time climb path', S.path, v => { S.path = v; map.paint(); }).el);
   controls.append(acSec.el, tSec.el, lSec.el);
 
   const metrics = metricsGrid();
@@ -37,7 +37,7 @@ export function envelopeTab({ keep = o => o } = {}) {
     const items = [[cssVar('--text'), 'Ps = 0: level-flight envelope', 'solid'], ['#9aa3b2', `Ps contours every ${show('gust', R.psStep, 0)}`, 'solid'], [cssVar('--bad'), 'stall (1 g)', 'solid'], [cssVar('--warn'), 'speed limits', 'dashed'], [cssVar('--text-3'), 'constant energy height', 'dashed'], ...(S.path && R.climb ? [['#ffd34d', 'minimum-time climb', 'solid']] : [])];
     legendEl.replaceChildren(...items.map(([col, t, st]) => h('span', {}, h('i', { style: { borderTop: `3px ${st} ${col}` } }), t)));
   };
-  const mapCard = card('Flight envelope and specific excess power', 'Colour: Ps = (T − D)·V/W in level 1 g flight, the rate the aircraft can gain energy height. Where Ps < 0 it cannot hold that speed and altitude. Dashed curves: constant energy height He = h + V²/2g (trading height for speed along them is free). Click to set the climb target.', map.el, legendEl);
+  const mapCard = card('Flight envelope and specific excess power', 'Color: Ps = (T − D)·V/W in level 1 g flight, the rate the aircraft can gain energy height. Where Ps < 0 it cannot hold that speed and altitude. Dashed curves: constant energy height He = h + V²/2g (trading height for speed along them is free). Click to set the climb target.', map.el, legendEl);
   const sliceHost = h('div', { class: 'plot' });
   const sliceCard = card('Ps against Mach at several altitudes', 'Horizontal slices through the map.', sliceHost);
   const slices = new Plot(sliceHost, { legend: true, xname: 'M', yname: 'Ps' });

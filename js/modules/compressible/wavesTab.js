@@ -122,7 +122,7 @@ export function wavesTab(shell) {
     desc.textContent = {
       normal: 'A straight shock across a duct: the flow jumps from supersonic to subsonic.',
       ramp: 'Concave corner. Supersonic: oblique shock (or detached bow shock past θmax). Subsonic: smooth turning.',
-      corner: 'Convex corner. Supersonic: a centred Prandtl–Meyer expansion fan. Subsonic: smooth acceleration.',
+      corner: 'Convex corner. Supersonic: a centered Prandtl–Meyer expansion fan. Subsonic: smooth acceleration.',
       isocomp: 'A gently curved ramp sends Mach waves that converge and coalesce into a shock.',
       wedge: 'Symmetric wedge followed by a flat afterbody: nose shock plus shoulder expansion.',
       diamond: 'Shock-expansion theory on a diamond (double-wedge) airfoil: lift and wave drag, compared to linear theory.',
