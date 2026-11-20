@@ -150,7 +150,7 @@ export const formulasModule = {
       if (f) { document.title = `${f.name} — Formula Library`; main.replaceChildren(formulaView(f)); }
       else if (t) { document.title = `${t.title} — Formula Library`; main.replaceChildren(topicView(t)); }
       else if (p.get('fav')) { document.title = 'Favorites — Formula Library'; main.replaceChildren(favView()); }
-      else { document.title = 'Formula Library — Pteronautics'; main.replaceChildren(homeView()); }
+      else { document.title = 'Formula Library — Pteronautics Atlas'; main.replaceChildren(homeView()); }
     }
 
     function formulaCard(f) {

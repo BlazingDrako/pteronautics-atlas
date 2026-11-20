@@ -271,18 +271,4 @@ function spacecraft() {
   return svg(s);
 }
 
-function design() {
-  // a layout drawing on a grid: top view of an aircraft with its wings shaded, and dimension lines for the span and length
-  let s = '';
-  for (let x = 0; x <= W; x += 20) s += `<path class="pv-grid" d="M${x} 0 L${x} ${H}"/>`;
-  for (let y = 0; y <= H; y += 20) s += `<path class="pv-grid" d="M0 ${y} L${W} ${y}"/>`;
-  const wing = 'M190 54 L160 18 L146 18 L150 54 L150 66 L146 102 L160 102 L190 66 Z';
-  s += `<path class="pv-fin" d="M78 54 L62 34 L54 34 L56 54 Z M78 66 L62 86 L54 86 L56 66 Z"/>`;
-  s += `<path class="pv-fin" d="${wing}"/>${trace(wing)}`;
-  s += `<path class="pv-rbody" d="M48 56 L60 54 L232 54 Q262 54 274 60 Q262 66 232 66 L60 66 L48 64 Z"/>`;
-  s += `<path class="pv-dash" d="M162 18 L306 18 M162 102 L306 102 M48 66 L48 116 M274 66 L274 116"/>`;
-  s += `<path class="pv-arrow thin" d="M300 18 L300 102 M297 23 L300 18 L303 23 M297 97 L300 102 L303 97 M48 112 L274 112 M53 109 L48 112 L53 115 M269 109 L274 112 L269 115"/>`;
-  return svg(s);
-}
-
-export const PREVIEWS = { cycles, heat, airfoil, compressible, cfd, turbine: propulsion, structures, flight, gnc, formulas, rocket, orbits, wings, rotors, materials, launch, spacecraft, design };
+export const PREVIEWS = { cycles, heat, airfoil, compressible, cfd, turbine: propulsion, structures, flight, gnc, formulas, rocket, orbits, wings, rotors, materials, launch, spacecraft };

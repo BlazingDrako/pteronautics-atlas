@@ -168,7 +168,7 @@ export function session(mod, { title = mod, tab = () => null } = {}) {
         if (!f) return;
         try {
           const data = JSON.parse(await f.text());
-          if (!data || !['Pteronautics', 'AeroStudio'].includes(data.app) || !data.module) throw new Error('not an Pteronautics project file');
+          if (!data || !['Pteronautics', 'AeroStudio'].includes(data.app) || !data.module) throw new Error('not a Pteronautics Atlas project file');
           frozen = true;
           stored = {}; for (const [k, v] of Object.entries(data.states || {})) stored[k] = v;
           for (const [k, v] of Object.entries(data.extra || {})) stored['~' + k] = v;
@@ -188,9 +188,9 @@ export function session(mod, { title = mod, tab = () => null } = {}) {
           const { extra } = snapshot();
           const states = {}; for (const [k, v] of Object.entries(stored)) if (!k.startsWith('~')) states[k] = v;
           const data = { app: 'Pteronautics', version: 1, module: mod, title, tab: tab(), saved: new Date().toISOString(), states, extra };
-          downloadText(`Pteronautics ${title} ${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(data, null, 1), 'application/json');
+          downloadText(`Pteronautics Atlas ${title} ${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(data, null, 1), 'application/json');
         }),
-        b('upload', 'Open', 'Open a saved Pteronautics project file', () => file.click()),
+        b('upload', 'Open', 'Open a saved Pteronautics Atlas project file', () => file.click()),
         b('print', 'Report', 'Open a printable report of the inputs and results on screen', () => {
           const v = document.getElementById('view');
           printReport({ title, controls: v.querySelector('.af-controls'), results: [...v.querySelectorAll('.cf-body, .af-main, .af-side')].filter(e => e.childElementCount) });

@@ -1,4 +1,4 @@
-// Pteronautics shell: navigation, routing, theming. Modules register in `modules` below.
+// Pteronautics Atlas shell: navigation, routing, theming. Modules register in `modules` below.
 import './lib/rename.js'; // must stay first: moves settings saved under the old AeroStudio name
 import { h, icon } from './lib/ui.js';
 import { airfoilModule } from './modules/airfoil/index.js';
@@ -70,9 +70,6 @@ const modules = [
   { id: 'spacecraft', title: 'Spacecraft Systems', icon: 'satellite', group: 'Flight', status: 'planned',
     blurb: 'What keeps a satellite working: pointing it with reaction wheels and thrusters, keeping it at the right temperature through sunlight and eclipse, and budgeting its power and radio link.',
     features: ['Attitude dynamics and control: spin, gravity gradient, reaction wheels', 'Thermal balance through sunlight and eclipse', 'Power and link budgets for a mission'] },
-  { id: 'design', title: 'Aircraft Design', icon: 'design', group: 'Design', status: 'planned',
-    blurb: 'Size a whole aircraft from a mission: weight estimates, the constraint diagram that picks the wing and engine, and a layout built with the other modules.',
-    features: ['Mission profile and weight fractions to a takeoff weight', 'T/W vs W/S constraint diagram from takeoff, climb, cruise and turns', 'Wing, tail and engine sized with the Airfoil Lab, Wings and Jet Engine Cycles'] },
   { ...formulasModule, icon: 'book', group: 'Reference', status: 'live',
     blurb: 'Over 100 aerospace formulas you can solve for any variable, with a live plot, unit switching and a plain-language explanation of each.',
     features: ['Solve for any variable, with every solution shown', 'Atmosphere and aero through propulsion, structures and orbits', 'Assumptions, typical values and links into the full tools'] },
@@ -100,7 +97,7 @@ function buildNav() {
   nav.replaceChildren();
   nav.append(h('div', { class: 'brand' },
     brandMark(),
-    h('div', {}, h('div', { class: 'brand-name' }, 'Pteronautics'), h('div', { class: 'brand-sub' }, 'See the physics'))));
+    h('div', {}, h('div', { class: 'brand-name' }, 'Pteronautics'), h('div', { class: 'brand-sub brand-product' }, 'Atlas'))));
   const find = h('button', { class: 'nav-item nav-search', type: 'button', title: `Search modules, concepts and formulas (${searchShortcut()})` }, icon('search'), h('span', { class: 'nav-label' }, 'Search'), h('span', { class: 'kbd' }, searchShortcut()));
   find.addEventListener('click', () => openSearch());
   const home = h('a', { class: 'nav-item', href: '#/', 'data-id': 'home' }, icon('home'), h('span', { class: 'nav-label' }, 'Home'));
@@ -146,13 +143,13 @@ function route() {
   const m = modules.find(m => m.id === id);
   if (!m) { current = null; renderHome(); return; }
   current = m;
-  document.title = `${m.title} — Pteronautics`;
+  document.title = `${m.title} — Pteronautics Atlas`;
   if (m.status === 'live') m.mount(view);
   else renderPlanned(m);
 }
 
 function renderHome() {
-  document.title = 'Pteronautics: Free Aerospace Engineering Tools in Your Browser';
+  document.title = 'Pteronautics Atlas: Free Aerospace Engineering Tools in Your Browser';
   const card = m => {
     const live = m.status === 'live';
     const tag = h('span', { class: 'tag' + (live ? ' live' : '') }, live ? 'Ready' : 'Coming soon');

@@ -1,16 +1,25 @@
-# Pteronautics
+# Pteronautics Atlas
 
 Free, visual aerospace engineering tools that run in the browser. Every result comes with a
 picture to attach the concept to.
+
+## The Pteronautics family
+
+| Program | What it's for |
+| --- | --- |
+| **Pteronautics Atlas** (this repository) | Learn how the physics works, one concept at a time: airfoils, wings, shocks, engines, structures, flight and orbits, each with a live visual |
+| **Pteronautics Works** (in development) | Design whole vehicles (aircraft, eVTOLs, launch vehicles, spacecraft) on the same validated solvers, coupled together, with requirements checked live |
+
+They are separate programs under the Pteronautics name. This repository is Atlas only.
 
 ## Run it
 
 - **macOS:** double-click `start.command` (first time: right-click → Open).
 - **Windows:** double-click `start.bat`.
-- **macOS app:** double-click `Pteronautics.app` in this folder (no Terminal window; quit it from the Dock to stop the server).
+- **macOS app:** double-click `Pteronautics Atlas.app` in this folder (no Terminal window; quit it from the Dock to stop the server).
 - **Any system:** `python3 serve.py`, then open http://localhost:8765
 
-If Pteronautics is already running, launching again just opens it in the browser; if port 8765 is taken by
+If Pteronautics Atlas is already running, launching again just opens it in the browser; if port 8765 is taken by
 something else, the next free port is used.
 
 A tiny local server is needed because browsers block JavaScript modules and background
@@ -36,8 +45,7 @@ The same folder can be hosted as-is on any static web host (for example GitHub P
 | [Guidance, Navigation & Control](docs/modules/gnc.md) | Control loops, fly-by-wire, autopilots, navigation, INS/GNSS Kalman filtering and collaborative flight |
 | [Formula Library](docs/modules/formula-library.md) | 178 formulas in 12 topics: solve for any variable, plot, switch units, read what each one means |
 
-Planned: Propellers & Rotors, Fatigue & Composites, Launch & Reentry,
-Spacecraft Systems and Aircraft Design.
+Planned: Fatigue & Composites, Launch & Reentry and Spacecraft Systems.
 
 ## Using it
 

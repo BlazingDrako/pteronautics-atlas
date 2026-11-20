@@ -335,7 +335,7 @@ export const cfdModule = {
       solver.render(v.mode, v.range || 1, colors); drawOverlay();
       const W = canvas.width, H = canvas.height, c = document.createElement('canvas'); c.width = W; c.height = H;
       const g = c.getContext('2d'); g.drawImage(canvas, 0, 0); g.drawImage(ov, 0, 0);
-      const dpr = W / canvas.getBoundingClientRect().width, txt = `Pteronautics · ${S.scene.label} · Re ${fmtRe(S.Re)} · ${v.label} · t = ${(solver.iter * U_LAT / refL()).toFixed(1)} ${S.scene.sym}/U`;
+      const dpr = W / canvas.getBoundingClientRect().width, txt = `Pteronautics Atlas · ${S.scene.label} · Re ${fmtRe(S.Re)} · ${v.label} · t = ${(solver.iter * U_LAT / refL()).toFixed(1)} ${S.scene.sym}/U`;
       g.font = `${12 * dpr}px system-ui, sans-serif`; const tw = g.measureText(txt).width;
       g.fillStyle = 'rgba(0,0,0,0.45)'; g.fillRect(W - tw - 18 * dpr, H - 24 * dpr, tw + 12 * dpr, 18 * dpr);
       g.fillStyle = '#fff'; g.textBaseline = 'middle'; g.fillText(txt, W - tw - 12 * dpr, H - 15 * dpr);
