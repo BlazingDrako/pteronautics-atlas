@@ -9,7 +9,7 @@ picture to attach the concept to.
 | --- | --- |
 | **Pteronautics Atlas** (this repository) | Learn how the physics works, one concept at a time: airfoils, wings, shocks, engines, structures, flight and orbits, each with a live visual |
 | **Pteronautics Works** (in development) | Design whole vehicles (aircraft, eVTOLs, launch vehicles, spacecraft) on the same validated solvers, coupled together, with requirements checked live |
-| **[Pteronautics Loom](https://github.com/BlazingDrako/pteronautics-loom)** | Model the system in SysML: requirements, functions, logical and physical architecture, interfaces and verification, traced end to end |
+| **[Pteronautics Loom](https://blazingdrako.github.io/pteronautics-loom/)** ([source](https://github.com/BlazingDrako/pteronautics-loom)) | Model the system in SysML: requirements, functions, logical and physical architecture, interfaces and verification, traced end to end |
 
 They are separate programs under the Pteronautics name. This repository is Atlas only.
 
